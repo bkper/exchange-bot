@@ -1,5 +1,5 @@
 {
-  "name": "bkper-bot",
+  "name": "currency-converter-bot",
   "version": "1.0.0",
   "scripts": {
     "login": "clasp login",
