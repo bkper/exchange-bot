@@ -7,3 +7,5 @@ scopes: "https://www.googleapis.com/auth/script.external_request"
 apiVersion: v2
 triggers: onTransactionPosted
 deploymentId: MKAgiUnECvm5nh0soueQaCpNuZToV6OsP
+whitelist: >
+    maelcaldas@gmail.com
