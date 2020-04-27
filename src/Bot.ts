@@ -1,10 +1,28 @@
 BkperApp.setApiKey(PropertiesService.getScriptProperties().getProperty('API_KEY'));
 
-function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Payload) {
+function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Payload): any {
   let book = BkperApp.getBook(bookId);
   let baseCurrency = book.getProperty('currency');
-  let rate = getRate_(baseCurrency, 'uyu');
-  return `Converted: ${rate * transaction.amount}`;
+
+  if (baseCurrency == null || baseCurrency == '') {
+    return 'Please set the "currency" property of this book.'
+  }
+
+  let responses: string[] = [];
+  for (const key in book.getProperties()) {
+    if (key.startsWith('currency_') && key.endsWith('_book')) {
+      let targetBook = BkperApp.getBook(book.getProperties()[key]);
+      let targetCurrency = targetBook.getProperty('currency');
+      if (targetCurrency != null && targetCurrency != '') {
+        let rate = getRate_(baseCurrency, targetCurrency);
+        let record = `${transaction.informedDateText} ${targetBook.formatValue(rate * transaction.amount)} ${transaction.creditAccName} ${transaction.debitAccName} ${transaction.description}`;
+        targetBook.record(record);
+        responses.push(`${targetBook.getName()}: ${record}`)
+      }
+    }
+  }
+
+  return responses;
 }
 
 function onTransactionChecked(bookId: string, transaction: bkper.TransactionV2Payload) {
@@ -13,11 +31,6 @@ function onTransactionChecked(bookId: string, transaction: bkper.TransactionV2Pa
 
 function onTransactionUnchecked(bookId: string, transaction: bkper.TransactionV2Payload) {
   return onTransactionPosted(bookId, transaction);
-}
-
-function getTargetBook(sourceBook: bkper.Book) {
-  let targetBookId = sourceBook.getProperty('currency_uyu_book')
-
 }
 
 function getRate_(base:string, currency:string) {
