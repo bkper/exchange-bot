@@ -1,5 +1,8 @@
 BkperApp.setApiKey(PropertiesService.getScriptProperties().getProperty('API_KEY'));
 
+/**
+ * Bkper trigger
+ */
 function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Payload): any {
   let book = BkperApp.getBook(bookId);
   let baseCurrency = book.getProperty('currency');
@@ -26,13 +29,6 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
   return responses;
 }
 
-function onTransactionChecked(bookId: string, transaction: bkper.TransactionV2Payload) {
-  return onTransactionPosted(bookId, transaction);
-}
-
-function onTransactionUnchecked(bookId: string, transaction: bkper.TransactionV2Payload) {
-  return onTransactionPosted(bookId, transaction);
-}
 
 function getRate_(base:string, currency:string) {
   let latestRates = getLatestRates_(base);
