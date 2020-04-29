@@ -17,7 +17,8 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
         let rate = getRate_(baseCurrency, targetCurrency);
         let record = `${transaction.informedDateText} ${targetBook.formatValue(rate * transaction.amount)} ${transaction.creditAccName} ${transaction.debitAccName} ${transaction.description}`;
         targetBook.record(record);
-        responses.push(`${targetBook.getName()}: ${record}`)
+        let bookAnchor = `<a href='https://app.bkper.com/b/#transactions:bookId=${targetBook.getId()}' target='_blank'>${targetBook.getName()}</a>`;
+        responses.push(`${bookAnchor}: ${record}`)
       }
     }
   }
