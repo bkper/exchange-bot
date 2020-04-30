@@ -25,9 +25,10 @@ It support operating on two or more books.
 - ```currency```: The book currency code in [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
 - ```currency_XXX_book```: The id of associated book
 
-You can associate multiple books. Example:
+You can associate multiple books.
 
-```yaml
+Example:
+```
 currency: USD
 currency_UYU_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwJWHgJQLDA
 currency_BRL_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwLWdrOEJDA
