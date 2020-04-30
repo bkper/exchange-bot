@@ -14,7 +14,7 @@ Example:
 Citibank Itau 1000 UYU35790.76 remitence from USA
 ```
 
-Recording directly the USD book, will generate a transaction in the current book of amount $1000, as well as another transaction on UYU book of $U35790.76.
+That will generate a transaction in the current book of amount $1000, as well as another transaction on UYU book of $U35790.76.
 
 It support operating on two or more books.
 
