@@ -6,7 +6,7 @@ It works by mirroring transactios from one Book to other books, applying updated
 
 For every transaction in a base book, it will generate another transaction on associated books, with different currencies.
 
-Transfer between permanent accounts with currencies defined are done by entering the amounts in each currency in the transaction description.
+Transfer between permanent accounts in different currencies are done by entering the amounts in each currency in the transaction description.
 
 Example:
 
