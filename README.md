@@ -22,17 +22,19 @@ It support operating on two or more books.
 
 ### Book Properties
 
-- ```currency```: The currency code in [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
+- ```currency```: The book currency code in [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
 - ```currency_XXX_book```: The id of associated book
 
 You can associate multiple books. Example:
 
-- ```currency```: USD
-- ```currency_UYU_book```: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwJWHgJQLDA
-- ```currency_BRL_book```: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwLWdrOEJDA
+```yaml
+currency: USD
+currency_UYU_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwJWHgJQLDA
+currency_BRL_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwLWdrOEJDA
+```
 
 ### Account properties
 
-Only permanent accounts, such as assets or liabilities, should have its currency defined.
+- ```currency```: The account currency code in [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
 
-- ```currency```: USD
+Only permanent accounts, such as assets or liabilities, should have its currency defined.
