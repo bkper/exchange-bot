@@ -11,33 +11,78 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
     return 'Please set the "currency" property of this book.'
   }
 
+  let creditAcc = book.getAccount(transaction.creditAccId);
+  let debitAcc = book.getAccount(transaction.debitAccId);
+
+  let creditAccCurrency = creditAcc.getProperty('currency');
+  let debitAccCurrency = debitAcc.getProperty('currency');
+
   let responses: string[] = [];
+
   for (const key in book.getProperties()) {
     if (key.startsWith('currency_') && key.endsWith('_book')) {
       let targetBook = BkperApp.getBook(book.getProperties()[key]);
       let targetCurrency = targetBook.getProperty('currency');
       if (targetCurrency != null && targetCurrency != '') {
-
-        if (targetBook.getAccount(transaction.creditAccName) == null) {
-          targetBook.createAccount(transaction.creditAccName);
+        if (targetBook.getAccount(creditAcc.getName()) == null) {
+          targetBook.createAccount(creditAcc.getName());
+        }
+        if (targetBook.getAccount(debitAcc.getName()) == null) {
+          targetBook.createAccount(debitAcc.getName());
         }
 
-        if (targetBook.getAccount(transaction.debitAccName) == null) {
-          targetBook.createAccount(transaction.debitAccName);
+        if (creditAccCurrency != null && creditAccCurrency.trim() != '' && debitAccCurrency != null && debitAccCurrency.trim() != '') {
+          //Moving between currency accounts
+          let amountDescription = extractAmount_(baseCurrency, targetCurrency, transaction);
+          let bookAnchor = builBookAnchor_(targetBook);
+          if (amountDescription != null) {
+            let record = `${transaction.informedDateText} ${targetBook.formatValue(amountDescription.amount)} ${transaction.creditAccName} ${transaction.debitAccName} ${amountDescription.description}`;
+            targetBook.record(`${record} id:currency_${transaction.id}`);
+            responses.push(`${bookAnchor}: ${record}`);          
+          } else {
+            responses.push(`${bookAnchor}: No ${targetCurrency}### found in transaction description`);          
+          }
+        } else {
+          let rate = getRate_(baseCurrency, targetCurrency);
+          let amount = rate * transaction.amount;
+          let record = `${transaction.informedDateText} ${targetBook.formatValue(amount)} ${transaction.creditAccName} ${transaction.debitAccName} ${transaction.description}`;
+          targetBook.record(`${record} id:currency_${transaction.id}`);
+          let bookAnchor = builBookAnchor_(targetBook);
+          responses.push(`${bookAnchor}: ${record}`);          
         }
-
-        let rate = getRate_(baseCurrency, targetCurrency);
-        let record = `${transaction.informedDateText} ${targetBook.formatValue(rate * transaction.amount)} ${transaction.creditAccName} ${transaction.debitAccName} ${transaction.description}`;
-        targetBook.record(`${record} id:currency_${transaction.id}`);
-        let bookAnchor = `<a href='https://app.bkper.com/b/#transactions:bookId=${targetBook.getId()}' target='_blank'>${targetBook.getName()}</a>`;
-        responses.push(`${bookAnchor}: ${record}`)
       }
     }
-  }
-
+  }  
   return responses;
 }
 
+interface AmountDescription {
+  amount:number;
+  description:string;
+}
+
+function extractAmount_(base: string, currency:string, transaction: bkper.TransactionV2Payload): AmountDescription {
+  let parts = transaction.description.split(' ');
+
+  for (const part of parts) {
+    if (part.startsWith(currency)) {
+      try {
+        return {
+          amount: new Number(part.replace(currency, '')).valueOf(),
+          description: transaction.description.replace(part, `${base}${transaction.amount}`)
+        };
+      } catch (error) {
+        continue;
+      }
+    }
+  }
+  return null;
+}
+
+
+function builBookAnchor_(book: bkper.Book) {
+  return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}' target='_blank'>${book.getName()}</a>`;
+}
 
 function getRate_(base:string, currency:string) {
   let latestRates = getLatestRates_(base);
