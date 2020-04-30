@@ -17,9 +17,18 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
       let targetBook = BkperApp.getBook(book.getProperties()[key]);
       let targetCurrency = targetBook.getProperty('currency');
       if (targetCurrency != null && targetCurrency != '') {
+
+        if (targetBook.getAccount(transaction.creditAccName) == null) {
+          targetBook.createAccount(transaction.creditAccName);
+        }
+
+        if (targetBook.getAccount(transaction.debitAccName) == null) {
+          targetBook.createAccount(transaction.debitAccName);
+        }
+
         let rate = getRate_(baseCurrency, targetCurrency);
         let record = `${transaction.informedDateText} ${targetBook.formatValue(rate * transaction.amount)} ${transaction.creditAccName} ${transaction.debitAccName} ${transaction.description}`;
-        targetBook.record(record);
+        targetBook.record(`${record} id:currency_${transaction.id}`);
         let bookAnchor = `<a href='https://app.bkper.com/b/#transactions:bookId=${targetBook.getId()}' target='_blank'>${targetBook.getName()}</a>`;
         responses.push(`${bookAnchor}: ${record}`)
       }
