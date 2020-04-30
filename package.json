@@ -11,7 +11,7 @@
     "minor": "yarn version --minor",
     "major": "yarn version --major",
     "preversion": "yarn push",
-    "postversion": "clasp deploy --description $npm_package_version --deploymentId DEPLOYMENT_ID  && git push && git push --tags && echo \"Successfully released version $npm_package_version!\""
+    "postversion": "clasp deploy --description $npm_package_version --deploymentId MKAgiUnECvm5nh0soueQaCpNuZToV6OsP && git push && git push --tags && echo \"Successfully released version $npm_package_version!\""
   },
   "devDependencies": {
     "@bkper/bkper-app-types": "^1.6.3",
