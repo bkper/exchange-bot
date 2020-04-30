@@ -6,6 +6,6 @@ clientId: 321364005933-28d88ahs0ltmpkvvmq57oclaitakmpq8.apps.googleusercontent.c
 scopes: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/script.external_request
 apiVersion: v2
 triggers: onTransactionPosted
-deploymentId: MKAgiUnECvm5nh0soueQaCpNuZToV6OsP
+deploymentId: AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM
 whitelist: >
     maelcaldas@gmail.com
