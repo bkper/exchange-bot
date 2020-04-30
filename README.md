@@ -28,7 +28,7 @@ It support operating on two or more books.
 You can associate multiple books.
 
 Example:
-```
+```yaml
 currency: USD
 currency_UYU_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwJWHgJQLDA
 currency_BRL_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwLWdrOEJDA
