@@ -36,7 +36,7 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
           let amountDescription = extractAmount_(baseCurrency, targetCurrency, transaction);
           let bookAnchor = builBookAnchor_(targetBook);
           if (amountDescription != null) {
-            let record = `${transaction.informedDateText} ${targetBook.formatValue(amountDescription.amount)} ${transaction.creditAccName} ${transaction.debitAccName} ${amountDescription.description}`;
+            let record = `${transaction.informedDateText} ${amountDescription.amount} ${transaction.creditAccName} ${transaction.debitAccName} ${amountDescription.description}`;
             targetBook.record(`${record} id:currency_${transaction.id}`);
             responses.push(`${bookAnchor}: ${record}`);          
           } else {
@@ -57,8 +57,8 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
 }
 
 interface AmountDescription {
-  amount:number;
-  description:string;
+  amount: string;
+  description: string;
 }
 
 function extractAmount_(base: string, currency:string, transaction: bkper.TransactionV2Payload): AmountDescription {
@@ -68,7 +68,7 @@ function extractAmount_(base: string, currency:string, transaction: bkper.Transa
     if (part.startsWith(currency)) {
       try {
         return {
-          amount: new Number(part.replace(currency, '')).valueOf(),
+          amount: part.replace(currency, ''),
           description: transaction.description.replace(part, `${base}${transaction.amount}`)
         };
       } catch (error) {
