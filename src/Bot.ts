@@ -14,15 +14,13 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
   let creditAcc = book.getAccount(transaction.creditAccId);
   let debitAcc = book.getAccount(transaction.debitAccId);
 
-  let creditAccCurrency = creditAcc.getProperty('exchange');
-  let debitAccCurrency = debitAcc.getProperty('exchange');
 
   let responses: string[] = [];
 
   for (const key in book.getProperties()) {
     if (key.startsWith('exchange_') && key.endsWith('_book')) {
       let targetBook = BkperApp.getBook(book.getProperties()[key]);
-      let targetCurrency = targetBook.getProperty('exchange');
+      let targetCurrency = targetBook.getProperty('exchange_code');
       if (targetCurrency != null && targetCurrency != '') {
         if (targetBook.getAccount(creditAcc.getName()) == null) {
           targetBook.createAccount(creditAcc.getName());
