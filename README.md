@@ -12,16 +12,16 @@ It support operating on two or more books.
 
 ### Book Properties
 
-- ```currency```: The book currency code in [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
-- ```currency_XXX_book```: The id of associated book
+- ```exchange_code```: The book (currency) exchange code in [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
+- ```exchange_XXX_book```: The id of associated book
 
 You can associate multiple books.
 
 Example:
 ```yaml
-currency: USD
-currency_UYU_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwJWHgJQLDA
-currency_BRL_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwLWdrOEJDA
+exchange_code: USD
+exchange_UYU_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwJWHgJQLDA
+exchange_BRL_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwLWdrOEJDA
 ```
 
 To force use fixed amounts, just append the currency symbol and amount in the transaction description.

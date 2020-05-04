@@ -5,24 +5,24 @@ BkperApp.setApiKey(PropertiesService.getScriptProperties().getProperty('API_KEY'
  */
 function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Payload): any {
   let book = BkperApp.getBook(bookId);
-  let baseCurrency = book.getProperty('currency');
+  let baseCurrency = book.getProperty('exchange_code');
 
   if (baseCurrency == null || baseCurrency == '') {
-    return 'Please set the "currency" property of this book.'
+    return 'Please set the "exchange_code" property of this book.'
   }
 
   let creditAcc = book.getAccount(transaction.creditAccId);
   let debitAcc = book.getAccount(transaction.debitAccId);
 
-  let creditAccCurrency = creditAcc.getProperty('currency');
-  let debitAccCurrency = debitAcc.getProperty('currency');
+  let creditAccCurrency = creditAcc.getProperty('exchange');
+  let debitAccCurrency = debitAcc.getProperty('exchange');
 
   let responses: string[] = [];
 
   for (const key in book.getProperties()) {
-    if (key.startsWith('currency_') && key.endsWith('_book')) {
+    if (key.startsWith('exchange_') && key.endsWith('_book')) {
       let targetBook = BkperApp.getBook(book.getProperties()[key]);
-      let targetCurrency = targetBook.getProperty('currency');
+      let targetCurrency = targetBook.getProperty('exchange');
       if (targetCurrency != null && targetCurrency != '') {
         if (targetBook.getAccount(creditAcc.getName()) == null) {
           targetBook.createAccount(creditAcc.getName());
@@ -33,7 +33,7 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
         let bookAnchor = builBookAnchor_(targetBook);
         let amountDescription = extractAmountDescription_(targetBook, baseCurrency, targetCurrency, transaction);
         let record = `${transaction.informedDateText} ${amountDescription.amount} ${transaction.creditAccName} ${transaction.debitAccName} ${amountDescription.description}`;
-        targetBook.record(`${record} id:currency_${transaction.id}`);
+        targetBook.record(`${record} id:exchange_${transaction.id}`);
         responses.push(`${bookAnchor}: ${record}`);          
       }
     }
@@ -46,14 +46,14 @@ interface AmountDescription {
   description: string;
 }
 
-function extractAmountDescription_(book: bkper.Book, base: string, currency:string, transaction: bkper.TransactionV2Payload): AmountDescription {
+function extractAmountDescription_(book: bkper.Book, base: string, exchange_code:string, transaction: bkper.TransactionV2Payload): AmountDescription {
   let parts = transaction.description.split(' ');
 
   for (const part of parts) {
-    if (part.startsWith(currency)) {
+    if (part.startsWith(exchange_code)) {
       try {
         return {
-          amount: part.replace(currency, ''),
+          amount: part.replace(exchange_code, ''),
           description: transaction.description.replace(part, `${base}${transaction.amount}`)
         };
       } catch (error) {
@@ -62,7 +62,7 @@ function extractAmountDescription_(book: bkper.Book, base: string, currency:stri
     }
   }
 
-  let rate = getRate_(base, currency);
+  let rate = getRate_(base, exchange_code);
   let amount = rate * transaction.amount;
 
   return {
@@ -76,11 +76,11 @@ function builBookAnchor_(book: bkper.Book) {
   return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}' target='_blank'>${book.getName()}</a>`;
 }
 
-function getRate_(base:string, currency:string) {
+function getRate_(base:string, exchange_code:string) {
   let latestRates = getLatestRates_(base);
-  currency = currency.toUpperCase();
+  exchange_code = exchange_code.toUpperCase();
   //@ts-ignore
-  return latestRates.rates[currency];
+  return latestRates.rates[exchange_code];
 }
 
 interface LatestRates {
