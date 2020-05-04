@@ -6,16 +6,6 @@ It works by mirroring transactios from one Book to other books, applying updated
 
 For every transaction in a base book, it will generate another transaction on associated books, with different currencies.
 
-Transfer between permanent accounts in different currencies are done by entering the amounts in each currency in the transaction description.
-
-Example:
-
-```
-Citibank Itau 1000 UYU35790.76 remitence from USA
-```
-
-That will generate a transaction in the current book of amount $1000, as well as another transaction on UYU book of $U35790.76.
-
 It support operating on two or more books.
 
 ## Configuration
@@ -34,8 +24,14 @@ currency_UYU_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwJWHgJQLDA
 currency_BRL_book: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwLWdrOEJDA
 ```
 
-### Account properties
+To force use fixed amounts, just append the currency symbol and amount in the transaction description.
 
-- ```currency```: The account currency code in [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
+Example:
 
-Only permanent accounts, such as assets or liabilities, should have its currency defined.
+```
+Citibank Itau 1000 UYU35790.76 remitence from USA
+```
+
+That will generate a transaction in the current book of amount $1000, as well as another transaction on UYU book of $U35790.76.
+
+

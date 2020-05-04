@@ -30,22 +30,11 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
         if (targetBook.getAccount(debitAcc.getName()) == null) {
           targetBook.createAccount(debitAcc.getName());
         }
-        
         let bookAnchor = builBookAnchor_(targetBook);
-
-        if (creditAccCurrency != null && creditAccCurrency.trim() != '' && debitAccCurrency != null && debitAccCurrency.trim() != '') {
-          //Moving between currency accounts
-          let amountDescription = extractAmount_(baseCurrency, targetCurrency, transaction);
-          let record = `${transaction.informedDateText} ${amountDescription.amount} ${transaction.creditAccName} ${transaction.debitAccName} ${amountDescription.description}`;
-          targetBook.record(`${record} id:currency_${transaction.id}`);
-          responses.push(`${bookAnchor}: ${record}`);          
-        } else {
-          let rate = getRate_(baseCurrency, targetCurrency);
-          let amount = rate * transaction.amount;
-          let record = `${transaction.informedDateText} ${targetBook.formatValue(amount)} ${transaction.creditAccName} ${transaction.debitAccName} ${transaction.description}`;
-          targetBook.record(`${record} id:currency_${transaction.id}`);
-          responses.push(`${bookAnchor}: ${record}`);          
-        }
+        let amountDescription = extractAmountDescription_(targetBook, baseCurrency, targetCurrency, transaction);
+        let record = `${transaction.informedDateText} ${amountDescription.amount} ${transaction.creditAccName} ${transaction.debitAccName} ${amountDescription.description}`;
+        targetBook.record(`${record} id:currency_${transaction.id}`);
+        responses.push(`${bookAnchor}: ${record}`);          
       }
     }
   }  
@@ -57,7 +46,7 @@ interface AmountDescription {
   description: string;
 }
 
-function extractAmount_(base: string, currency:string, transaction: bkper.TransactionV2Payload): AmountDescription {
+function extractAmountDescription_(book: bkper.Book, base: string, currency:string, transaction: bkper.TransactionV2Payload): AmountDescription {
   let parts = transaction.description.split(' ');
 
   for (const part of parts) {
@@ -72,9 +61,13 @@ function extractAmount_(base: string, currency:string, transaction: bkper.Transa
       }
     }
   }
+
+  let rate = getRate_(base, currency);
+  let amount = rate * transaction.amount;
+
   return {
-    amount: '',
-    description: `${transaction.description} ${base}${transaction.amount}`,
+    amount: book.formatValue(amount),
+    description: `${transaction.description}`,
   };
 }
 
