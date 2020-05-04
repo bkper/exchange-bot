@@ -1,4 +1,4 @@
-The Currency Converter bot helps you keep multiple Books in different currencies in sync.
+The Exchange Bot helps you keep multiple Books in different currencies in sync.
 
 It works by mirroring transactios from one Book to other books, applying updated conversions rates automatically.
 
