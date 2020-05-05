@@ -44,7 +44,7 @@ interface AmountDescription {
   description: string;
 }
 
-function extractAmountDescription_(book: bkper.Book, base: string, exchange_code:string, transaction: bkper.TransactionV2Payload): AmountDescription {
+function extractAmountDescription_(book: Bkper.Book, base: string, exchange_code:string, transaction: bkper.TransactionV2Payload): AmountDescription {
   let parts = transaction.description.split(' ');
 
   for (const part of parts) {
@@ -62,6 +62,8 @@ function extractAmountDescription_(book: bkper.Book, base: string, exchange_code
 
   let rate = getRate_(base, exchange_code);
   let amount = rate * transaction.amount;
+  //let amount = FxApp.convert(transaction.amount).from(base).to(exchange_code)
+  //let amount = FxApp.convert(transaction.amount, {from: base, to: exchange_code})
 
   return {
     amount: book.formatValue(amount),
@@ -70,11 +72,12 @@ function extractAmountDescription_(book: bkper.Book, base: string, exchange_code
 }
 
 
-function builBookAnchor_(book: bkper.Book) {
+function builBookAnchor_(book: Bkper.Book) {
   return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}' target='_blank'>${book.getName()}</a>`;
 }
 
 function getRate_(base:string, exchange_code:string) {
+  //
   let latestRates = getLatestRates_(base);
   exchange_code = exchange_code.toUpperCase();
   //@ts-ignore
