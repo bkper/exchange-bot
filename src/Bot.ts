@@ -60,10 +60,8 @@ function extractAmountDescription_(book: Bkper.Book, base: string, exchange_code
     }
   }
 
-  let rate = getRate_(base, exchange_code);
-  let amount = rate * transaction.amount;
-  //let amount = FxApp.convert(transaction.amount).from(base).to(exchange_code)
-  //let amount = FxApp.convert(transaction.amount, {from: base, to: exchange_code})
+  ExchangeApp.setRatesEndpoint(book.getProperty('exchange_rates_api'))
+  let amount = ExchangeApp.exchange(transaction.amount).from(base).to(exchange_code).convert()
 
   return {
     amount: book.formatValue(amount),
@@ -71,56 +69,9 @@ function extractAmountDescription_(book: Bkper.Book, base: string, exchange_code
   };
 }
 
-
 function builBookAnchor_(book: Bkper.Book) {
   return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}' target='_blank'>${book.getName()}</a>`;
 }
 
-function getRate_(base:string, exchange_code:string) {
-  //
-  let latestRates = getLatestRates_(base);
-  exchange_code = exchange_code.toUpperCase();
-  //@ts-ignore
-  return latestRates.rates[exchange_code];
-}
-
-interface LatestRates {
-  "base": string,
-  "date": string,
-  "rates": Map<string, number>
-}
-
-function getLatestRates_(base: string): LatestRates {
-  base = base.toLowerCase();
-  //TODO get from the API's
-  let latests = {
-    usd: {
-      "base": "USD",
-      "date": "2019-04-27",
-      "rates": {
-        "BRL": 5.59,
-        "UYU": 43.19,
-        }
-      },
-    brl: {
-      "base": "BRL",
-      "date": "2019-04-27",
-      "rates": {
-        "USD": 0.18,
-        "UYU": 7.69,
-        }
-      },
-    uyu: {
-      "base": "UYU",
-      "date": "2019-04-27",
-      "rates": {
-        "USD": 0.023,
-        "BRL": 0.13,
-        }
-      },
-    }
-    //@ts-ignore
-    return latests[base] as LatestRates;
-}
 
 

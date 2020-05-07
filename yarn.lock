@@ -9,6 +9,11 @@
   dependencies:
     "@types/google-apps-script" "*"
 
+"@bkper/exchange-app-types@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@bkper/exchange-app-types/-/exchange-app-types-1.0.1.tgz#1c9b74c47395acad69f8053d4b3ac16acdb4256d"
+  integrity sha512-DHuaWTf7tfaS+mEJTUdPaWSKv6kaTFXnlVg/GjPBQlE6MJKK8vJZfUv2g3zkteQ8ymX4EybuVg7bkevQnVy2Sw==
+
 "@google/clasp@^2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@google/clasp/-/clasp-2.3.0.tgz#3bc7c3c82ae218e7a75b5e127242f736ac3bf35b"
