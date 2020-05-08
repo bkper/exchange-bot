@@ -151,6 +151,7 @@ declare namespace bkper {
     id?: string;
     informedDateMs?: string;
     informedDateText?: string;
+    date?: string;
     informedDateValue?: number;
     latitude?: number;
     link?: string;
