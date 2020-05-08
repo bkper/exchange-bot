@@ -60,7 +60,7 @@ function extractAmountDescription_(book: Bkper.Book, base: string, exchange_code
     }
   }
 
-  ExchangeApp.setRatesEndpoint(book.getProperty('exchange_rates_api'))
+  ExchangeApp.setRatesEndpoint(book.getProperty('exchange_rates_url'))
   let amount = ExchangeApp.exchange(transaction.amount).from(base).to(exchange_code).convert()
 
   return {
