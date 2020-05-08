@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@bkper/bkper-app-types": "^1.7.0",
-    "@bkper/exchange-app-types": "^1.0.1",
+    "@bkper/exchange-app-types": "^1.1.1",
     "@google/clasp": "^2.3.0"
   }
 }

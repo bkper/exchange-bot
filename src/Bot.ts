@@ -60,7 +60,11 @@ function extractAmountDescription_(book: Bkper.Book, base: string, exchange_code
     }
   }
 
-  ExchangeApp.setRatesEndpoint(book.getProperty('exchange_rates_url'))
+  let ratesUrl = book.getProperty('exchange_rates_url');
+  let ratesCacheStr = book.getProperty('exchange_rates_cache')
+  let ratesCache: number = ratesCacheStr != null && /^\d+$/.test(ratesCacheStr) ? parseInt(ratesCacheStr) : 0;
+
+  ExchangeApp.setRatesEndpoint(ratesUrl, ratesCache)
   let amount = ExchangeApp.exchange(transaction.amount).from(base).to(exchange_code).convert()
 
   return {
