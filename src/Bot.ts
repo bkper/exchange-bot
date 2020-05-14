@@ -5,10 +5,10 @@ BkperApp.setApiKey(PropertiesService.getScriptProperties().getProperty('API_KEY'
  */
 function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Payload): any {
   let book = BkperApp.getBook(bookId);
-  let baseCurrency = book.getProperty('exchange_code');
+  let baseCurrency = book.getProperty('exc_code', 'exchange_code');
 
   if (baseCurrency == null || baseCurrency == '') {
-    return 'Please set the "exchange_code" property of this book.'
+    return 'Please set the "exc_code" property of this book.'
   }
 
   let creditAcc = book.getAccount(transaction.creditAccId);
@@ -18,9 +18,9 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
   let responses: string[] = [];
 
   for (const key in book.getProperties()) {
-    if (key.startsWith('exchange_') && key.endsWith('_book')) {
+    if ((key.startsWith('exc')) && key.endsWith('_book')) {
       let targetBook = BkperApp.getBook(book.getProperties()[key]);
-      let targetCurrency = targetBook.getProperty('exchange_code');
+      let targetCurrency = targetBook.getProperty('exc_code', 'exchange_code');
       if (targetCurrency != null && targetCurrency != '') {
         if (targetBook.getAccount(creditAcc.getName()) == null) {
           targetBook.createAccount(creditAcc.getName());

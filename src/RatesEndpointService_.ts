@@ -2,8 +2,8 @@ namespace RatesEndpointService_ {
 
   export function setRatesEndpoint(book: Bkper.Book, date: string): void {
     //Read from properties
-    let ratesUrl = book.getProperty('exchange_rates_url');
-    let ratesCacheStr = book.getProperty('exchange_rates_cache');
+    let ratesUrl = book.getProperty('exc_rates_url', 'exchange_rates_url');
+    let ratesCacheStr = book.getProperty('exc_rates_cache', 'exchange_rates_cache');
     let ratesCache: number = ratesCacheStr != null && /^\d+$/.test(ratesCacheStr) ? parseInt(ratesCacheStr) : 0;
 
     //Default values
