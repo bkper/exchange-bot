@@ -60,17 +60,22 @@ function extractAmountDescription_(book: Bkper.Book, base: string, exchange_code
     }
   }
 
+  //Read from properties
   let ratesUrl = book.getProperty('exchange_rates_url');
-  let ratesCacheStr = book.getProperty('exchange_rates_cache')
+  let ratesCacheStr = book.getProperty('exchange_rates_cache');
   let ratesCache: number = ratesCacheStr != null && /^\d+$/.test(ratesCacheStr) ? parseInt(ratesCacheStr) : 0;
 
-  if (ratesUrl != null && ratesUrl.trim() != '') {
-    ratesUrl = ratesUrl.replace("${transaction.date}", transaction.date)
+  //Default values
+  if (ratesUrl == null || ratesUrl.trim() == '') {
+    ratesUrl = "https://api.exchangeratesapi.io/${transaction.date}";
+    ratesCache = 3600;
   }
 
-  ExchangeApp.setRatesEndpoint(ratesUrl, ratesCache)
+  ratesUrl = ratesUrl.replace("${transaction.date}", transaction.date);
+
+  ExchangeApp.setRatesEndpoint(ratesUrl, ratesCache);
   
-  let amount = ExchangeApp.exchange(transaction.amount).from(base).to(exchange_code).convert()
+  let amount = ExchangeApp.exchange(transaction.amount).from(base).to(exchange_code).convert();
 
   return {
     amount: book.formatValue(amount),
