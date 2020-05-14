@@ -13,7 +13,7 @@ It support operating on two or more books.
 ### Book Properties
 
 - ```exc_code```: The book (currency) exchange code in [ISO4217](https://en.wikipedia.org/wiki/ISO_4217)
-- ```exc_rates_url```: The rates endpoint url to use. Accepts ${date} expression for current transaction date. If not provided, the [exchangeratesapi.io](https://exchangeratesapi.io/) will be used
+- ```exc_rates_url```: The rates endpoint url to use. Accepts ```${date}``` expression for current transaction date. If not provided, the [exchangeratesapi.io](https://exchangeratesapi.io/) will be used
 - ```exc_rates_cache```: The rates endpoint url cache, **in seconds**. 
 - ```exc_XXX_book```: The id of associated book
 
