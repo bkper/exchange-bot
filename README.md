@@ -1,12 +1,12 @@
 The Exchange Bot helps you keep multiple Books in different currencies in sync.
 
-It works by mirroring transactios from one Book to other books, automatically applying updated conversions rates.
+It works by mirroring transactios from one book to other books, automatically applying updated conversions rates.
 
 ![Exchange Bot](https://docs.google.com/drawings/d/e/2PACX-1vTAW6vvlAPHup58L5mwdiQnUVoSxHbf890GJiHYVkLmzhAc0kaGsb8B721vc1pRFVXp2OWx8rBiACMR/pub?w=888&h=389)
 
 For every transaction in a base book, it will generate another transaction on associated books, with different currencies.
 
-The Exchange Bot uses rates from [exchangeratesapi.io](https://exchangeratesapi.io/) by default, but any source endpoint can be used.
+The Exchange Bot uses rates from [exchangeratesapi.io](https://exchangeratesapi.io/) by default, but any rates source endpoint can be used.
 
 It support operating on two or more books.
 
