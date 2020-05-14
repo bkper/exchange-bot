@@ -28,7 +28,7 @@ function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Pay
         if (targetBook.getAccount(debitAcc.getName()) == null) {
           targetBook.createAccount(debitAcc.getName());
         }
-        let bookAnchor = builBookAnchor_(targetBook);
+        let bookAnchor = buildBookAnchor_(targetBook);
         let amountDescription = extractAmountDescription_(targetBook, baseCurrency, targetCurrency, transaction);
         let record = `${transaction.informedDateText} ${amountDescription.amount} ${transaction.creditAccName} ${transaction.debitAccName} ${amountDescription.description}`;
         targetBook.record(`${record} id:exchange_${transaction.id}`);
@@ -60,21 +60,7 @@ function extractAmountDescription_(book: Bkper.Book, base: string, exchange_code
     }
   }
 
-  //Read from properties
-  let ratesUrl = book.getProperty('exchange_rates_url');
-  let ratesCacheStr = book.getProperty('exchange_rates_cache');
-  let ratesCache: number = ratesCacheStr != null && /^\d+$/.test(ratesCacheStr) ? parseInt(ratesCacheStr) : 0;
-
-  //Default values
-  if (ratesUrl == null || ratesUrl.trim() == '') {
-    ratesUrl = "https://api.exchangeratesapi.io/${transaction.date}";
-    ratesCache = 3600;
-  }
-
-  ratesUrl = ratesUrl.replace("${transaction.date}", transaction.date);
-
-  ExchangeApp.setRatesEndpoint(ratesUrl, ratesCache);
-  
+  RatesEndpointService_.setRatesEndpoint(book, transaction.date);
   let amount = ExchangeApp.exchange(transaction.amount).from(base).to(exchange_code).convert();
 
   return {
@@ -83,8 +69,8 @@ function extractAmountDescription_(book: Bkper.Book, base: string, exchange_code
   };
 }
 
-function builBookAnchor_(book: Bkper.Book) {
-  return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}' target='_blank'>${book.getName()}</a>`;
+function buildBookAnchor_(book: Bkper.Book) {
+  return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}'>${book.getName()}</a>`;
 }
 
 
