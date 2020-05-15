@@ -1,4 +1,4 @@
-namespace RatesEndpointService_ {
+namespace Service_ {
 
   export function setRatesEndpoint(book: Bkper.Book, date: string): void {
     //Read from properties
@@ -18,5 +18,22 @@ namespace RatesEndpointService_ {
     ratesUrl = ratesUrl.replace("${date}", date);
 
     ExchangeApp.setRatesEndpoint(ratesUrl, ratesCache);
+  }
+
+  export function getConnectedBooks(book: Bkper.Book): Bkper.Book[] {
+    if (book.getProperties() == null) {
+      return [];
+    }
+    let books = new Array<Bkper.Book>();
+    for (const key in book.getProperties()) {
+      if ((key.startsWith('exc')) && key.endsWith('_book')) {
+        books.push(BkperApp.getBook(book.getProperties()[key]));
+      }
+    }
+    return books;
+  }
+
+  export function getBaseCode(book: Bkper.Book): string {
+    return book.getProperty('exc_code', 'exchange_code');
   }
 }

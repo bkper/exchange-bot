@@ -5,7 +5,7 @@
       {
       "userSymbol": "BkperApp",
       "libraryId": "1hMJszJGSUVZDB3vmsWrUZfRhY1UWbhS0SQ6Lzl06gm1zhBF3ioTM7mpJ",
-      "version": "15"
+      "version": "16"
       },
       {
       "userSymbol": "ExchangeApp",
@@ -14,9 +14,13 @@
       }
     ]
   },
-  "exceptionLogging": "STACKDRIVER",
+  "webapp": {
+    "access": "ANYONE",
+    "executeAs": "USER_ACCESSING"
+  },
   "executionApi": {
     "access": "ANYONE"
   },
+  "exceptionLogging": "STACKDRIVER",
   "runtimeVersion": "V8"
 }
