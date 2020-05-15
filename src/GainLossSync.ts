@@ -21,7 +21,7 @@ function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
             let expectedBalance = ExchangeApp.exchange(connectedAccount.getBalance()).from(connectedCode).to(baseCode).convert();
             let delta = account.getBalance() - expectedBalance;
   
-            let excAccountName = `${connectedCode}_exchange`;
+            let excAccountName = `Exchange_${connectedCode}`;
             
             //Verify Exchange account created
             let accPrefix = book.getProperty('exc_acc_prefix');
