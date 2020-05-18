@@ -32,6 +32,11 @@ function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
             if (excAccount == null) {
               excAccount = book.createAccount(excAccountName);
             }
+
+            if (account.isCredit()) {
+              delta = delta * -1;
+            }
+
             if (Math.round(delta) > 0) {
               book.record(`${account.getName()} ${excAccountName} ${book.formatValue(Math.abs(delta))} #exchange_loss`)
             } else if (Math.round(delta) < 0) {
