@@ -60,7 +60,7 @@ function extractAmountDescription_(book: Bkper.Book, base: string, connectedCode
     }
   }
 
-  Service_.setRatesEndpoint(book, transaction.date);
+  Service_.setRatesEndpoint(book, transaction.date, 'bot');
   let amount = ExchangeApp.exchange(transaction.amount).from(base).to(connectedCode).convert();
 
   return {

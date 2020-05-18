@@ -14,11 +14,23 @@ function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
 
 }
 
-function updateGainLoss(bookId: any, date: string) {
+function updateGainLoss(bookId: any, dateParam: string) {
   let book = BkperApp.getBook(bookId);
   let connectedBooks = Service_.getConnectedBooks(book);
   let baseCode = Service_.getBaseCode(book);
-  Service_.setRatesEndpoint(book, date);
+
+  Service_.setRatesEndpoint(book, dateParam, 'app');
+
+  var dateSplit = dateParam != null ? dateParam.split('-') : null;
+  
+  let year = new Number(dateSplit[0]).valueOf();
+  let month = new Number(dateSplit[1]).valueOf() - 1;
+  let day = new Number(dateSplit[2]).valueOf();
+  var date = new Date(year, month , day, 13, 0, 0, 0);
+  
+  //Adjust time zone offset
+  date.setTime(date.getTime() + book.getTimeZoneOffset()*60*1000 );    
+
   connectedBooks.forEach(connectedBook => {
     let connectedCode = Service_.getBaseCode(connectedBook);
     let group = book.getGroup(connectedCode);
@@ -44,10 +56,9 @@ function updateGainLoss(bookId: any, date: string) {
               delta = delta * -1;
             }
             if (Math.round(delta) > 0) {
-              book.record(`${account.getName()} ${excAccountName} ${book.formatValue(Math.abs(delta))} #exchange_loss`);
-            }
-            else if (Math.round(delta) < 0) {
-              book.record(`${excAccountName} ${account.getName()} ${book.formatValue(Math.abs(delta))} #exchange_gain`);
+              book.record(`${account.getName()} ${excAccountName} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_loss`);
+            } else if (Math.round(delta) < 0) {
+              book.record(`${excAccountName} ${account.getName()} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_gain`);
             }
           }
         });

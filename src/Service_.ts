@@ -1,6 +1,6 @@
 namespace Service_ {
 
-  export function setRatesEndpoint(book: Bkper.Book, date: string): void {
+  export function setRatesEndpoint(book: Bkper.Book, date: string, agent: string): void {
     //Read from properties
     let ratesUrl = book.getProperty('exc_rates_url', 'exchange_rates_url');
     let ratesCacheStr = book.getProperty('exc_rates_cache', 'exchange_rates_cache');
@@ -16,6 +16,7 @@ namespace Service_ {
     ratesUrl = ratesUrl.replace("${transaction.date}", date);
 
     ratesUrl = ratesUrl.replace("${date}", date);
+    ratesUrl = ratesUrl.replace("${agent}", agent);
 
     ExchangeApp.setRatesEndpoint(ratesUrl, ratesCache);
   }
