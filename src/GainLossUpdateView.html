@@ -1,24 +1,60 @@
 
 <html>
   <header>
+
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+
+    <style>
+      body, div, table td, select {
+        font-family:  Arial, sans-serif !important;
+        font-size: 10pt;
+      }
+      .header, .body , .footer{
+        padding: 20px;
+      }
+      .header {
+        font-size: 120%;
+        background-color: #f5f5f5;
+        text-align: center;
+      }
+      .body #waiting-panel, .body #update-date-panel {
+        height: 40px;
+        display: flex;
+        align-items: center;
+      }
+      .body #waiting-panel img {
+        height: 25px;
+      }
+      .body #waiting-panel {
+        display: none;
+        justify-content: center;
+      }
+      .footer {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
     
   </header>
 
   <body>
 
     <div class='header'>
-      Update Gain Loss
+      Update <?!= book.name ?> Gain/Loss
     </div>
-    
-    <div class='book'>
-      <?!= book.name ?>
+
+    <div class='body'>
+      <div id='waiting-panel'>
+        <img src='https://storage.googleapis.com/bkper-public/addons/loading_3dots.gif'/>
+      </div>
+      <div id='update-date-panel'>
+        <label for="update-date">Rates of day: </label>
+        <input type="date" id="update-date" name="update-date" value="<?!= Utilities.formatDate(new Date(), book.timeZone, 'yyyy-MM-dd') ?>" >
+      </div>
     </div>
-    
-    <div class='date'>
-      <label for="start">Date:</label>
-      <input type="date" id="start" name="trip-start"
-             value="2018-07-22"
-             min="2018-01-01" max="2018-12-31">
+
+    <div class="footer">
+      <button class="action" onclick="updateGainLoss()">Update</button>
     </div>
 
   </body>
@@ -27,6 +63,19 @@
 
 
 <script>
+
+  function updateGainLoss() {
+    var date = document.getElementById("update-date").value;
+    document.getElementById('waiting-panel').style.display = 'flex';
+    document.getElementById('update-date-panel').style.display = 'none';
+    google.script.run.withSuccessHandler(closeWindow).withFailureHandler(showError).updateGainLoss('<?!= book.id ?>', date)
+  }
+
+  function showError(error) {
+    document.getElementById('waiting-panel').style.display = 'none';
+    document.getElementById('update-date-panel').style.display = 'flex';
+    window.alert(error);
+  }
 
   function closeWindow() {
     try {

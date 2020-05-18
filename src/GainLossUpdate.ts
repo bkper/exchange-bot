@@ -6,18 +6,18 @@ function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
 
   template.book = {
     id: bookId,
-    name: book.getName()
+    name: book.getName(),
+    timeZone: book.getTimeZone()
   }
 
   return template.evaluate().setTitle('Exchange Bot');;
 
 }
 
-function updateGainLoss(bookId: any) {
+function updateGainLoss(bookId: any, date: string) {
   let book = BkperApp.getBook(bookId);
   let connectedBooks = Service_.getConnectedBooks(book);
   let baseCode = Service_.getBaseCode(book);
-  let date = Utilities.formatDate(new Date(), book.getTimeZone(), "yyyy-MM-dd");
   Service_.setRatesEndpoint(book, date);
   connectedBooks.forEach(connectedBook => {
     let connectedCode = Service_.getBaseCode(connectedBook);
