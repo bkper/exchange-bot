@@ -10,14 +10,3 @@ scopes: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.co
 apiVersion: v2
 triggers: onTransactionPosted
 deploymentId: AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM
-whitelist: >
-    maelcaldas@gmail.com
-    ppvbkper@ppvbooks.com.uy
-    jacobvdb@gmail.com
-    esper.raquel@gmail.com
-    cpreve@brain.uy
-    dgcotelo@gmail.com
-    lgarcia@ppv.com.uy
-    jherrera@pvci.com.uy
-    brainbkper@ppvbooks.com.uy
-    oauthtest121@gmail.com
