@@ -8,7 +8,7 @@ It works by mirroring transactios from one book to other books, automatically ap
 
 For every transaction in a base book, it will generate another transaction on associated books, with different currencies.
 
-It also adds an menu item to your books too update gains and losses, based on exchange rates variation.
+The Bot also adds an menu item to your books too update gains and losses, based on exchange rates variation.
 
 ![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=1200&h=400)
 
