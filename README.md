@@ -4,7 +4,13 @@ It works by mirroring transactios from one book to other books, automatically ap
 
 ![Exchange Bot](https://docs.google.com/drawings/d/e/2PACX-1vTAW6vvlAPHup58L5mwdiQnUVoSxHbf890GJiHYVkLmzhAc0kaGsb8B721vc1pRFVXp2OWx8rBiACMR/pub?w=888&h=389)
 
+
+
 For every transaction in a base book, it will generate another transaction on associated books, with different currencies.
+
+It also adds an menu item to your books too update gains and losses, based on exchange rates variation.
+
+![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=539&h=194)
 
 The Exchange Bot uses rates from [exchangeratesapi.io](https://exchangeratesapi.io/) by default, but any rates source endpoint can be used.
 
@@ -18,6 +24,7 @@ It support operating on two or more books.
 - ```exc_rates_url```: The rates endpoint url to use. Accepts ```${date}``` expression for current transaction date. If not provided, the [exchangeratesapi.io](https://exchangeratesapi.io/) API endpoint will be used. 
 - ```exc_rates_cache```: The rates endpoint url cache, **in seconds**. 
 - ```exc_XXX_book```: The id of associated book(s).
+- ```exc_acc_prefix```: The prefix in which each Gain/Loss account will use. If not set, a single account for each associated book code will be used. E.g. ```Exchange_EUR```
 
 You can associate multiple books.
 
