@@ -2,7 +2,7 @@ The Exchange Bot helps you keep multiple Books in different currencies in sync.
 
 It works by mirroring transactios from one book to other books, automatically applying updated conversions rates.
 
-![Exchange Bot](https://docs.google.com/drawings/d/e/2PACX-1vTAW6vvlAPHup58L5mwdiQnUVoSxHbf890GJiHYVkLmzhAc0kaGsb8B721vc1pRFVXp2OWx8rBiACMR/pub?w=888&h=389)
+![Exchange Bot](https://docs.google.com/drawings/d/e/2PACX-1vTAW6vvlAPHup58L5mwdiQnUVoSxHbf890GJiHYVkLmzhAc0kaGsb8B721vc1pRFVXp2OWx8rBiACMR/pub?w=949&h=436)
 
 
 
@@ -10,7 +10,7 @@ For every transaction in a base book, it will generate another transaction on as
 
 It also adds an menu item to your books too update gains and losses, based on exchange rates variation.
 
-![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=539&h=194)
+![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=1200&h=400)
 
 The Exchange Bot uses rates from [exchangeratesapi.io](https://exchangeratesapi.io/) by default, but any rates source endpoint can be used.
 
