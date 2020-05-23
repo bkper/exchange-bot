@@ -27,9 +27,9 @@ In order to proper setup the Exchange Bot on your books, some book properties sh
 
 - ```exc_code```: Required - The book (currency) exchange code.
 - ```exc_books```: Required - The id of associated book(s), splitted by spaces if more than one.
-- ```exc_rates_url```: Optional - The rates endpoint url to use. Accepts ```${date}``` expression for current transaction date. If not provided, the [exchangeratesapi.io](https://exchangeratesapi.io/) API endpoint will be used. 
-- ```exc_rates_cache```: Optional - The exchange rates endpoint url cache, **in seconds**. 
-- ```exc_acc_prefix```: Optional - The prefix in which each Gain/Loss account will use. If not set, a single account for each associated book code will be used, with prefix ```Exchange_```. E.g. ```Exchange_EUR```
+- ```exc_rates_url```: Optional - The rates endpoint url to use. Default: [exchangeratesapi.io](https://exchangeratesapi.io/). 
+- ```exc_rates_cache```: Optional - The exchange rates endpoint url cache, **in seconds**. Default: ```3600```.
+- ```exc_acc_prefix```: Optional - The prefix in which each Gain/Loss account will use. Default: ```Exchange_```.
 
 You can associate multiple books.
 
@@ -53,13 +53,21 @@ That will generate a transaction in the current book of amount $1000, as well as
 
 ### Exchange rates endpoint
 
-By default, the free [exchangeratesapi.io](https://exchangeratesapi.io/) endpoint is used to fetch rates, but any endpoint can be provided, from other third party providers such as [Fixer](https://fixer.io/) or [Open Exchange Rates](https://openexchangerates.org/). To change the default endpoint, set the ```exc_rates_url``` book property. 
+By default, the free [exchangeratesapi.io](https://exchangeratesapi.io/) endpoint is used to fetch rates, but any endpoint can be provided, from other third party providers such as [Fixer](https://fixer.io/) or [Open Exchange Rates](https://openexchangerates.org/). 
+
+To change the default endpoint, set the ```exc_rates_url``` book property. 
 
 Example:
 ```yaml
-exc_rates_url: https://data.fixer.io/api/${date}?access_key=XXXX
-exc_rates_cache: 3600
+exc_rates_url: https://data.fixer.io/api/${date}?access_key=*****
+exc_rates_cache: 3600  #optional cache
 ```
+
+**Supported expressions:**
+
+- ```${date}```: The date of transaction in the standard ISO format ```yyyy-mm-dd```.
+- ```${agent}```: The agent for the fetch request. 'app' for Gain/Loss update from menu. 'bot' for transaction post.
+
 
 Despite of which endpoint choosed, the json format returned MUST be:
 
