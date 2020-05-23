@@ -71,7 +71,7 @@ exc_rates_cache: 3600  #optional cache
 
 Despite of which endpoint choosed, the json format returned MUST be:
 
-```ts
+```typescript
 {
   base: string;
   date: string;
