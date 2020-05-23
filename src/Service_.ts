@@ -26,11 +26,24 @@ namespace Service_ {
       return [];
     }
     let books = new Array<Bkper.Book>();
+
+    //deprecated
     for (const key in book.getProperties()) {
       if ((key.startsWith('exc')) && key.endsWith('_book')) {
         books.push(BkperApp.getBook(book.getProperties()[key]));
       }
     }
+
+    var exc_books = book.getProperty('exc_books');
+    if (exc_books != null && exc_books.trim() != '') {
+      var bookIds = exc_books.split(/[ ,]+/);
+      for (var bookId of bookIds) {
+        if (bookId != null && bookId.trim().length > 10) {
+          books.push(BkperApp.getBook(bookId));
+        }
+      }
+    }
+
     return books;
   }
 
