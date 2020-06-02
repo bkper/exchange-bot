@@ -16,6 +16,7 @@ The Exchange Bot uses rates from [exchangeratesapi.io](https://exchangeratesapi.
 ## Sponsors ❤
 
 [<img src='https://storage.googleapis.com/bkper-public/logos/ppv-logo.png' height='50'>](http://ppv.com.uy/)
+&nbsp;
 [<img src='https://storage.googleapis.com/bkper-public/logos/brain-logo.webp' height='50'>](https://www.brain.uy/)
 
 
