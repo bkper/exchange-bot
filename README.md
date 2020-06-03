@@ -59,7 +59,7 @@ That will generate a transaction in the current book of amount $1000, as well as
 
 ### Exchange rates endpoint
 
-By default, the free [exchangeratesapi.io](https://exchangeratesapi.io/) endpoint is used to fetch rates, but any endpoint can be provided, from other third party providers such as [Fixer](https://fixer.io/) or [Open Exchange Rates](https://openexchangerates.org/). 
+By default, the free [exchangeratesapi.io](https://exchangeratesapi.io/) endpoint is used to fetch rates, but any endpoint can be provided, from other third party providers such as [Fixer](https://fixer.io/) or [Open Exchange Rates](https://openexchangerates.org/), or build your own. 
 
 To change the default endpoint, set the ```exc_rates_url``` book property. 
 
@@ -80,7 +80,7 @@ Despite of which endpoint choosed, the json format returned MUST be:
 ```typescript
 {
   base: string;
-  date: string;
+  date: string; //yyyy-MM-dd
   rates: {
     [key: string]: number;
   }
@@ -92,6 +92,7 @@ Example:
 ```json
 {
   "base": "EUR",
+  "date": "2020-05-29",
   "rates": {
     "CAD": 1.565,
     "CHF": 1.1798,
