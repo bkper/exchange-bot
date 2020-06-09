@@ -56,6 +56,14 @@ Citibank Itau 1000 UYU35790.76 remitence from USA
 
 That will generate a transaction in the current book of amount $1000, as well as another transaction on UYU book of $U35790.76.
 
+### Gain/Loss tracking
+
+As the rates changes over time, the balances on accounts with different currencies than the books should be adjusted and by gains or losses transactions. The transactions are triggered by an item on menu:
+
+![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=1200&h=400)
+
+The accounts will be selected by matching the **group names** with exc_code from associated books.
+
 
 ### Exchange rates endpoint
 
