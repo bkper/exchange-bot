@@ -58,12 +58,20 @@ That will generate a transaction in the current book of amount $1000, as well as
 
 ### Gain/Loss tracking
 
-As the rates changes over time, the balances on accounts with different currencies than the books should be adjusted and by gains or losses transactions. The transactions are triggered by an item on menu:
+As the rates changes over time, the balances on accounts with different currencies than the books should be adjusted and by gain/loss transactions. The transactions are triggered by an item on menu:
 
 ![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=1200&h=400)
 
 The accounts will be selected by matching the **group names** with exc_code from associated books.
 
+By default, the prefix ```Exchange_Gain_``` and ```Exchange_Loss_``` will be used for each exc_code of associated books. 
+
+Optionally, you can set the book property ```exc_acc_prefix``` to use a custom prefix per foreign account.
+
+Example:
+```yaml
+exc_acc_prefix: FX
+```
 
 ### Exchange rates endpoint
 
