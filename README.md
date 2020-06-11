@@ -66,11 +66,6 @@ The accounts will be selected by matching the **group names** with exc_code from
 By default, the prefix ```Exchange_```  will be used for each exc_code of associated books. 
 
 
-Example:
-```yaml
-exc_acc_prefix: FX
-```
-
 ### Exchange rates endpoint
 
 By default, the free [exchangeratesapi.io](https://exchangeratesapi.io/) endpoint is used to fetch rates, but any endpoint can be provided, from other third party providers such as [Fixer](https://fixer.io/) or [Open Exchange Rates](https://openexchangerates.org/), or build your own. 
