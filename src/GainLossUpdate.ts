@@ -42,14 +42,18 @@ function updateGainLoss(bookId: any, dateParam: string) {
           if (connectedAccount != null) {
             let expectedBalance = ExchangeApp.exchange(connectedAccount.getBalance()).from(connectedCode).to(baseCode).convert();
             let delta = account.getBalance() - expectedBalance;
+            let excAccountName = `Exchange_${connectedCode}`;
+            //Verify Exchange account created
+            let excAccount = book.getAccount(excAccountName);
+            if (excAccount == null) {
+              excAccount = book.createAccount(excAccountName);
+            }
             if (account.isCredit()) {
               delta = delta * -1;
             }
             if (Math.round(delta) > 0) {
-              let excAccountName = getExchangeAccountName_(connectedCode, book, account, 'Loss');
               book.record(`${account.getName()} ${excAccountName} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_loss`);
             } else if (Math.round(delta) < 0) {
-              let excAccountName = getExchangeAccountName_(connectedCode, book, account, 'Gain');
               book.record(`${excAccountName} ${account.getName()} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_gain`);
             }
           }
@@ -57,19 +61,5 @@ function updateGainLoss(bookId: any, dateParam: string) {
       }
     }
   });
-}
-
-function getExchangeAccountName_(connectedCode: string, book: Bkper.Book, account: Bkper.Account, prefix: string) {
-  let excAccountName = `Exchange_${prefix}_${connectedCode}`;
-  //Verify Exchange account created
-  let accPrefix = book.getProperty('exc_acc_prefix');
-  if (accPrefix != null && accPrefix.trim() != '') {
-    excAccountName = `${accPrefix}_${prefix} - ${account.getName()}`;
-  }
-  let excAccount = book.getAccount(excAccountName);
-  if (excAccount == null) {
-    excAccount = book.createAccount(excAccountName);
-  }
-  return excAccountName;
 }
 

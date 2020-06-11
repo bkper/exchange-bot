@@ -35,7 +35,6 @@ In order to proper setup the Exchange Bot on your books, some book properties sh
 - ```exc_books```: Required - The id of associated book(s), splitted by spaces if more than one.
 - ```exc_rates_url```: Optional - The rates endpoint url to use. Default: [exchangeratesapi.io](https://exchangeratesapi.io/). 
 - ```exc_rates_cache```: Optional - The exchange rates endpoint url cache, **in seconds**. Default: ```3600```.
-- ```exc_acc_prefix```: Optional - The prefix in which each Gain/Loss account will use. Default: ```Exchange_```.
 
 You can associate multiple books.
 
@@ -64,9 +63,8 @@ As the rates changes over time, the balances on accounts with different currenci
 
 The accounts will be selected by matching the **group names** with exc_code from associated books.
 
-By default, the prefix ```Exchange_Gain_``` and ```Exchange_Loss_``` will be used for each exc_code of associated books. 
+By default, the prefix ```Exchange_```  will be used for each exc_code of associated books. 
 
-Optionally, you can set the book property ```exc_acc_prefix``` to use a custom prefix per foreign account.
 
 Example:
 ```yaml
