@@ -8,5 +8,5 @@ menuPopupHeight: 250
 clientId: 321364005933-28d88ahs0ltmpkvvmq57oclaitakmpq8.apps.googleusercontent.com
 scopes: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/script.external_request
 apiVersion: v2
-triggers: onTransactionPosted onTransactionChecked
+triggers: onTransactionChecked
 deploymentId: AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM
