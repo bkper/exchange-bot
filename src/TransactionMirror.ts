@@ -31,7 +31,7 @@ function onTransactionChecked(bookId: string, transaction: bkper.TransactionV2Pa
       let bookAnchor = buildBookAnchor_(connectedBook);
       let amountDescription = extractAmountDescription_(connectedBook, baseCode, connectedCode, transaction);
       let record = `${transaction.informedDateText} ${amountDescription.amount} ${transaction.creditAccName} ${transaction.debitAccName} ${amountDescription.description}`;
-      connectedBook.record(`${record} id:exchange_${transaction.id}`);
+      connectedBook.record(`${record} id:${transaction.id}`);
       responses.push(`${bookAnchor}: ${record}`);          
     }
   })  
