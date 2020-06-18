@@ -3,7 +3,7 @@ BkperApp.setApiKey(PropertiesService.getScriptProperties().getProperty('API_KEY'
 /**
  * Bkper trigger
  */
-function onTransactionPosted(bookId: string, transaction: bkper.TransactionV2Payload): any {
+function onTransactionChecked(bookId: string, transaction: bkper.TransactionV2Payload): any {
   let book = BkperApp.getBook(bookId);
   let baseCode = Service_.getBaseCode(book);
 
