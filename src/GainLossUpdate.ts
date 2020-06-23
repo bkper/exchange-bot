@@ -51,9 +51,12 @@ function updateGainLoss(bookId: any, dateParam: string) {
             if (account.isCredit()) {
               delta = delta * -1;
             }
-            if (Math.round(delta) > 0) {
+
+            delta = book.round(delta);
+
+            if (delta > 0) {
               book.record(`${account.getName()} ${excAccountName} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_loss`);
-            } else if (Math.round(delta) < 0) {
+            } else if (delta < 0) {
               book.record(`${excAccountName} ${account.getName()} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_gain`);
             }
           }
