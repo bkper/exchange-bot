@@ -13,11 +13,11 @@ The Bot also adds a menu item to your books too update gains and losses, based o
 
 The Exchange Bot uses rates from [exchangeratesapi.io](https://exchangeratesapi.io/) by default, but any rates source endpoint can be used.
 
-## Sponsors ❤
+<!-- ## Sponsors ❤
 
 [<img src='https://storage.googleapis.com/bkper-public/logos/ppv-logo.png' height='50'>](http://ppv.com.uy/)
 &nbsp;
-[<img src='https://storage.googleapis.com/bkper-public/logos/brain-logo.webp' height='50'>](https://www.brain.uy/)
+[<img src='https://storage.googleapis.com/bkper-public/logos/brain-logo.webp' height='50'>](https://www.brain.uy/) -->
 
 
 ## Configuration
