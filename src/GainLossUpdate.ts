@@ -40,8 +40,10 @@ function updateGainLoss(bookId: any, dateParam: string) {
         accounts.forEach(account => {
           let connectedAccount = connectedBook.getAccount(account.getName());
           if (connectedAccount != null) {
-            let expectedBalance = ExchangeApp.exchange(connectedAccount.getBalance()).from(connectedCode).to(baseCode).convert();
-            let delta = account.getBalance() - expectedBalance;
+            let connectedAccountBalanceOnDate = getAccountBalance(connectedBook, connectedAccount, date);
+            let expectedBalance = ExchangeApp.exchange(connectedAccountBalanceOnDate).from(connectedCode).to(baseCode).convert();
+            let accountBalanceOnDate = getAccountBalance(book, account, date);
+            let delta = accountBalanceOnDate - expectedBalance;
             let excAccountName = `Exchange_${connectedCode}`;
             //Verify Exchange account created
             let excAccount = book.getAccount(excAccountName);
@@ -64,5 +66,14 @@ function updateGainLoss(bookId: any, dateParam: string) {
       }
     }
   });
+}
+
+function getAccountBalance(book: Bkper.Book, account: Bkper.Account, date: Date): number {
+  let balances = book.getBalancesReport(`account:"${account.getName()}" on:${book.formatDate(date)}`);
+  let containers = balances.getBalancesContainers();
+  if (containers == null || containers.length == 0) {
+    return 0;
+  }
+  return containers[0].getCumulativeBalance();
 }
 
