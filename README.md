@@ -26,13 +26,13 @@ The Exchange Bot work by listening for TRANSACTION_CHECKED events in your book, 
 
 ![Exchange Bot Flow](https://docs.google.com/drawings/d/e/2PACX-1vSgg3HznU8deJsYNuZx57XvOusDTg-t6MwNIBpF2RuJRMzz-eFY4LhbCP1giOaO1mR3pD3K1gvEIz5i/pub?w=960&h=416)
 
+The books are associated by its [Collection](https://help.bkper.com/en/articles/4208937-work-with-multiple-books), so a transaction in one book is mirrored on all books of the Collection.
 
 ### Book Properties
 
 In order to proper setup the Exchange Bot on your books, some book properties should be set:
 
 - ```exc_code```: Required - The book (currency) exchange code.
-- ```exc_books```: Required - The id of associated book(s), splitted by spaces if more than one.
 - ```exc_rates_url```: Optional - The rates endpoint url to use. Default: [exchangeratesapi.io](https://exchangeratesapi.io/). 
 - ```exc_rates_cache```: Optional - The exchange rates endpoint url cache, **in seconds**. Default: ```3600```.
 
@@ -41,7 +41,6 @@ You can associate multiple books.
 Example:
 ```yaml
 exc_code: USD
-exc_books: agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwJWHgJQLDA agtzfmJrcGVyLWhyZHITCxIGTGVkZ2VyGICAwLWdrOEJDA
 ```
 
 ### Fixed Amounts

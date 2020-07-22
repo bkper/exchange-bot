@@ -21,25 +21,35 @@ namespace Service_ {
     ExchangeApp.setRatesEndpoint(ratesUrl, ratesCache);
   }
 
-  export function getConnectedBooks(book: Bkper.Book): Bkper.Book[] {
+  export function getConnectedBooks(book: Bkper.Book): Set<Bkper.Book> {
     if (book.getProperties() == null) {
-      return [];
+      return new Set<Bkper.Book>();
     }
-    let books = new Array<Bkper.Book>();
+    let books = new Set<Bkper.Book>();
 
     //deprecated
     for (const key in book.getProperties()) {
       if ((key.startsWith('exc')) && key.endsWith('_book')) {
-        books.push(BkperApp.getBook(book.getProperties()[key]));
+        books.add(BkperApp.getBook(book.getProperties()[key]));
       }
     }
 
+    //deprecated
     var exc_books = book.getProperty('exc_books');
     if (exc_books != null && exc_books.trim() != '') {
       var bookIds = exc_books.split(/[ ,]+/);
       for (var bookId of bookIds) {
         if (bookId != null && bookId.trim().length > 10) {
-          books.push(BkperApp.getBook(bookId));
+          books.add(BkperApp.getBook(bookId));
+        }
+      }
+    }
+
+    let collectionBooks = book.getCollection() != null ? book.getCollection().getBooks() : null;
+    if (collectionBooks) {
+      for (const b of collectionBooks) {
+        if (b.getId() != book.getId()) {
+          books.add(b);
         }
       }
     }
