@@ -23,10 +23,18 @@ function onTransactionChecked(bookId: string, transaction: bkper.TransactionV2Pa
     let connectedCode = Service_.getBaseCode(connectedBook);
     if (connectedCode != null && connectedCode != '') {
       if (connectedBook.getAccount(creditAcc.getName()) == null) {
-        connectedBook.createAccount(creditAcc.getName());
+        try {
+          connectedBook.createAccount(creditAcc.getName());
+        } catch (err) {
+          //OK
+        }
       }
       if (connectedBook.getAccount(debitAcc.getName()) == null) {
-        connectedBook.createAccount(debitAcc.getName());
+        try {
+          connectedBook.createAccount(debitAcc.getName());
+        } catch (err) {
+          //OK
+        }
       }
       let bookAnchor = buildBookAnchor_(connectedBook);
       let amountDescription = extractAmountDescription_(connectedBook, baseCode, connectedCode, transaction);
