@@ -3,7 +3,10 @@ BkperApp.setApiKey(PropertiesService.getScriptProperties().getProperty('API_KEY'
 /**
  * Bkper trigger
  */
-function onTransactionChecked(bookId: string, transaction: bkper.TransactionV2Payload): any {
+function onTransactionChecked(event: bkper.Event) {
+
+  let bookId = event.bookId;
+
   let book = BkperApp.getBook(bookId);
   let baseCode = Service_.getBaseCode(book);
 
@@ -11,9 +14,11 @@ function onTransactionChecked(bookId: string, transaction: bkper.TransactionV2Pa
     return 'Please set the "exc_code" property of this book.'
   }
 
-  let creditAcc = book.getAccount(transaction.creditAccId);
-  let debitAcc = book.getAccount(transaction.debitAccId);
+  let operation = event.data.object as bkper.TransactionOperation;
+  let transaction = operation.transaction;
 
+  let creditAcc = book.getAccount(transaction.creditAccount.id);
+  let debitAcc = book.getAccount(transaction.debitAccount.id);
 
   let responses: string[] = [];
 
@@ -38,7 +43,7 @@ function onTransactionChecked(bookId: string, transaction: bkper.TransactionV2Pa
       }
       let bookAnchor = buildBookAnchor_(connectedBook);
       let amountDescription = extractAmountDescription_(connectedBook, baseCode, connectedCode, transaction);
-      let record = `${transaction.informedDateText} ${amountDescription.amount} ${transaction.creditAccName} ${transaction.debitAccName} ${amountDescription.description}`;
+      let record = `${transaction.dateFormatted} ${amountDescription.amount} ${creditAcc.getName()} ${debitAcc.getName()} ${amountDescription.description}`;
       connectedBook.record(`${record} id:${transaction.id}`);
       responses.push(`${bookAnchor}: ${record}`);          
     }
@@ -52,7 +57,7 @@ interface AmountDescription {
   description: string;
 }
 
-function extractAmountDescription_(book: Bkper.Book, base: string, connectedCode:string, transaction: bkper.TransactionV2Payload): AmountDescription {
+function extractAmountDescription_(book: Bkper.Book, base: string, connectedCode:string, transaction: bkper.Transaction): AmountDescription {
   let parts = transaction.description.split(' ');
 
   for (const part of parts) {
@@ -69,7 +74,7 @@ function extractAmountDescription_(book: Bkper.Book, base: string, connectedCode
   }
 
   Service_.setRatesEndpoint(book, transaction.date, 'bot');
-  let amount = ExchangeApp.exchange(transaction.amount).from(base).to(connectedCode).convert();
+  let amount = ExchangeApp.exchange(+transaction.amount).from(base).to(connectedCode).convert();
 
   return {
     amount: book.formatValue(amount),
