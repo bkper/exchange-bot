@@ -9,7 +9,7 @@ clientId: 321364005933-28d88ahs0ltmpkvvmq57oclaitakmpq8.apps.googleusercontent.c
 scopes: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/script.external_request
 apiVersion: v3
 triggers: > 
-      onTransactionChecked
-      onTransactionUnchecked
-      
+    onTransactionChecked
+    onTransactionUnchecked
+
 deploymentId: AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM
