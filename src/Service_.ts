@@ -1,9 +1,5 @@
 namespace Service_ {
 
-  interface AmountDescription {
-    amount: number;
-    description: string;
-  }
 
   export function setRatesEndpoint(book: Bkper.Book, date: string, agent: string): void {
     //Read from properties
@@ -66,33 +62,6 @@ namespace Service_ {
     return book.getProperty('exc_code', 'exchange_code');
   }
 
-  export function extractAmountDescription_(book: Bkper.Book, base: string, connectedCode: string, transaction: bkper.Transaction): AmountDescription {
-    let parts = transaction.description.split(' ');
 
-    for (const part of parts) {
-      if (part.startsWith(connectedCode)) {
-        try {
-          return {
-            amount: +part.replace(connectedCode, ''),
-            description: transaction.description.replace(part, `${base}${transaction.amount}`)
-          };
-        } catch (error) {
-          continue;
-        }
-      }
-    }
-
-    Service_.setRatesEndpoint(book, transaction.date, 'bot');
-    let amount = ExchangeApp.exchange(+transaction.amount).from(base).to(connectedCode).convert();
-
-    return {
-      amount: amount,
-      description: `${transaction.description}`,
-    };
-  }
-
-  export function buildBookAnchor(book: Bkper.Book) {
-    return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}'>${book.getName()}</a>`;
-  }
 
 }

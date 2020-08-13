@@ -11,11 +11,10 @@ function updateGainLoss(bookId: any, dateParam: string): void {
 }
 
 function onTransactionEdited(event: bkper.Event) {
-  return TransactionEditedHandler_.handleTransactionEdited(event);
-}
+  return new EventHandlerTransactionEdited().handleEvent(event);}
 
 function onTransactionChecked(event: bkper.Event) {
-  return TransactionCheckedHandler_.handleTransactionChecked(event);
+  return new EventHandlerTransactionChecked().handleEvent(event);
 }
 
 

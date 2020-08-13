@@ -11,5 +11,7 @@ apiVersion: v3
 triggers: > 
     onTransactionChecked
     onTransactionEdited
+    onTransactionDeleted
+    onTransactionRestored
 
 deploymentId: AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM
