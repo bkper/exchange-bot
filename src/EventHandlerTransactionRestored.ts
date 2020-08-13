@@ -14,7 +14,7 @@ class EventHandlerTransactionRestored extends EventHandlerTransaction {
 
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 
-    let record = `DELETED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getCreditAccountName()} ${connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+    let record = `RESTORED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getCreditAccountName()} ${connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
 
     return `${bookAnchor}: ${record}`;
   }

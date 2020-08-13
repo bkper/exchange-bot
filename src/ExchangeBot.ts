@@ -10,8 +10,18 @@ function updateGainLoss(bookId: any, dateParam: string): void {
   GainLossUpdateService_.updateGainLoss(bookId, dateParam);
 }
 
+
+function onTransactionDeleted(event: bkper.Event) {
+  return new EventHandlerTransactionDeleted().handleEvent(event);
+}
+
+function onTransactionRestored(event: bkper.Event) {
+  return new EventHandlerTransactionRestored().handleEvent(event);
+}
+
 function onTransactionEdited(event: bkper.Event) {
-  return new EventHandlerTransactionEdited().handleEvent(event);}
+  return new EventHandlerTransactionEdited().handleEvent(event);
+}
 
 function onTransactionChecked(event: bkper.Event) {
   return new EventHandlerTransactionChecked().handleEvent(event);
