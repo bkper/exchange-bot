@@ -10,8 +10,8 @@ function updateGainLoss(bookId: any, dateParam: string): void {
   GainLossUpdateService_.updateGainLoss(bookId, dateParam);
 }
 
-function onTransactionUnchecked(event: bkper.Event) {
-  return TransactionUncheckedHandler_.handleTransactionUnchecked(event);
+function onTransactionEdited(event: bkper.Event) {
+  return TransactionEditedHandler_.handleTransactionEdited(event);
 }
 
 function onTransactionChecked(event: bkper.Event) {

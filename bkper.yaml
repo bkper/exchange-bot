@@ -10,6 +10,6 @@ scopes: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.co
 apiVersion: v3
 triggers: > 
     onTransactionChecked
-    onTransactionUnchecked
+    onTransactionEdited
 
 deploymentId: AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM
