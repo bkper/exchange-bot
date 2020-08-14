@@ -19,8 +19,8 @@ function onTransactionRestored(event: bkper.Event) {
   return new EventHandlerTransactionRestored().handleEvent(event);
 }
 
-function onTransactionEdited(event: bkper.Event) {
-  return new EventHandlerTransactionEdited().handleEvent(event);
+function onTransactionUpdated(event: bkper.Event) {
+  return new EventHandlerTransactionUpdated().handleEvent(event);
 }
 
 function onTransactionChecked(event: bkper.Event) {

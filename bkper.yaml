@@ -10,7 +10,7 @@ scopes: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.co
 apiVersion: v3
 triggers: > 
     onTransactionChecked
-    onTransactionEdited
+    onTransactionUpdated
     onTransactionDeleted
     onTransactionRestored
 

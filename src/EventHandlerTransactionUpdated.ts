@@ -1,4 +1,4 @@
-class EventHandlerTransactionEdited extends EventHandlerTransaction {
+class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
     return transaction.id;
