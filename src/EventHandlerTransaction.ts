@@ -7,6 +7,12 @@ abstract class EventHandlerTransaction extends EventHandler<bkper.TransactionOpe
 
   processObject(baseBook: Bkper.Book, connectedBook: Bkper.Book, operation: bkper.TransactionOperation): string {
     let transaction = operation.transaction;
+
+    if (transaction.agentId == 'exchange-bot') {
+      console.log("Same payload agent. Preventing bot loop.");
+      return null;
+    } 
+
     let connectedCode = Service_.getBaseCode(connectedBook);
     if (connectedCode != null && connectedCode != '') {
       let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
