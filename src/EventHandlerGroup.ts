@@ -6,9 +6,11 @@ abstract class EventHandlerGroup extends EventHandler {
 
     if (connectedCode != null && connectedCode != '') {
 
-      let name = event.data.previousAttributes['name'] ? event.data.previousAttributes['name'] : group.name;
+      let connectedGroup = connectedBook.getGroup(group.name);
+      if (connectedGroup == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+        connectedGroup = connectedBook.getGroup(event.data.previousAttributes['name']);
+      }
 
-      let connectedGroup = connectedBook.getGroup(name);
       if (connectedGroup) {
         return this.connectedGroupFound(baseBook, connectedBook, group, connectedGroup);
       } else {

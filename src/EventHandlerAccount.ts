@@ -6,9 +6,11 @@ abstract class EventHandlerAccount extends EventHandler {
 
     if (connectedCode != null && connectedCode != '') {
 
-      let name = event.data.previousAttributes['name'] ? event.data.previousAttributes['name'] : account.name;
+      let connectedAccount = connectedBook.getAccount(account.name);
+      if (connectedAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+        connectedAccount = connectedBook.getAccount(event.data.previousAttributes['name']);
+      }
 
-      let connectedAccount = connectedBook.getAccount(name);
       if (connectedAccount) {
         return this.connectedAccountFound(baseBook, connectedBook, account, connectedAccount);
       } else {

@@ -23,7 +23,7 @@ class EventHandlerTransactionChecked extends EventHandlerTransaction {
     let connectedCreditAccount = connectedBook.getAccount(baseCreditAccount.getName());
     if (connectedCreditAccount == null) {
       try {
-        connectedCreditAccount = connectedBook.createAccount(baseCreditAccount.getName());
+        connectedCreditAccount = this.createAccount(connectedBook, baseCreditAccount);
       } catch (err) {
         //OK
       }
@@ -31,7 +31,7 @@ class EventHandlerTransactionChecked extends EventHandlerTransaction {
     let connectedDebitAccount = connectedBook.getAccount(baseDebitAccount.getName());
     if (connectedDebitAccount == null) {
       try {
-        connectedDebitAccount = connectedBook.createAccount(baseDebitAccount.getName());
+        connectedDebitAccount = this.createAccount(connectedBook, baseDebitAccount);
       } catch (err) {
         //OK
       }
@@ -44,4 +44,23 @@ class EventHandlerTransactionChecked extends EventHandlerTransaction {
     return `${connectedBookAnchor}: ${record}`;
   }
 
+
+  private createAccount(connectedBook: Bkper.Book, baseAccount: Bkper.Account): Bkper.Account {
+    let newConnectedAccount = connectedBook.newAccount()
+      .setName(baseAccount.getName())
+      .setType(baseAccount.getType())
+      .setProperties(baseAccount.getProperties());
+    const baseGroups = baseAccount.getGroups();
+    if (baseGroups) {
+      baseGroups.forEach(baseGroup => {
+        let connectedGroup = connectedBook.getGroup(baseGroup.getName());
+        if (connectedGroup == null) {
+          connectedGroup = connectedBook.newGroup().setName(baseGroup.getName()).setProperties(baseGroup.getProperties()).create();
+        }
+        newConnectedAccount.addGroup(connectedGroup);
+      });
+    }
+    newConnectedAccount.create();
+    return newConnectedAccount;
+  }
 }

@@ -28,11 +28,11 @@ function onTransactionChecked(event: bkper.Event) {
 }
 
 function onAccountCreated(event: bkper.Event) {
-  return new EventHandlerAccountCreated().handleEvent(event);
+  return new EventHandlerAccountCreatedOrUpdated().handleEvent(event);
 }
 
 function onAccountUpdated(event: bkper.Event) {
-  return new EventHandlerAccountUpdated().handleEvent(event);
+  return new EventHandlerAccountCreatedOrUpdated().handleEvent(event);
 }
 
 function onAccountDeleted(event: bkper.Event) {
@@ -40,11 +40,11 @@ function onAccountDeleted(event: bkper.Event) {
 }
 
 function onGroupCreated(event: bkper.Event) {
-  return new EventHandlerGroupCreated().handleEvent(event);
+  return new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
 }
 
 function onGroupUpdated(event: bkper.Event) {
-  return new EventHandlerGroupUpdated().handleEvent(event);
+  return new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
 }
 
 function onGroupDeleted(event: bkper.Event) {
