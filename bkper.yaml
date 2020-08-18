@@ -13,5 +13,11 @@ triggers: >
     onTransactionUpdated
     onTransactionDeleted
     onTransactionRestored
+    onAccountCreated
+    onAccountUpdated
+    onAccountDeleted
+    onGroupCreated
+    onGroupUpdated
+    onGroupDeleted
 
 deploymentId: AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM

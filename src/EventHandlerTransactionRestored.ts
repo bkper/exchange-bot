@@ -1,7 +1,7 @@
 class EventHandlerTransactionRestored extends EventHandlerTransaction {
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
-    return `${transaction.id} is:trashed`;
+    return `remoteId:${transaction.id} is:trashed`;
   }
 
   protected connectedTransactionNotFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction): string {

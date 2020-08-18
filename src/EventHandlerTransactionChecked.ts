@@ -2,7 +2,7 @@
 class EventHandlerTransactionChecked extends EventHandlerTransaction {
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
-    return transaction.id;
+    return `remoteId:${transaction.id}`;
   }
 
   protected connectedTransactionFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction, connectedTransaction: Bkper.Transaction): string {

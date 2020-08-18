@@ -1,7 +1,7 @@
 class EventHandlerTransactionDeleted extends EventHandlerTransaction {
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
-    return transaction.id;
+    return `remoteId:${transaction.id}`;
   }
 
   protected connectedTransactionNotFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction): string {

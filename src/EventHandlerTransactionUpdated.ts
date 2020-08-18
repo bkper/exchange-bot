@@ -1,7 +1,7 @@
 class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
-    return transaction.id;
+    return `remoteId:${transaction.id}`;
   }
 
   protected connectedTransactionNotFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction): string {
@@ -40,8 +40,31 @@ class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     .setDescription(amountDescription.description)
     .setDate(transaction.date)
     .setCreditAccount(connectedCreditAccount)
-    .setDebitAccount(connectedDebitAccount)
-    .edit();
+    .setDebitAccount(connectedDebitAccount);
+
+    let urls = transaction.urls;
+    if (!urls) {
+      urls = [];
+    }
+
+    if (connectedTransaction.getUrls()) {
+      urls = urls.concat(connectedTransaction.getUrls())
+    }
+
+    if (transaction.files) {
+      transaction.files.forEach(file => {
+        Logger.log(`FILE: ${JSON.stringify(file)}`)
+        urls.push(file.url)
+      })
+    }
+
+    connectedTransaction
+    .setUrls(urls);
+
+    Logger.log(urls)
+
+    connectedTransaction.update();
+    
 
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 

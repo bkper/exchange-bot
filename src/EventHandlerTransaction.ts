@@ -3,9 +3,11 @@ interface AmountDescription {
   description: string;
 }
 
-abstract class EventHandlerTransaction extends EventHandler<bkper.TransactionOperation>{
+abstract class EventHandlerTransaction extends EventHandler{
 
-  processObject(baseBook: Bkper.Book, connectedBook: Bkper.Book, operation: bkper.TransactionOperation): string {
+  processObject(baseBook: Bkper.Book, connectedBook: Bkper.Book, event: bkper.Event): string {
+
+    let operation = event.data.object as bkper.TransactionOperation;
     let transaction = operation.transaction;
 
     if (transaction.agentId == 'exchange-bot') {

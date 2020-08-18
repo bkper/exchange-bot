@@ -1,6 +1,6 @@
-abstract class EventHandler<E> {
+abstract class EventHandler {
 
-  protected abstract processObject(baseBook: Bkper.Book, connectedBook: Bkper.Book, object: E): string;
+  protected abstract processObject(baseBook: Bkper.Book, connectedBook: Bkper.Book, event: bkper.Event): string;
 
   handleEvent(event: bkper.Event): string[] | string {
     let bookId = event.bookId;
@@ -11,14 +11,13 @@ abstract class EventHandler<E> {
       return 'Please set the "exc_code" property of this book.'
     }
 
-    let object = event.data.object as E;
     let responses: string[] = [];
     let connectedBooks = Service_.getConnectedBooks(baseBook);
     
     connectedBooks.forEach(connectedBook => {
       let connectedCode = Service_.getBaseCode(connectedBook);
       if (connectedCode != null && connectedCode != '') {
-        let response = this.processObject(baseBook, connectedBook, object);
+        let response = this.processObject(baseBook, connectedBook, event);
         if (response) {
           responses.push(response);
         }
