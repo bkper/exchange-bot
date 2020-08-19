@@ -7,10 +7,21 @@ class EventHandlerTransactionChecked extends EventHandlerTransaction {
 
   protected connectedTransactionFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction, connectedTransaction: Bkper.Transaction): string {
     let bookAnchor = super.buildBookAnchor(connectedBook);
-    connectedTransaction.check();
-    let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
-    let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getCreditAccountName()} ${connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
-    return `${bookAnchor}: ${record}`;
+    if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
+      Logger.log('CHECKING...')
+      connectedTransaction.check();
+      let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
+      let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getCreditAccountName()} ${connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+      return `${bookAnchor}: ${record}`;
+    } else if (!connectedTransaction.isPosted() && this.isReadyToPost(connectedTransaction)) {
+      Logger.log('POST AND CHECKING...')
+
+      connectedTransaction.post().check();
+      let record = `${connectedTransaction.getDate()} ${connectedTransaction.getAmount()} ${connectedTransaction.getCreditAccountName()} ${connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+      return `${bookAnchor}: ${record}`;
+    } else {
+      return `${bookAnchor}: DRAFT FOUND`;
+    }
   }
 
   protected connectedTransactionNotFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction): string {
@@ -37,13 +48,32 @@ class EventHandlerTransactionChecked extends EventHandlerTransaction {
       }
     }
     let amountDescription = super.extractAmountDescription_(connectedBook, baseCode, connectedCode, transaction);
-    let amountFormatted = connectedBook.formatValue(amountDescription.amount)
 
-    let record = `${transaction.dateFormatted} ${amountFormatted} ${baseCreditAccount.getName()} ${baseDebitAccount.getName()} ${amountDescription.description}`;
-    connectedBook.record(`${record} id:${transaction.id}`);
+    let newTransaction = connectedBook.newTransaction()
+      .setDate(transaction.date)
+      .setAmount(amountDescription.amount)
+      .setCreditAccount(baseCreditAccount.getName())
+      .setDebitAccount(baseDebitAccount.getName())
+      .setDescription(amountDescription.description)
+      .addRemoteId(transaction.id);
+
+      let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.getName()} ${baseDebitAccount.getName()} ${amountDescription.description}`;
+      Logger.log(record)
+
+    if (this.isReadyToPost(newTransaction)) {
+      newTransaction.post().check();
+    } else {
+      newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
+      newTransaction.create();
+    }
+
     return `${connectedBookAnchor}: ${record}`;
   }
 
+
+  private isReadyToPost(newTransaction: Bkper.Transaction) {
+    return newTransaction.getCreditAccount() != null && newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;
+  }
 
   private createAccount(connectedBook: Bkper.Book, baseAccount: Bkper.Account): Bkper.Account {
     let newConnectedAccount = connectedBook.newAccount()
