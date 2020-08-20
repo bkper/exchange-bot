@@ -49,8 +49,8 @@ class EventHandlerTransactionChecked extends EventHandlerTransaction {
     }
     let amountDescription = super.extractAmountDescription_(connectedBook, baseCode, connectedCode, transaction);
 
-    if (amountDescription.amount == null || amountDescription.amount == 0) {
-      throw `Exchange rate not found for code  ${connectedCode} on ${transaction.date}`;
+    if (amountDescription.amount == null || amountDescription.amount == 0 || isNaN(amountDescription.amount) || !isFinite(amountDescription.amount)) {
+      throw `Exchange rate NOT found for code  ${connectedCode} on ${transaction.date}`;
     }
 
     let newTransaction = connectedBook.newTransaction()

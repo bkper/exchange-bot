@@ -16,7 +16,19 @@ namespace GainLossUpdateService_ {
   export function updateGainLoss(bookId: any, dateParam: string): void {
     let book = BkperApp.getBook(bookId);
     let connectedBooks = Service_.getConnectedBooks(book);
+    connectedBooks.add(book);
+    connectedBooks.forEach(connectedBook => updateGainLossForBook(connectedBook, dateParam));
+  }
+
+  function updateGainLossForBook(book: Bkper.Book, dateParam: string) {
+
+    Logger.log(`GAIN LOSS FOR BOOK: ${book.getName()}`)
+
+    let connectedBooks = Service_.getConnectedBooks(book);
     let baseCode = Service_.getBaseCode(book);
+
+    Logger.log(`CONNECTED BOOKS: ${connectedBooks.size}`)
+
 
     Service_.setRatesEndpoint(book, dateParam, 'app');
 
@@ -32,8 +44,10 @@ namespace GainLossUpdateService_ {
 
     connectedBooks.forEach(connectedBook => {
       let connectedCode = Service_.getBaseCode(connectedBook);
+      Logger.log(`CONNECTED CODE: ${connectedCode}`)
       let group = book.getGroup(connectedCode);
       if (group != null) {
+        Logger.log(`GROUP: ${group.getName()}`)
         let accounts = group.getAccounts();
         if (accounts != null) {
           accounts.forEach(account => {
@@ -55,9 +69,12 @@ namespace GainLossUpdateService_ {
 
               delta = book.round(delta);
 
+              Logger.log(`ACCOUNT: ${connectedAccount.getName()} - delta: ${delta}`)
+
               if (delta > 0) {
                 book.record(`${account.getName()} ${excAccountName} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_loss`);
-              } else if (delta < 0) {
+              }
+              else if (delta < 0) {
                 book.record(`${excAccountName} ${account.getName()} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_gain`);
               }
             }
