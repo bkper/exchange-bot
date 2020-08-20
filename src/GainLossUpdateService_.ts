@@ -22,13 +22,8 @@ namespace GainLossUpdateService_ {
 
   function updateGainLossForBook(book: Bkper.Book, dateParam: string) {
 
-    Logger.log(`GAIN LOSS FOR BOOK: ${book.getName()}`)
-
     let connectedBooks = Service_.getConnectedBooks(book);
     let baseCode = Service_.getBaseCode(book);
-
-    Logger.log(`CONNECTED BOOKS: ${connectedBooks.size}`)
-
 
     Service_.setRatesEndpoint(book, dateParam, 'app');
 
@@ -44,10 +39,8 @@ namespace GainLossUpdateService_ {
 
     connectedBooks.forEach(connectedBook => {
       let connectedCode = Service_.getBaseCode(connectedBook);
-      Logger.log(`CONNECTED CODE: ${connectedCode}`)
       let group = book.getGroup(connectedCode);
       if (group != null) {
-        Logger.log(`GROUP: ${group.getName()}`)
         let accounts = group.getAccounts();
         if (accounts != null) {
           accounts.forEach(account => {
@@ -57,11 +50,13 @@ namespace GainLossUpdateService_ {
               let expectedBalance = ExchangeApp.exchange(connectedAccountBalanceOnDate).from(connectedCode).to(baseCode).convert();
               let accountBalanceOnDate = getAccountBalance(book, account, date);
               let delta = accountBalanceOnDate - expectedBalance;
-              let excAccountName = `Exchange_${connectedCode}`;
+
+              let excAccountName = getExcAccountName(connectedAccount, connectedCode);
+
               //Verify Exchange account created
               let excAccount = book.getAccount(excAccountName);
               if (excAccount == null) {
-                excAccount = book.createAccount(excAccountName);
+                excAccount = book.newAccount().setName(excAccountName).create();
               }
               if (account.isCredit()) {
                 delta = delta * -1;
@@ -69,19 +64,34 @@ namespace GainLossUpdateService_ {
 
               delta = book.round(delta);
 
-              Logger.log(`ACCOUNT: ${connectedAccount.getName()} - delta: ${delta}`)
+              let transaction = book.newTransaction()
+                .setDate(dateParam)
+                .setAmount(Math.abs(delta));
 
               if (delta > 0) {
-                book.record(`${account.getName()} ${excAccountName} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_loss`);
+                transaction.from(account).to(excAccount).setDescription('#exchange_loss').post();
               }
               else if (delta < 0) {
-                book.record(`${excAccountName} ${account.getName()} ${book.formatDate(date)} ${book.formatValue(Math.abs(delta))} #exchange_gain`);
+                transaction.from(excAccount).to(account).setDescription('#exchange_gain').post();
               }
             }
           });
         }
       }
     });
+  }
+
+  function getExcAccountName(connectedAccount: Bkper.Account, connectedCode: string): string {
+    let groups = connectedAccount.getGroups(); 
+    if (groups) {
+      for (const group of groups) {
+        let excAccount = group.getProperty('exc_account')
+        if (excAccount) {
+          return excAccount;
+        }
+      }
+    }
+    return `Exchange_${connectedCode}`;
   }
 
   function getAccountBalance(book: Bkper.Book, account: Bkper.Account, date: Date): number {
