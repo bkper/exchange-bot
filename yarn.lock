@@ -14,10 +14,10 @@
   dependencies:
     "@types/google-apps-script" "*"
 
-"@bkper/exchange-app-types@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@bkper/exchange-app-types/-/exchange-app-types-1.1.1.tgz#a32e964e2db6526e4be4330a9c6dc6655254ba4a"
-  integrity sha512-n0RmLHZqvKUowtK4RzS1PDtlQkIXCKSMl3uwHCNaK0uOLNeB5Qpx2nzTzDt08AML7TpVCrbNz14uQ1sFhegc1Q==
+"@bkper/exchange-app-types@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@bkper/exchange-app-types/-/exchange-app-types-1.2.0.tgz#27533047be0842597eacd8e80c3b7c0836878f89"
+  integrity sha512-zV2r+J7EvI569DOW3hExkuDu/mA35ZfBzS1FNI/fzB06vYGbL9KyodtSSXurXpMYgSV2+kj39AK0iQd3i2FWAQ==
 
 "@google/clasp@^2.3.0":
   version "2.3.0"

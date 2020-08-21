@@ -19,6 +19,13 @@
       }
       .body #waiting-panel, .body #update-date-panel {
         height: 40px;
+        align-items: center;
+      }
+      .body #update-date-panel {
+        display: flex;
+      }
+      .body .rate {
+        margin-top: 5px;
         display: flex;
         align-items: center;
       }
@@ -26,13 +33,22 @@
         height: 25px;
       }
       .body #waiting-panel {
-        display: none;
+        display: flex;
         justify-content: center;
       }
+      .body #rates-panel {
+        display: none;
+      }
+
+      .body label {
+        width: 60px;
+      }
+
       .footer {
         display: flex;
         justify-content: center;
       }
+
     </style>
     
   </header>
@@ -40,21 +56,24 @@
   <body>
 
     <div class='header'>
-      Update <?!= book.name ?> Gain/Loss
+      Update Gain/Loss
     </div>
 
     <div class='body'>
+      <div id='update-date-panel'>
+        <label for="update-date">Date: </label>
+        <input type="date" id="update-date" name="update-date" value="<?!= today ?>" onchange="loadRates()"/>
+      </div>
       <div id='waiting-panel'>
         <img src='https://storage.googleapis.com/bkper-public/addons/loading_3dots.gif'/>
-      </div>
-      <div id='update-date-panel'>
-        <label for="update-date">Rates of day: </label>
-        <input type="date" id="update-date" name="update-date" value="<?!= Utilities.formatDate(new Date(), book.timeZone, 'yyyy-MM-dd') ?>" >
-      </div>
+      </div>      
+      <div id='rates-panel'>
+
+      </div> 
     </div>
 
     <div class="footer">
-      <button class="action" onclick="updateGainLoss()">Update</button>
+      <button class="action" id="update-button" onclick="updateGainLoss()">Update</button>
     </div>
 
   </body>
@@ -64,16 +83,59 @@
 
 <script>
 
+  var loadedExchangeRates;
+
   function updateGainLoss() {
     var date = document.getElementById("update-date").value;
-    document.getElementById('waiting-panel').style.display = 'flex';
-    document.getElementById('update-date-panel').style.display = 'none';
-    google.script.run.withSuccessHandler(closeWindow).withFailureHandler(showError).updateGainLoss('<?!= book.id ?>', date)
+    showWaiting(true);
+    google.script.run.withSuccessHandler(closeWindow).withFailureHandler(showError).updateGainLoss('<?!= book.id ?>', date, getExchangeRates())
+  }
+
+  function showWaiting(show) {
+    if (show) {
+      document.getElementById('waiting-panel').style.display = 'flex';
+      document.getElementById('rates-panel').style.display = 'none';
+      document.getElementById('update-button').setAttribute('disabled', true);
+    } else {
+      document.getElementById('waiting-panel').style.display = 'none';
+      document.getElementById('rates-panel').style.display = 'block';
+      document.getElementById('update-button').removeAttribute('disabled');
+    }
+  }
+
+  function loadRates() {
+    showWaiting(true);
+    var date = document.getElementById("update-date").value;
+    google.script.run.withSuccessHandler(ratesLoaded).withFailureHandler(showError).loadRates('<?!= book.id ?>', date)
+  }
+
+  function ratesLoaded(exchangeRates) {
+    loadedExchangeRates = exchangeRates;
+    var html = `<div class='rate'>
+                 <label for='rate-${exchangeRates.base}'>${exchangeRates.base}: </label>
+                 <input type='text' id='rate-${exchangeRates.base}' name='rate-${exchangeRates.base}' value='1' disabled size='10' />
+               </div>`;
+    for (const rate in exchangeRates.rates) {
+      html += `<div class='rate'>
+                 <label for='rate-${rate}'>${rate}: </label>
+                 <input type='text' id='rate-${rate}' name='rate-${rate}' value='${exchangeRates.rates[rate]}' size='10' />
+               </div>`
+    }
+    let ratesPanel = document.getElementById('rates-panel');
+    ratesPanel.innerHTML = html;
+    showWaiting(false);
+    document.getElementById('waiting-panel').style.height = `${ratesPanel.offsetHeight}px`;
+  }
+
+  function getExchangeRates() {
+    for (const rate in loadedExchangeRates.rates) {
+      loadedExchangeRates.rates[rate] = document.getElementById(`rate-${rate}`).value
+    }
+    return loadedExchangeRates;
   }
 
   function showError(error) {
-    document.getElementById('waiting-panel').style.display = 'none';
-    document.getElementById('update-date-panel').style.display = 'flex';
+    showWaiting(false);
     window.alert(error);
   }
 
@@ -85,4 +147,6 @@
       showError(error)
     }
   }
+
+  loadRates();
 </script>

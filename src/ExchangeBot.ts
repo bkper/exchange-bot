@@ -1,13 +1,18 @@
 BkperApp.setApiKey(PropertiesService.getScriptProperties().getProperty('API_KEY'));
 
+
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
   //@ts-ignore
   let bookId = e.parameter.bookId;
   return GainLossUpdateService_.getGainLossViewTemplate(bookId);
 }
 
-function updateGainLoss(bookId: any, dateParam: string): void {
-  GainLossUpdateService_.updateGainLoss(bookId, dateParam);
+function loadRates(bookId: string, date: string): Bkper.ExchangeRates {
+  return GainLossUpdateService_.loadRates(bookId, date);
+}
+
+function updateGainLoss(bookId: string, dateParam: string, exchangeRates: Bkper.ExchangeRates): void {
+  GainLossUpdateService_.updateGainLoss(bookId, dateParam, exchangeRates);
 }
 
 

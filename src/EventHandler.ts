@@ -44,9 +44,8 @@ abstract class EventHandler {
       }
     }
 
-    Service_.setRatesEndpoint(book, transaction.date, 'bot');
-
-    Logger.log(`TRANSACTION AMOUNT: ${transaction.amount}` )
+    let ratesEndpointConfig = Service_.getRatesEndpointConfig(book, transaction.date, 'bot');
+    ExchangeApp.setRatesEndpoint(ratesEndpointConfig.url, ratesEndpointConfig.cache);
 
     let amount = ExchangeApp.exchange(+transaction.amount).from(base).to(connectedCode).convert();
 

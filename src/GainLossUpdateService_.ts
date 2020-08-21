@@ -1,31 +1,50 @@
 
+
 namespace GainLossUpdateService_ {
 
   export function getGainLossViewTemplate(bookId: string): GoogleAppsScript.HTML.HtmlOutput {
     let book = BkperApp.getBook(bookId);
     const template = HtmlService.createTemplateFromFile('GainLossUpdateView');
+    let today = Utilities.formatDate(new Date(), book.getTimeZone(), 'yyyy-MM-dd');
   
     template.book = {
       id: bookId,
       name: book.getName(),
-      timeZone: book.getTimeZone()
     }
+    template.today = today
+
     return template.evaluate().setTitle('Exchange Bot');
   }
 
-  export function updateGainLoss(bookId: any, dateParam: string): void {
+  export function loadRates(bookId: string, date: string): Bkper.ExchangeRates {
+    let book = BkperApp.getBook(bookId);
+    let ratesEndpointConfig = Service_.getRatesEndpointConfig(book, date, 'app');
+    let ratesJSON = UrlFetchApp.fetch(ratesEndpointConfig.url).getContentText();
+    let exchangeRates = JSON.parse(ratesJSON) as Bkper.ExchangeRates;
+
+    let codes: string[] = [];
+    Service_.getConnectedBooks(book).add(book).forEach(book => codes.push(Service_.getBaseCode(book)));
+
+    for (const rate in exchangeRates.rates) {
+      if (!codes.includes(rate)) {
+        delete exchangeRates.rates[rate];
+      }
+    }
+
+    return exchangeRates;
+  }
+
+  export function updateGainLoss(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): void {
     let book = BkperApp.getBook(bookId);
     let connectedBooks = Service_.getConnectedBooks(book);
     connectedBooks.add(book);
-    connectedBooks.forEach(connectedBook => updateGainLossForBook(connectedBook, dateParam));
+    connectedBooks.forEach(connectedBook => updateGainLossForBook(connectedBook, dateParam, exchangeRates));
   }
 
-  function updateGainLossForBook(book: Bkper.Book, dateParam: string) {
+  function updateGainLossForBook(book: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates) {
 
     let connectedBooks = Service_.getConnectedBooks(book);
     let baseCode = Service_.getBaseCode(book);
-
-    Service_.setRatesEndpoint(book, dateParam, 'app');
 
     var dateSplit = dateParam != null ? dateParam.split('-') : null;
 
@@ -47,7 +66,7 @@ namespace GainLossUpdateService_ {
             let connectedAccount = connectedBook.getAccount(account.getName());
             if (connectedAccount != null) {
               let connectedAccountBalanceOnDate = getAccountBalance(connectedBook, connectedAccount, date);
-              let expectedBalance = ExchangeApp.exchange(connectedAccountBalanceOnDate).from(connectedCode).to(baseCode).convert();
+              let expectedBalance = ExchangeApp.exchange(connectedAccountBalanceOnDate).withRates(exchangeRates).from(connectedCode).to(baseCode).convert();
               let accountBalanceOnDate = getAccountBalance(book, account, date);
               let delta = accountBalanceOnDate - expectedBalance;
 
