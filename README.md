@@ -43,16 +43,6 @@ Example:
 exc_code: USD
 ```
 
-### Group Properties
-
-- ```exc_account```: Optional - The Gain/Loss exchange account to use. Default:  ```Exchange_CODE```
-
-Example:
-```yaml
-exc_account: Assets_Exchange
-```
-The first ```exc_account``` property found will be used, so, make sure to have only one group per account with the property set, to avoid unexpected behavior.
-
 ### Fixed Amounts
 
 To bypass dynamic rates from endpoint and force use of fixed amounts, just append the currency symbol and amount in the transaction description.
@@ -72,8 +62,11 @@ As the rates changes over time, the balances on accounts with different currenci
 
 The accounts will be selected by matching the **group names** with exc_code from associated books.
 
-By default, an account with prefix ```Exchange_```  will be used for each ```exc_code``` of associated books. You can change the default account by setting a ```exc_account``` custom property in the account **Group**, with the name of exchange account to use.
-
+By default, an account with prefix ```Exchange_```  will be used for each ```exc_code``` of associated books. You can change the default account by setting a ```exc_account``` custom property in the account **Group**, with the name of exchange account to use. Example:
+```yaml
+exc_account: Assets_Exchange
+```
+The first ```exc_account``` property found will be used, so, make sure to have only one group per account with the property set, to avoid unexpected behavior.
 
 ### Exchange rates endpoint
 
