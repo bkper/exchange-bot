@@ -51,7 +51,7 @@ Example:
 ```yaml
 exc_account: Assets_Exchange
 ```
-
+The first ```exc_account``` property found will be used, so, make sure to have only one group per account with the property set, to avoid unexpected behavior.
 
 ### Fixed Amounts
 
