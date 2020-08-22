@@ -47,6 +47,11 @@ exc_code: USD
 
 - ```exc_account```: Optional - The Gain/Loss exchange account to use. Default:  ```Exchange_CODE```
 
+Example:
+```yaml
+exc_account: Assets_Exchange
+```
+
 
 ### Fixed Amounts
 
