@@ -55,6 +55,7 @@ class EventHandlerTransactionChecked extends EventHandlerTransaction {
 
     let newTransaction = connectedBook.newTransaction()
       .setDate(transaction.date)
+      .setProperties(transaction.properties)
       .setAmount(amountDescription.amount)
       .setCreditAccount(baseCreditAccount.getName())
       .setDebitAccount(baseDebitAccount.getName())

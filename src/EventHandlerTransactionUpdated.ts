@@ -39,6 +39,7 @@ class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     connectedTransaction.setAmount(+amountDescription.amount)
     .setDescription(amountDescription.description)
     .setDate(transaction.date)
+    .setProperties(transaction.properties)
     .setCreditAccount(connectedCreditAccount)
     .setDebitAccount(connectedDebitAccount);
 
