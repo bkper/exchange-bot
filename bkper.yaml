@@ -20,12 +20,14 @@ triggers: >
     onGroupUpdated
     onGroupDeleted
 
-bookProperties: >
-    exc_code
-    exc_rates_url
-    exc_rates_cache
+properties: 
+    book:
+      keys: >
+        exc_code
+        exc_rates_url
+        exc_rates_cache
+    group:
+      keys: exc_account
 
-groupProperties: > 
-    exc_account
 
 deploymentId: AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM
