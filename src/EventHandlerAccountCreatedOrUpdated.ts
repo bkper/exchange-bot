@@ -28,7 +28,11 @@ class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
         if (baseGroup) {
           let connectedGroup = connectedBook.getGroup(baseGroup.getName());
           if (connectedGroup == null) {
-            connectedGroup = connectedBook.newGroup().setName(baseGroup.getName()).setProperties(baseGroup.getProperties()).create();
+            connectedGroup = connectedBook.newGroup()
+              .setHidden(baseGroup.isHidden())
+              .setName(baseGroup.getName())
+              .setProperties(baseGroup.getProperties())
+              .create();
           }
           connectedAccount.addGroup(connectedGroup);
         }
