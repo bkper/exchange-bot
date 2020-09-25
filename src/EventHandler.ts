@@ -2,7 +2,7 @@ abstract class EventHandler {
 
   protected abstract processObject(baseBook: Bkper.Book, connectedBook: Bkper.Book, event: bkper.Event): string;
 
-  handleEvent(event: bkper.Event): string[] | string {
+  handleEvent(event: bkper.Event): string[] | string | boolean {
     let bookId = event.bookId;
     let baseBook = BkperApp.getBook(bookId);
     let baseCode = Service_.getBaseCode(baseBook);
@@ -24,6 +24,10 @@ abstract class EventHandler {
       }
 
     })
+
+    if (responses.length == 0) {
+      return false;
+    }
 
     return responses;
   }
