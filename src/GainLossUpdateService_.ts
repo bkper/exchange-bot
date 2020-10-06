@@ -56,6 +56,9 @@ namespace GainLossUpdateService_ {
     //Adjust time zone offset
     date.setTime(date.getTime() + book.getTimeZoneOffset() * 60 * 1000);
 
+    let booksToAudit: Bkper.Book[] = []
+    booksToAudit.push(book);
+
     connectedBooks.forEach(connectedBook => {
       let connectedCode = Service_.getBaseCode(connectedBook);
       let group = book.getGroup(connectedCode);
@@ -89,15 +92,18 @@ namespace GainLossUpdateService_ {
 
               if (delta > 0) {
                 transaction.from(account).to(excAccount).setDescription('#exchange_loss').post();
-              }
-              else if (delta < 0) {
+              } else if (delta < 0) {
                 transaction.from(excAccount).to(account).setDescription('#exchange_gain').post();
               }
+              booksToAudit.push(connectedBook);
             }
           });
         }
       }
     });
+
+    booksToAudit.forEach(book => book.audit());
+
   }
 
   function getExcAccountName(connectedAccount: Bkper.Account, connectedCode: string): string {
