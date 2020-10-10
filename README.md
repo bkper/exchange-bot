@@ -50,7 +50,7 @@ To bypass dynamic rates from the endpoint and force use of fixed amount for a gi
 - ```exc_code```: The book (currency) exchange code.
 - ```exc_amount```: The amount for that transaction, in the specified exchange code.
 
-This is specially useful for remitences, when fees and spread will be processed later on gain/loss adjustments.
+This is specially useful for remitences, when fees and spread will be processed later on gain/loss updates.
 
 
 Example:
