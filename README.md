@@ -43,13 +43,20 @@ Example:
 exc_code: USD
 ```
 
-### Fixed Amounts
+### Transaction Properties
 
-To bypass dynamic rates from endpoint and force use of fixed amounts, just append the currency symbol and amount in the transaction description.
+To bypass dynamic rates from the endpoint and force use of fixed amount for a given exc_code, just use the following transaction properties:
+
+- ```exc_code```: The book (currency) exchange code.
+- ```exc_amount```: The amount for that transaction, in the specified exchange code.
+
+This is specially useful for remitences, when fees and spread will be processed later on gain/loss adjustments.
+
 
 Example:
-```
-Citibank Itau 1000 UYU35790.76 remitence from USA
+```yaml
+exc_code: UYU
+exc_amount: 1256.43
 ```
 
 That will generate a transaction in the current book of amount $1000, as well as another transaction on UYU book of $U35790.76.
