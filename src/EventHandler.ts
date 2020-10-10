@@ -33,6 +33,18 @@ abstract class EventHandler {
   }
 
   protected extractAmountDescription_(book: Bkper.Book, base: string, connectedCode: string, transaction: bkper.Transaction): AmountDescription {
+
+    let txExcCode = transaction.properties['exc_code'];
+    let txExcAmount = transaction.properties['exc_amount'];
+
+    if (txExcAmount && txExcCode && txExcCode == connectedCode) {
+      return {
+        amount: +txExcAmount,
+        description: transaction.description
+      };
+    }
+
+
     let parts = transaction.description.split(' ');
 
     for (const part of parts) {
