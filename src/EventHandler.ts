@@ -50,10 +50,13 @@ abstract class EventHandler {
     for (const part of parts) {
       if (part.startsWith(connectedCode)) {
         try {
-          return {
+          let ret =  {
             amount: +part.replace(connectedCode, ''),
             description: transaction.description.replace(part, `${base}${transaction.amount}`)
           };
+          if (ret.amount && ret.amount != 0) {
+            return ret;
+          }
         } catch (error) {
           continue;
         }
