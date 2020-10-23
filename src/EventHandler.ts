@@ -39,7 +39,7 @@ abstract class EventHandler {
 
     if (txExcAmount && txExcCode && txExcCode == connectedCode) {
       return {
-        amount: +txExcAmount,
+        amount: book.parseValue(txExcAmount),
         description: transaction.description
       };
     }
@@ -51,7 +51,7 @@ abstract class EventHandler {
       if (part.startsWith(connectedCode)) {
         try {
           let ret =  {
-            amount: +part.replace(connectedCode, ''),
+            amount: book.parseValue(part.replace(connectedCode, '')),
             description: transaction.description.replace(part, `${base}${transaction.amount}`)
           };
           if (ret.amount && ret.amount != 0) {
