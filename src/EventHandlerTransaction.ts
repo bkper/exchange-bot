@@ -15,6 +15,10 @@ abstract class EventHandlerTransaction extends EventHandler{
       return null;
     } 
 
+    if (!transaction.posted) {
+      return null;
+    }
+
     let connectedCode = Service_.getBaseCode(connectedBook);
     if (connectedCode != null && connectedCode != '') {
       let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
