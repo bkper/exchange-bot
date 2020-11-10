@@ -37,8 +37,15 @@ namespace GainLossUpdateService_ {
   export function updateGainLoss(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): void {
     let book = BkperApp.getBook(bookId);
     let connectedBooks = Service_.getConnectedBooks(book);
+    let booksToAudit: Bkper.Book[] = []
     connectedBooks.add(book);
-    connectedBooks.forEach(connectedBook => updateGainLossForBook(connectedBook, dateParam, exchangeRates));
+    connectedBooks.forEach(connectedBook => {
+      updateGainLossForBook(connectedBook, dateParam, exchangeRates);
+      booksToAudit.push(connectedBook);
+    });
+
+    booksToAudit.forEach(book => book.audit());
+
   }
 
   function updateGainLossForBook(book: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates) {
@@ -56,8 +63,6 @@ namespace GainLossUpdateService_ {
     //Adjust time zone offset
     date.setTime(date.getTime() + book.getTimeZoneOffset() * 60 * 1000);
 
-    let booksToAudit: Bkper.Book[] = []
-    booksToAudit.push(book);
 
     connectedBooks.forEach(connectedBook => {
       let connectedCode = Service_.getBaseCode(connectedBook);
@@ -95,14 +100,11 @@ namespace GainLossUpdateService_ {
               } else if (delta < 0) {
                 transaction.from(excAccount).to(account).setDescription('#exchange_gain').post();
               }
-              booksToAudit.push(connectedBook);
             }
           });
         }
       }
     });
-
-    booksToAudit.forEach(book => book.audit());
 
   }
 
