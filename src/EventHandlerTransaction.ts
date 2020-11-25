@@ -15,6 +15,11 @@ abstract class EventHandlerTransaction extends EventHandler{
       return null;
     } 
 
+    if (transaction.agentId == 'sales-tax-bot') {
+      console.log("Skiping Tax Bot agent.");
+      return null;
+    } 
+
     if (!transaction.posted) {
       return null;
     }
