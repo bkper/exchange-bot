@@ -5,17 +5,17 @@ abstract class EventHandler {
   handleEvent(event: bkper.Event): string[] | string | boolean {
     let bookId = event.bookId;
     let baseBook = BkperApp.getBook(bookId);
-    let baseCode = Service_.getBaseCode(baseBook);
+    let baseCode = BotService.getBaseCode(baseBook);
 
     if (baseCode == null || baseCode == '') {
       return 'Please set the "exc_code" property of this book.'
     }
 
     let responses: string[] = [];
-    let connectedBooks = Service_.getConnectedBooks(baseBook);
+    let connectedBooks = BotService.getConnectedBooks(baseBook);
     
     connectedBooks.forEach(connectedBook => {
-      let connectedCode = Service_.getBaseCode(connectedBook);
+      let connectedCode = BotService.getBaseCode(connectedBook);
       if (connectedCode != null && connectedCode != '') {
         let response = this.processObject(baseBook, connectedBook, event);
         if (response) {
@@ -34,44 +34,10 @@ abstract class EventHandler {
 
   protected extractAmountDescription_(book: Bkper.Book, base: string, connectedCode: string, transaction: bkper.Transaction): AmountDescription {
 
-    let txExcCode = transaction.properties['exc_code'];
-    let txExcAmount = transaction.properties['exc_amount'];
-
-    if (txExcAmount && txExcCode && txExcCode == connectedCode) {
-      return {
-        amount: book.parseValue(txExcAmount),
-        description: transaction.description
-      };
-    }
-
-
-    let parts = transaction.description.split(' ');
-
-    for (const part of parts) {
-      if (part.startsWith(connectedCode)) {
-        try {
-          let ret =  {
-            amount: book.parseValue(part.replace(connectedCode, '')),
-            description: transaction.description.replace(part, `${base}${transaction.amount}`)
-          };
-          if (ret.amount && ret.amount != 0) {
-            return ret;
-          }
-        } catch (error) {
-          continue;
-        }
-      }
-    }
-
-    let ratesEndpointConfig = Service_.getRatesEndpointConfig(book, transaction.date, 'bot');
+    let ratesEndpointConfig = BotService.getRatesEndpointConfig(book, transaction.date, 'bot');
     ExchangeApp.setRatesEndpoint(ratesEndpointConfig.url, ratesEndpointConfig.cache);
 
-    let amount = ExchangeApp.exchange(+transaction.amount).from(base).to(connectedCode).convert();
-
-    return {
-      amount: amount,
-      description: `${transaction.description}`,
-    };
+    return BotService.extractAmountDescription_(book, base, connectedCode, transaction)
   }
 
   protected buildBookAnchor(book: Bkper.Book) {

@@ -3,7 +3,7 @@ interface RatesEndpointConfig {
   cache: number
 }
 
-namespace Service_ {
+namespace BotService {
 
   export function getRatesEndpointConfig(book: Bkper.Book, date: string, agent: string): RatesEndpointConfig {
     //Read from properties
@@ -69,6 +69,61 @@ namespace Service_ {
     return book.getProperty('exc_code', 'exchange_code');
   }
 
+  export function parseDateParam(dateParam: string, book: Bkper.Book) {
+    var dateSplit = dateParam != null ? dateParam.split('-') : null;
+  
+    let year = new Number(dateSplit[0]).valueOf();
+    let month = new Number(dateSplit[1]).valueOf() - 1;
+    let day = new Number(dateSplit[2]).valueOf();
+    var date = new Date(year, month, day, 13, 0, 0, 0);
+  
+    //Adjust time zone offset
+    date.setTime(date.getTime() + book.getTimeZoneOffset() * 60 * 1000);
+    return date;
+  }
+
+
+  export function extractAmountDescription_(book: Bkper.Book, base: string, connectedCode: string, transaction: bkper.Transaction, exchangeRates?: Bkper.ExchangeRates): AmountDescription {
+
+    let txExcCode = transaction.properties['exc_code'];
+    let txExcAmount = transaction.properties['exc_amount'];
+
+    if (txExcAmount && txExcCode && txExcCode == connectedCode) {
+      return {
+        amount: book.parseValue(txExcAmount),
+        description: transaction.description
+      };
+    }
+
+
+    let parts = transaction.description.split(' ');
+
+    for (const part of parts) {
+      if (part.startsWith(connectedCode)) {
+        try {
+          let ret =  {
+            amount: book.parseValue(part.replace(connectedCode, '')),
+            description: transaction.description.replace(part, `${base}${transaction.amount}`)
+          };
+          if (ret.amount && ret.amount != 0) {
+            return ret;
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+    }
+
+    let amount = ExchangeApp.convert(+transaction.amount, base, connectedCode, exchangeRates);
+
+    return {
+      amount: amount,
+      description: `${transaction.description}`,
+    };
+  }  
+
+
+  
 
 
 }

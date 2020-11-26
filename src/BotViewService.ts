@@ -1,0 +1,37 @@
+
+
+namespace BotViewService {
+
+  export function getGainLossViewTemplate(bookId: string): GoogleAppsScript.HTML.HtmlOutput {
+    let book = BkperApp.getBook(bookId);
+    const template = HtmlService.createTemplateFromFile('BotView');
+    let today = Utilities.formatDate(new Date(), book.getTimeZone(), 'yyyy-MM-dd');
+  
+    template.book = {
+      id: bookId,
+      name: book.getName(),
+    }
+    template.today = today
+
+    return template.evaluate().setTitle('Exchange Bot');
+  }
+
+  export function loadRates(bookId: string, date: string): Bkper.ExchangeRates {
+    let book = BkperApp.getBook(bookId);
+    let ratesEndpointConfig = BotService.getRatesEndpointConfig(book, date, 'app');
+    let ratesJSON = UrlFetchApp.fetch(ratesEndpointConfig.url).getContentText();
+    let exchangeRates = JSON.parse(ratesJSON) as Bkper.ExchangeRates;
+
+    let codes: string[] = [];
+    BotService.getConnectedBooks(book).add(book).forEach(book => codes.push(BotService.getBaseCode(book)));
+
+    for (const rate in exchangeRates.rates) {
+      if (!codes.includes(rate)) {
+        delete exchangeRates.rates[rate];
+      }
+    }
+
+    return exchangeRates;
+  }
+
+}

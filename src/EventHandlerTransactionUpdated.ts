@@ -4,14 +4,14 @@ class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     return `remoteId:${transaction.id}`;
   }
 
-  protected connectedTransactionNotFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction): string {
+  protected connectedTransactionNotFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, baseTransaction: bkper.Transaction): string {
     return null;
   }
-  protected connectedTransactionFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction, connectedTransaction: Bkper.Transaction): string {
-    let baseCreditAccount = baseBook.getAccount(transaction.creditAccount.id);
-    let baseDebitAccount = baseBook.getAccount(transaction.debitAccount.id);
-    let baseCode = Service_.getBaseCode(baseBook);
-    let connectedCode = Service_.getBaseCode(connectedBook);
+  protected connectedTransactionFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, baseTransaction: bkper.Transaction, connectedTransaction: Bkper.Transaction): string {
+    let baseCreditAccount = baseBook.getAccount(baseTransaction.creditAccount.id);
+    let baseDebitAccount = baseBook.getAccount(baseTransaction.debitAccount.id);
+    let baseCode = BotService.getBaseCode(baseBook);
+    let connectedCode = BotService.getBaseCode(connectedBook);
 
     let connectedCreditAccount = connectedBook.getAccount(baseCreditAccount.getName());
     if (connectedCreditAccount == null) {
@@ -29,43 +29,13 @@ class EventHandlerTransactionUpdated extends EventHandlerTransaction {
         //OK
       }
     }
+
+
+    let amountDescription = super.extractAmountDescription_(connectedBook, baseCode, connectedCode, baseTransaction);
+
     let bookAnchor = super.buildBookAnchor(connectedBook);
 
-    if (connectedTransaction.isChecked()) {
-      connectedTransaction.uncheck();
-    }
-
-    let amountDescription = super.extractAmountDescription_(connectedBook, baseCode, connectedCode, transaction);
-    connectedTransaction.setAmount(+amountDescription.amount)
-    .setDescription(amountDescription.description)
-    .setDate(transaction.date)
-    .setProperties(transaction.properties)
-    .setCreditAccount(connectedCreditAccount)
-    .setDebitAccount(connectedDebitAccount);
-
-    let urls = transaction.urls;
-    if (!urls) {
-      urls = [];
-    }
-
-    if (connectedTransaction.getUrls()) {
-      urls = urls.concat(connectedTransaction.getUrls())
-    }
-
-    if (transaction.files) {
-      transaction.files.forEach(file => {
-        Logger.log(`FILE: ${JSON.stringify(file)}`)
-        urls.push(file.url)
-      })
-    }
-
-    connectedTransaction
-    .setUrls(urls);
-
-    Logger.log(urls)
-
-    connectedTransaction.update();
-    
+    this.updateConnectedTransaction(connectedTransaction, amountDescription, baseTransaction, connectedCreditAccount, connectedDebitAccount);
 
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 
@@ -74,4 +44,42 @@ class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     return `${bookAnchor}: ${record}`;
   }
 
+
+
+private updateConnectedTransaction(connectedTransaction: Bkper.Transaction, amountDescription: AmountDescription, transaction: bkper.Transaction, connectedCreditAccount: Bkper.Account, connectedDebitAccount: Bkper.Account) {
+  if (connectedTransaction.isChecked()) {
+    connectedTransaction.uncheck();
+  }
+
+  connectedTransaction.setAmount(amountDescription.amount)
+    .setDescription(amountDescription.description)
+    .setDate(transaction.date)
+    .setProperties(transaction.properties)
+    .setCreditAccount(connectedCreditAccount)
+    .setDebitAccount(connectedDebitAccount);
+
+  let urls = transaction.urls;
+  if (!urls) {
+    urls = [];
+  }
+
+  if (connectedTransaction.getUrls()) {
+    urls = urls.concat(connectedTransaction.getUrls());
+  }
+
+  if (transaction.files) {
+    transaction.files.forEach(file => {
+      urls.push(file.url);
+    });
+  }
+
+  connectedTransaction
+    .setUrls(urls);
+
+  connectedTransaction.update();
 }
+
+
+
+}
+

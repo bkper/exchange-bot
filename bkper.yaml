@@ -3,7 +3,7 @@ logo: https://static.thenounproject.com/png/2318541-200.png
 scriptId: 1KPU60slDZBVslJdt9EnKx-3irpgXfdai30-g0cdyuSaILvHRfYBLTnVu
 menuUrl: https://script.google.com/macros/s/AKfycbxI7OU_cMGfqX6FqsCoLrQrTrFGlZ3SNwajwMNBqR8YBdCpJjI/exec?bookId=${book.id}
 menuUrlDev: https://script.google.com/a/bkper.com/macros/s/AKfycbwg42np5A-niYBI7Qq2yxOguhcoNgEkqqe0aRLw628/dev?bookId=${book.id}
-menuText: Exchange Gain/Loss update
+menuText: Exchange Update
 menuPopupWidth: 400
 menuPopupHeight: 500
 clientId: 321364005933-28d88ahs0ltmpkvvmq57oclaitakmpq8.apps.googleusercontent.com

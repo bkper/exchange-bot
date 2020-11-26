@@ -24,7 +24,7 @@ abstract class EventHandlerTransaction extends EventHandler{
       return null;
     }
 
-    let connectedCode = Service_.getBaseCode(connectedBook);
+    let connectedCode = BotService.getBaseCode(connectedBook);
     if (connectedCode != null && connectedCode != '') {
       let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
       if (iterator.hasNext()) {

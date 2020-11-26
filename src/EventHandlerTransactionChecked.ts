@@ -27,8 +27,8 @@ class EventHandlerTransactionChecked extends EventHandlerTransaction {
   protected connectedTransactionNotFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction): string {
     let baseCreditAccount = baseBook.getAccount(transaction.creditAccount.id);
     let baseDebitAccount = baseBook.getAccount(transaction.debitAccount.id);
-    let baseCode = Service_.getBaseCode(baseBook);
-    let connectedCode = Service_.getBaseCode(connectedBook);
+    let baseCode = BotService.getBaseCode(baseBook);
+    let connectedCode = BotService.getBaseCode(connectedBook);
     let connectedBookAnchor = super.buildBookAnchor(connectedBook);
 
     let connectedCreditAccount = connectedBook.getAccount(baseCreditAccount.getName());

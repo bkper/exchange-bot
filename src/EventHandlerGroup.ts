@@ -1,7 +1,7 @@
 abstract class EventHandlerGroup extends EventHandler {
 
   protected processObject(baseBook: Bkper.Book, connectedBook: Bkper.Book, event: bkper.Event): string {
-    let connectedCode = Service_.getBaseCode(connectedBook);
+    let connectedCode = BotService.getBaseCode(connectedBook);
     let group = event.data.object as bkper.Group;
 
     if (connectedCode != null && connectedCode != '') {
