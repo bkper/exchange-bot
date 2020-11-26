@@ -17,6 +17,10 @@ namespace TransactionsUpdateService {
     let connectedBooks = BotService.getConnectedBooks(baseBook);
     let baseCode = BotService.getBaseCode(baseBook);
 
+    if (baseCode == null) {
+      return;
+    }
+
     var date = BotService.parseDateParam(dateParam, baseBook);
 
     let iterator = baseBook.getTransactions(`on: ${baseBook.formatDate(date)}`)
@@ -25,23 +29,32 @@ namespace TransactionsUpdateService {
       if (baseTransaction.getAgentId() != 'exchange-bot') {
         connectedBooks.forEach(connectedBook => {
           let connectedCode = BotService.getBaseCode(connectedBook);
-          let connectedIterator = connectedBook.getTransactions(`remoteId:${baseTransaction.getId()}`);
-          if (connectedIterator.hasNext()) {
-            let connectedTransaction = connectedIterator.next();
-            let baseTransactionRaw: bkper.Transaction = {
-              properties: baseTransaction.getProperties(),
-              description: baseTransaction.getDescription(),
-              amount: baseTransaction.getAmount()+'',
-            }
-            let amountDescription = BotService.extractAmountDescription_(connectedBook, baseCode, connectedCode, baseTransactionRaw, exchangeRates);
-            if (connectedTransaction.getAmount() != amountDescription.amount) {
-              if (connectedTransaction.isChecked()) {
-                connectedTransaction = connectedTransaction.uncheck()
+
+          if (connectedCode != null) {
+
+            let connectedIterator = connectedBook.getTransactions(`remoteId:${baseTransaction.getId()}`);
+            if (connectedIterator.hasNext()) {
+              let connectedTransaction = connectedIterator.next();
+              let baseTransactionRaw: bkper.Transaction = {
+                properties: baseTransaction.getProperties(),
+                description: baseTransaction.getDescription(),
+                amount: baseTransaction.getAmount()+'',
               }
-              connectedTransaction.setAmount(amountDescription.amount).update().check();
+              let amountDescription = BotService.extractAmountDescription_(connectedBook, baseCode, connectedCode, baseTransactionRaw, exchangeRates);
+              if (connectedTransaction.getAmount() != amountDescription.amount) {
+                let wasChecked = false;
+                if (connectedTransaction.isChecked()) {
+                  wasChecked = true;
+                  connectedTransaction = connectedTransaction.uncheck()
+                }
+                connectedTransaction.setAmount(amountDescription.amount).update();
+                if (wasChecked) {
+                  connectedTransaction.check();
+                }
+              }
             }
           }
-    
+
         });
         
       }
