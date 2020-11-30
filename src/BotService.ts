@@ -56,7 +56,7 @@ namespace BotService {
     let collectionBooks = book.getCollection() != null ? book.getCollection().getBooks() : null;
     if (collectionBooks) {
       for (const b of collectionBooks) {
-        if (b.getId() != book.getId()) {
+        if ((b.getId() != book.getId()) && getBaseCode(b) != null) {
           books.add(b);
         }
       }

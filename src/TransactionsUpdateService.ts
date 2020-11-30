@@ -1,19 +1,12 @@
 namespace TransactionsUpdateService {
 
-  export function updateTransactions(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): void {
+  export function updateTransactions(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): string {
     let book = BkperApp.getBook(bookId);
-    let connectedBooks = BotService.getConnectedBooks(book);
-    let booksToAudit: Bkper.Book[] = []
-    connectedBooks.add(book);
-    connectedBooks.forEach(connectedBook => {
-      updateTransactionsForBook(connectedBook, dateParam, exchangeRates);
-      booksToAudit.push(connectedBook);
-    });
-
-    booksToAudit.forEach(book => book.audit());
+    let response = updateTransactionsForBook(book, dateParam, exchangeRates);
+    return response;
   }
 
-  function updateTransactionsForBook(baseBook: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates) {
+  function updateTransactionsForBook(baseBook: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): string {
     let connectedBooks = BotService.getConnectedBooks(baseBook);
     let baseCode = BotService.getBaseCode(baseBook);
 
@@ -27,6 +20,10 @@ namespace TransactionsUpdateService {
     while (iterator.hasNext()) {
       let baseTransaction = iterator.next();
       if (baseTransaction.getAgentId() != 'exchange-bot') {
+
+        console.log(`Processing TX on base book ${baseBook.getName()}`)
+
+
         connectedBooks.forEach(connectedBook => {
           let connectedCode = BotService.getBaseCode(connectedBook);
 
@@ -59,6 +56,8 @@ namespace TransactionsUpdateService {
         
       }
     }
+
+    return baseCode;
 
   }
   

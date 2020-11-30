@@ -2,15 +2,40 @@
 
 namespace BotViewService {
 
+  export function auditBooks(bookId: string): void {
+    let book = BkperApp.getBook(bookId);
+    let connectedBooks = BotService.getConnectedBooks(book);
+    connectedBooks.add(book);
+    connectedBooks.forEach(b => {
+      b.audit();
+    });
+
+  }
+
   export function getGainLossViewTemplate(bookId: string): GoogleAppsScript.HTML.HtmlOutput {
     let book = BkperApp.getBook(bookId);
     const template = HtmlService.createTemplateFromFile('BotView');
     let today = Utilities.formatDate(new Date(), book.getTimeZone(), 'yyyy-MM-dd');
-  
+
+    template.books = [];
+
+    let connectedBooks = BotService.getConnectedBooks(book);
+    connectedBooks.forEach(connectedBook => {
+      template.books.push({
+        id: connectedBook.getId(),
+        name: connectedBook.getName(),
+        code: BotService.getBaseCode(connectedBook)
+      })
+    });
+
     template.book = {
-      id: bookId,
+      id: book.getId(),
       name: book.getName(),
+      code: BotService.getBaseCode(book)
     }
+
+    template.books.push(template.book)
+  
     template.today = today
 
     return template.evaluate().setTitle('Exchange Bot');

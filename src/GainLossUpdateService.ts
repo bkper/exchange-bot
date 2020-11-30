@@ -2,21 +2,13 @@
 
 namespace GainLossUpdateService {
 
-  export function updateGainLoss(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): void {
+  export function updateGainLoss(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): string {
     let book = BkperApp.getBook(bookId);
-    let connectedBooks = BotService.getConnectedBooks(book);
-    let booksToAudit: Bkper.Book[] = []
-    connectedBooks.add(book);
-    connectedBooks.forEach(connectedBook => {
-      updateGainLossForBook(connectedBook, dateParam, exchangeRates);
-      booksToAudit.push(connectedBook);
-    });
-
-    booksToAudit.forEach(book => book.audit());
-
+    let response = updateGainLossForBook(book, dateParam, exchangeRates);
+    return response;
   }
 
-  function updateGainLossForBook(book: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates) {
+  function updateGainLossForBook(book: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): string {
 
     let connectedBooks = BotService.getConnectedBooks(book);
     let baseCode = BotService.getBaseCode(book);
@@ -65,6 +57,7 @@ namespace GainLossUpdateService {
       }
     });
 
+    return baseCode;
   }
 
   function getExcAccountName(connectedAccount: Bkper.Account, connectedCode: string): string {

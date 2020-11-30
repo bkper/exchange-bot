@@ -29,6 +29,12 @@
         display: flex;
         align-items: center;
       }
+
+      .body .rate img {
+        height: 15px;
+        margin-left: 8px;
+      }
+
       .body #waiting-panel img {
         height: 25px;
       }
@@ -69,12 +75,14 @@
       </div>      
       <div id='rates-panel'>
 
-      </div> 
+      </div>
+      
     </div>
 
     <div class="footer">
       <button id="transactions-update-button" onclick="updateTransactions()">Transactions</button>
-      <button class="action" id="gain-loss-update-button" onclick="updateGainLoss()">Gain/Loss</button>
+      <button id="gain-loss-update-button" onclick="updateGainLoss()">Gain/Loss</button>
+      <button id="close-button" onclick="closeWindow()">Close</button>
     </div>
 
   </body>
@@ -86,29 +94,46 @@
 
   var loadedExchangeRates;
 
+  var waitingCodes = [];
+
   function updateGainLoss() {
     var date = document.getElementById("update-date").value;
-    showWaiting(true);
-    google.script.run.withSuccessHandler(closeWindow).withFailureHandler(showError).updateGainLoss('<?!= book.id ?>', date, getExchangeRates())
+    var rates = getExchangeRates();
+    <? for (var i = 0; i < books.length; i++) { ?>
+      showCodeWaiting('<?!= books[i].code ?>')
+      google.script.run.withSuccessHandler(hideCodeWaiting).withFailureHandler(showError).updateGainLoss('<?!= books[i].id ?>', date, rates)
+    <? } ?>
   }
 
   function updateTransactions() {
     var date = document.getElementById("update-date").value;
-    showWaiting(true);
-    google.script.run.withSuccessHandler(hideWaiting).withFailureHandler(showError).updateTransactions('<?!= book.id ?>', date, getExchangeRates())
+    var rates = getExchangeRates();
+    <? for (var i = 0; i < books.length; i++) { ?>
+      showCodeWaiting('<?!= books[i].code ?>')
+      google.script.run.withSuccessHandler(hideCodeWaiting).withFailureHandler(showError).updateTransactions('<?!= books[i].id ?>', date, rates)
+    <? } ?>    
   }
 
   function showWaiting(show) {
     if (show) {
       document.getElementById('waiting-panel').style.display = 'flex';
       document.getElementById('rates-panel').style.display = 'none';
-      document.getElementById('gain-loss-update-button').setAttribute('disabled', true);
-      document.getElementById('transactions-update-button').setAttribute('disabled', true);
     } else {
       document.getElementById('waiting-panel').style.display = 'none';
       document.getElementById('rates-panel').style.display = 'block';
+    }
+    disableButtons(show)
+  }
+
+  function disableButtons(disable) {
+    if (disable) {
+      document.getElementById('gain-loss-update-button').setAttribute('disabled', true);
+      document.getElementById('transactions-update-button').setAttribute('disabled', true);
+      document.getElementById('close-button').setAttribute('disabled', true);
+    } else {
       document.getElementById('gain-loss-update-button').removeAttribute('disabled');
       document.getElementById('transactions-update-button').removeAttribute('disabled');
+      document.getElementById('close-button').removeAttribute('disabled');
     }
   }
 
@@ -123,11 +148,15 @@
     var html = `<div class='rate'>
                  <label for='rate-${exchangeRates.base}'>${exchangeRates.base}: </label>
                  <input type='text' id='rate-${exchangeRates.base}' name='rate-${exchangeRates.base}' value='1' disabled size='10' />
+                 <div id='result-${exchangeRates.base}'>
+                 </div>                 
                </div>`;
     for (const rate in exchangeRates.rates) {
       html += `<div class='rate'>
                  <label for='rate-${rate}'>${rate}: </label>
                  <input type='text' id='rate-${rate}' name='rate-${rate}' value='${exchangeRates.rates[rate]}' size='10' />
+                 <div id='result-${rate}'>
+                 </div>
                </div>`
     }
     let ratesPanel = document.getElementById('rates-panel');
@@ -146,6 +175,21 @@
   function showError(error) {
     showWaiting(false);
     window.alert(error);
+  }
+
+  function showCodeWaiting(code) {
+    waitingCodes.push(code);
+    disableButtons(true)
+    document.getElementById(`result-${code}`).innerHTML = `<img src='https://storage.googleapis.com/bkper-public/addons/loading_3dots.gif'/>`
+  }
+
+  function hideCodeWaiting(code) {
+    waitingCodes.splice(waitingCodes.indexOf(code), 1)
+    document.getElementById(`result-${code}`).innerHTML = ``
+    if (waitingCodes.length == 0) {
+      disableButtons(false)
+      google.script.run.withFailureHandler(showError).auditBooks('<?!= book.id ?>')
+    }
   }
 
   function hideWaiting() {
