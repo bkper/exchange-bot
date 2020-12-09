@@ -13,7 +13,7 @@ namespace GainLossUpdateService {
     let connectedBooks = BotService.getConnectedBooks(book);
     let baseCode = BotService.getBaseCode(book);
 
-    var date = BotService.parseDateParam(dateParam, book);
+    var date = BotService.parseDateParam(dateParam);
 
     connectedBooks.forEach(connectedBook => {
       let connectedCode = BotService.getBaseCode(connectedBook);
@@ -26,6 +26,7 @@ namespace GainLossUpdateService {
             if (connectedAccount != null) {
               let connectedAccountBalanceOnDate = getAccountBalance(connectedBook, connectedAccount, date);
               let expectedBalance = ExchangeApp.exchange(connectedAccountBalanceOnDate).withRates(exchangeRates).from(connectedCode).to(baseCode).convert();
+
               let accountBalanceOnDate = getAccountBalance(book, account, date);
               let delta = accountBalanceOnDate - expectedBalance;
 
@@ -74,7 +75,7 @@ namespace GainLossUpdateService {
   }
 
   function getAccountBalance(book: Bkper.Book, account: Bkper.Account, date: Date): number {
-    let balances = book.getBalancesReport(`account:"${account.getName()}" on:${book.formatDate(date)}`);
+    let balances = book.getBalancesReport(`account:"${account.getName()}" on:${book.formatDate(date, Session.getScriptTimeZone())}`);
     let containers = balances.getBalancesContainers();
     if (containers == null || containers.length == 0) {
       return 0;

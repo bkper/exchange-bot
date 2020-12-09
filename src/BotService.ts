@@ -69,7 +69,7 @@ namespace BotService {
     return book.getProperty('exc_code', 'exchange_code');
   }
 
-  export function parseDateParam(dateParam: string, book: Bkper.Book) {
+  export function parseDateParam(dateParam: string) {
     var dateSplit = dateParam != null ? dateParam.split('-') : null;
   
     let year = new Number(dateSplit[0]).valueOf();
@@ -77,8 +77,6 @@ namespace BotService {
     let day = new Number(dateSplit[2]).valueOf();
     var date = new Date(year, month, day, 13, 0, 0, 0);
   
-    //Adjust time zone offset
-    date.setTime(date.getTime() + book.getTimeZoneOffset() * 60 * 1000);
     return date;
   }
 
