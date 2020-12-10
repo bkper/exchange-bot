@@ -13,9 +13,7 @@
     "minor": "yarn version --minor",
     "major": "yarn version --major",
     "preversion": "yarn push",
-    "deploy": "run-s deploy:*",
-    "deploy:api": "clasp deploy --description $npm_package_version --deploymentId AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM",
-    "deploy:web": "clasp deploy --description $npm_package_version --deploymentId AKfycbxI7OU_cMGfqX6FqsCoLrQrTrFGlZ3SNwajwMNBqR8YBdCpJjI",
+    "deploy": "clasp deploy --description $npm_package_version --deploymentId AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM",
     "postversion": "yarn deploy && git push && git push --tags && echo \"Successfully released version $npm_package_version!\""
   },
   "devDependencies": {
