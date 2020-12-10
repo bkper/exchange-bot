@@ -43,6 +43,25 @@ Example:
 exc_code: USD
 ```
 
+
+### Group Properties
+
+As the rates changes over time, the balances on accounts with different currencies than the book should be adjusted and by gain/loss transactions. The transactions are triggered by an item on menu:
+
+![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=1200&h=400)
+
+The accounts will be selected by matching the **group names** with exc_code from associated books, or by the ```exc_code``` property set on Groups.
+
+- ```exc_code```: The (currency) exchange code of the accounts of the group.
+- ```exc_account```: The name of exchange account to use.
+
+By default, an account with prefix ```Exchange_```  will be used for each ```exc_code``` of associated books. You can change the default account by setting a ```exc_account``` custom property in the account **Group**, with the name of exchange account to use. Example:
+```yaml
+exc_account: Assets_Exchange
+```
+The first ```exc_account``` property found will be used, so, make sure to have only one group per account with the property set, to avoid unexpected behavior.
+
+
 ### Transaction Properties
 
 To bypass dynamic rates from the endpoint and force use of fixed amount for a given exc_code, just use the following transaction properties:
@@ -60,20 +79,6 @@ exc_amount: 1256.43
 ```
 
 That will generate a transaction in the current book of amount $1000, as well as another transaction on UYU book of $U35790.76.
-
-### Gain/Loss tracking
-
-As the rates changes over time, the balances on accounts with different currencies than the books should be adjusted and by gain/loss transactions. The transactions are triggered by an item on menu:
-
-![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=1200&h=400)
-
-The accounts will be selected by matching the **group names** with exc_code from associated books.
-
-By default, an account with prefix ```Exchange_```  will be used for each ```exc_code``` of associated books. You can change the default account by setting a ```exc_account``` custom property in the account **Group**, with the name of exchange account to use. Example:
-```yaml
-exc_account: Assets_Exchange
-```
-The first ```exc_account``` property found will be used, so, make sure to have only one group per account with the property set, to avoid unexpected behavior.
 
 ### Exchange rates endpoint
 

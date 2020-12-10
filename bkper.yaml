@@ -28,9 +28,13 @@ properties:
         exc_rates_url
         exc_rates_cache
     group:
-      keys: exc_account
+      keys: >
+        exc_account
+        exc_code
     transaction:
-      keys: exc_code exc_amount
+      keys: >
+        exc_code
+        exc_amount
 
 
 deploymentId: AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM

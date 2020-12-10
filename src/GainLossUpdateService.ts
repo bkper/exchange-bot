@@ -17,48 +17,72 @@ namespace GainLossUpdateService {
 
     connectedBooks.forEach(connectedBook => {
       let connectedCode = BotService.getBaseCode(connectedBook);
-      let group = book.getGroup(connectedCode);
-      if (group != null) {
-        let accounts = group.getAccounts();
-        if (accounts != null) {
-          accounts.forEach(account => {
-            let connectedAccount = connectedBook.getAccount(account.getName());
-            if (connectedAccount != null) {
-              let connectedAccountBalanceOnDate = getAccountBalance(connectedBook, connectedAccount, date);
-              let expectedBalance = ExchangeApp.exchange(connectedAccountBalanceOnDate).withRates(exchangeRates).from(connectedCode).to(baseCode).convert();
+      let accounts = getMatchingAccounts(book, connectedCode);
+      accounts.forEach(account => {
+        let connectedAccount = connectedBook.getAccount(account.getName());
+        if (connectedAccount != null) {
+          let connectedAccountBalanceOnDate = getAccountBalance(connectedBook, connectedAccount, date);
+          let expectedBalance = ExchangeApp.exchange(connectedAccountBalanceOnDate).withRates(exchangeRates).from(connectedCode).to(baseCode).convert();
 
-              let accountBalanceOnDate = getAccountBalance(book, account, date);
-              let delta = accountBalanceOnDate - expectedBalance;
+          let accountBalanceOnDate = getAccountBalance(book, account, date);
+          let delta = accountBalanceOnDate - expectedBalance;
 
-              let excAccountName = getExcAccountName(connectedAccount, connectedCode);
+          let excAccountName = getExcAccountName(connectedAccount, connectedCode);
 
-              //Verify Exchange account created
-              let excAccount = book.getAccount(excAccountName);
-              if (excAccount == null) {
-                excAccount = book.newAccount().setName(excAccountName).create();
-              }
-              if (account.isCredit()) {
-                delta = delta * -1;
-              }
+          //Verify Exchange account created
+          let excAccount = book.getAccount(excAccountName);
+          if (excAccount == null) {
+            excAccount = book.newAccount().setName(excAccountName).create();
+          }
+          if (account.isCredit()) {
+            delta = delta * -1;
+          }
 
-              delta = book.round(delta);
+          delta = book.round(delta);
 
-              let transaction = book.newTransaction()
-                .setDate(dateParam)
-                .setAmount(Math.abs(delta));
+          let transaction = book.newTransaction()
+            .setDate(dateParam)
+            .setAmount(Math.abs(delta));
 
-              if (delta > 0) {
-                transaction.from(account).to(excAccount).setDescription('#exchange_loss').post();
-              } else if (delta < 0) {
-                transaction.from(excAccount).to(account).setDescription('#exchange_gain').post();
-              }
-            }
-          });
+          if (delta > 0) {
+            transaction.from(account).to(excAccount).setDescription('#exchange_loss').post();
+          } else if (delta < 0) {
+            transaction.from(excAccount).to(account).setDescription('#exchange_gain').post();
+          }
         }
-      }
+      });
     });
 
     return baseCode;
+  }
+
+  function getMatchingAccounts(book: Bkper.Book, code: string): Set<Bkper.Account> {
+    let accounts = new Set<Bkper.Account>();
+    let group = book.getGroup(code);
+    if (group != null) {
+      let groupAccounts = group.getAccounts();
+      if (groupAccounts != null) {
+        groupAccounts.forEach(account => {
+          accounts.add(account);
+        })
+      }
+    }
+    let groups = book.getGroups();
+    if (groups != null) {
+        groups.forEach(group => {
+          if (group.getProperty('exc_code') == code) {
+            let groupAccounts = group.getAccounts();
+            if (groupAccounts != null) {
+              groupAccounts.forEach(account => {
+                accounts.add(account);
+              })
+            }
+          }
+        }
+      )
+    }
+
+    return accounts;
   }
 
   function getExcAccountName(connectedAccount: Bkper.Account, connectedCode: string): string {
@@ -75,7 +99,14 @@ namespace GainLossUpdateService {
   }
 
   function getAccountBalance(book: Bkper.Book, account: Bkper.Account, date: Date): number {
-    let balances = book.getBalancesReport(`account:"${account.getName()}" on:${book.formatDate(date, Session.getScriptTimeZone())}`);
+    let balances;
+    if (account.isPermanent()) {
+      balances = book.getBalancesReport(`account:"${account.getName()}" on:${book.formatDate(date, Session.getScriptTimeZone())}`);
+    } else {
+      var dateAfter = new Date(date.getTime());
+      dateAfter.setDate(dateAfter.getDate() + 1)
+      balances = book.getBalancesReport(`account:"${account.getName()}" before:${book.formatDate(dateAfter, Session.getScriptTimeZone())}`);
+    }
     let containers = balances.getBalancesContainers();
     if (containers == null || containers.length == 0) {
       return 0;
