@@ -2,18 +2,20 @@
 
 namespace GainLossUpdateService {
 
-  export function updateGainLoss(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): string {
+  export function updateGainLoss(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
     let book = BkperApp.getBook(bookId);
     let response = updateGainLossForBook(book, dateParam, exchangeRates);
     return response;
   }
 
-  function updateGainLossForBook(book: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): string {
+  function updateGainLossForBook(book: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
 
     let connectedBooks = BotService.getConnectedBooks(book);
     let baseCode = BotService.getBaseCode(book);
 
     var date = BotService.parseDateParam(dateParam);
+
+    let result: any = {};
 
     connectedBooks.forEach(connectedBook => {
       let connectedCode = BotService.getBaseCode(connectedBook);
@@ -39,6 +41,7 @@ namespace GainLossUpdateService {
             let type = getExcAccountType(book);          
             excAccount.setType(type);
             excAccount.create();
+            result[excAccount.getName()] = 0
           }
           if (account.isCredit()) {
             delta = delta * -1;
@@ -52,14 +55,30 @@ namespace GainLossUpdateService {
 
           if (delta > 0) {
             transaction.from(account).to(excAccount).setDescription('#exchange_loss').post();
+            aknowledgeResult(result, excAccount, delta);
           } else if (delta < 0) {
             transaction.from(excAccount).to(account).setDescription('#exchange_gain').post();
+            aknowledgeResult(result, excAccount, delta);
           }
+
         }
       });
     });
 
-    return baseCode;
+    for (const key in result) {
+      if (Object.prototype.hasOwnProperty.call(result, key)) {
+        result[key] = book.formatValue(result[key])
+      }
+    }
+
+    return {code: baseCode, result: JSON.stringify(result)};
+  }
+
+  function aknowledgeResult(result: any, excAccount: Bkper.Account, delta: number) {
+    if (result[excAccount.getName()] == null) {
+      result[excAccount.getName()] = 0;
+    }
+    result[excAccount.getName()] += delta;
   }
 
   function getMatchingAccounts(book: Bkper.Book, code: string): Set<Bkper.Account> {

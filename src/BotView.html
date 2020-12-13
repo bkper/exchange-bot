@@ -32,7 +32,10 @@
 
       .body .rate img {
         height: 15px;
-        margin-left: 8px;
+      }
+
+      .body .rate input {
+        margin-right: 8px;
       }
 
       .body #waiting-panel img {
@@ -183,9 +186,9 @@
     document.getElementById(`result-${code}`).innerHTML = `<img src='https://storage.googleapis.com/bkper-public/addons/loading_3dots.gif'/>`
   }
 
-  function hideCodeWaiting(code) {
-    waitingCodes.splice(waitingCodes.indexOf(code), 1)
-    document.getElementById(`result-${code}`).innerHTML = ``
+  function hideCodeWaiting(sumary) {
+    waitingCodes.splice(waitingCodes.indexOf(sumary.code), 1)
+    document.getElementById(`result-${sumary.code}`).innerHTML = sumary.result
     if (waitingCodes.length == 0) {
       disableButtons(false)
       google.script.run.withFailureHandler(showError).auditBooks('<?!= book.id ?>')

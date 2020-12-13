@@ -1,12 +1,12 @@
 namespace TransactionsUpdateService {
 
-  export function updateTransactions(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): string {
+  export function updateTransactions(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
     let book = BkperApp.getBook(bookId);
     let response = updateTransactionsForBook(book, dateParam, exchangeRates);
     return response;
   }
 
-  function updateTransactionsForBook(baseBook: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): string {
+  function updateTransactionsForBook(baseBook: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
     let connectedBooks = BotService.getConnectedBooks(baseBook);
     let baseCode = BotService.getBaseCode(baseBook);
 
@@ -14,7 +14,9 @@ namespace TransactionsUpdateService {
       return;
     }
 
-    var date = BotService.parseDateParam(dateParam, baseBook);
+    var date = BotService.parseDateParam(dateParam);
+
+    let result: any = {};
 
     let iterator = baseBook.getTransactions(`on: ${baseBook.formatDate(date)}`)
     while (iterator.hasNext()) {
@@ -48,6 +50,10 @@ namespace TransactionsUpdateService {
                 if (wasChecked) {
                   connectedTransaction.check();
                 }
+                if (result[connectedCode] == null) {
+                  result[connectedCode] = 0;
+                }
+                result[connectedCode]++;
               }
             }
           }
@@ -57,7 +63,7 @@ namespace TransactionsUpdateService {
       }
     }
 
-    return baseCode;
+    return {code: baseCode, result: JSON.stringify(result)};
 
   }
   
