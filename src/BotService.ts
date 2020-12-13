@@ -23,6 +23,10 @@ namespace BotService {
     ratesUrl = ratesUrl.replace("${date}", date);
     ratesUrl = ratesUrl.replace("${agent}", agent);
 
+    if (ratesCache < 300) {
+      ratesCache = 300;
+    }
+
     return {
       url: ratesUrl,
       cache: ratesCache
