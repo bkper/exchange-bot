@@ -1,6 +1,6 @@
 {
   "name": "exchange-bot",
-  "version": "1.19.6",
+  "version": "1.19.7",
   "scripts": {
     "login": "clasp login",
     "open": "clasp open",
