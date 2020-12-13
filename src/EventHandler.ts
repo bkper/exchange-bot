@@ -32,13 +32,6 @@ abstract class EventHandler {
     return responses;
   }
 
-  protected extractAmountDescription_(book: Bkper.Book, base: string, connectedCode: string, transaction: bkper.Transaction): AmountDescription {
-
-    let ratesEndpointConfig = BotService.getRatesEndpointConfig(book, transaction.date, 'bot');
-    ExchangeApp.setRatesEndpoint(ratesEndpointConfig.url, ratesEndpointConfig.cache);
-
-    return BotService.extractAmountDescription_(book, base, connectedCode, transaction)
-  }
 
   protected buildBookAnchor(book: Bkper.Book) {
     return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}'>${book.getName()}</a>`;

@@ -2,15 +2,15 @@
 # yarn lockfile v1
 
 
-"@bkper/bkper-api-types@^3.6.1":
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-3.6.1.tgz#f573f6d539233850e43a91823990f0b3bf233d3b"
-  integrity sha512-X6t+MP4vdFyq4UewSKiGcZ5KjYJqYRk+ssHve5Q9xoAhT2PnCUVIeXD2FnhBttiF1t3pxmZrnpSBdTWy6QVc8g==
+"@bkper/bkper-api-types@^3.7.1":
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-3.7.1.tgz#e5093db9895a631e1d3767724d1eba6bdebc248f"
+  integrity sha512-cnaUjbejMfG2w7DqEg20Tt1IYHKxh00b5rJ36npGWLf/yEYy1vdtGu/DkidoQFpqkkxF7XPNo5YvDPyiE438oA==
 
-"@bkper/bkper-app-types@^3.7.2":
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/@bkper/bkper-app-types/-/bkper-app-types-3.7.2.tgz#02202f9d7495c2b77bd3a61ecb2a72dd54d9f9d1"
-  integrity sha512-KWIlGSRY/uScJgI2YVMTLWi6YS1iAICV9YQO5XEZv4rHRPN6F40JXoUK7nFWdKCNEpk9BmaCqS+pYC8zyAnS+A==
+"@bkper/bkper-app-types@^3.7.4":
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/@bkper/bkper-app-types/-/bkper-app-types-3.7.4.tgz#f18209920cbcc2a112307c5043dc916b056683af"
+  integrity sha512-KNO9lkiny7Ykhblev/k8PtLq4Kp4yr9vmT1IfRFbFg/E8anx4S+W1CgfyNcFmeBzTqhrLhGQuPV7MQWA13h6kQ==
   dependencies:
     "@types/google-apps-script" "*"
 

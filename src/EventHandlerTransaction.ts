@@ -36,6 +36,14 @@ abstract class EventHandlerTransaction extends EventHandler{
     }
   }
 
+  protected extractAmountDescription_(book: Bkper.Book, base: string, connectedCode: string, transaction: bkper.Transaction): AmountDescription {
+
+    let ratesEndpointConfig = BotService.getRatesEndpointConfig(book, transaction.date, 'bot');
+    ExchangeApp.setRatesEndpoint(ratesEndpointConfig.url, ratesEndpointConfig.cache);
+
+    return BotService.extractAmountDescription_(book, base, connectedCode, transaction)
+  }
+
   protected abstract getTransactionQuery(transaction: bkper.Transaction): string;
 
   protected abstract connectedTransactionNotFound(baseBook: Bkper.Book, connectedBook: Bkper.Book, transaction: bkper.Transaction): string;

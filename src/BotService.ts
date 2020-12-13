@@ -7,8 +7,8 @@ namespace BotService {
 
   export function getRatesEndpointConfig(book: Bkper.Book, date: string, agent: string): RatesEndpointConfig {
     //Read from properties
-    let ratesUrl = book.getProperty('exc_rates_url', 'exchange_rates_url');
-    let ratesCacheStr = book.getProperty('exc_rates_cache', 'exchange_rates_cache');
+    let ratesUrl = book.getProperty(EXC_RATES_URL_PROP, 'exchange_rates_url');
+    let ratesCacheStr = book.getProperty(EXC_RATES_CACHE_PROP, 'exchange_rates_cache');
     let ratesCache: number = ratesCacheStr != null && /^\d+$/.test(ratesCacheStr) ? parseInt(ratesCacheStr) : 0;
 
     //Default values

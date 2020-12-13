@@ -20,6 +20,7 @@ triggers: >
     onGroupCreated
     onGroupUpdated
     onGroupDeleted
+    onBookUpdated
 
 properties: 
     book:

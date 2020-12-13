@@ -1,5 +1,7 @@
 BkperApp.setApiKey(PropertiesService.getScriptProperties().getProperty('API_KEY'));
 
+const EXC_RATES_URL_PROP = 'exc_rates_url';
+const EXC_RATES_CACHE_PROP = 'exc_rates_cache';
 
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
   //@ts-ignore
@@ -63,6 +65,11 @@ function onGroupUpdated(event: bkper.Event) {
 function onGroupDeleted(event: bkper.Event) {
   return new EventHandlerGroupDeleted().handleEvent(event);
 }
+
+function onBookUpdated(event: bkper.Event) {
+  return new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
+}
+
 
 
 
