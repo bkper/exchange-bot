@@ -1,12 +1,12 @@
 namespace TransactionsUpdateService {
 
-  export function updateTransactions(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
+  export function updateTransactions(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): Summary {
     let book = BkperApp.getBook(bookId);
     let response = updateTransactionsForBook(book, dateParam, exchangeRates);
     return response;
   }
 
-  function updateTransactionsForBook(baseBook: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
+  function updateTransactionsForBook(baseBook: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): Summary {
     let connectedBooks = BotService.getConnectedBooks(baseBook);
     let baseCode = BotService.getBaseCode(baseBook);
 

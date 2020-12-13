@@ -11,7 +11,7 @@ function loadRates(bookId: string, date: string): Bkper.ExchangeRates {
   return BotViewService.loadRates(bookId, date);
 }
 
-function updateGainLoss(bookId: string, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
+function updateGainLoss(bookId: string, dateParam: string, exchangeRates: Bkper.ExchangeRates): Summary {
   return GainLossUpdateService.updateGainLoss(bookId, dateParam, exchangeRates);
 }
 
@@ -19,7 +19,7 @@ function auditBooks(bookId: string) {
   BotViewService.auditBooks(bookId);
 }
 
-function updateTransactions(bookId: string, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
+function updateTransactions(bookId: string, dateParam: string, exchangeRates: Bkper.ExchangeRates): Summary {
   return TransactionsUpdateService.updateTransactions(bookId, dateParam, exchangeRates);
 }
 

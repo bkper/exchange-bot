@@ -2,13 +2,13 @@
 
 namespace GainLossUpdateService {
 
-  export function updateGainLoss(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
+  export function updateGainLoss(bookId: any, dateParam: string, exchangeRates: Bkper.ExchangeRates): Summary {
     let book = BkperApp.getBook(bookId);
     let response = updateGainLossForBook(book, dateParam, exchangeRates);
     return response;
   }
 
-  function updateGainLossForBook(book: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): Sumary {
+  function updateGainLossForBook(book: Bkper.Book, dateParam: string, exchangeRates: Bkper.ExchangeRates): Summary {
 
     let connectedBooks = BotService.getConnectedBooks(book);
     let baseCode = BotService.getBaseCode(book);

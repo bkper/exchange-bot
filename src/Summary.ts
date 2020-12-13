@@ -1,4 +1,4 @@
-interface Sumary {
+interface Summary {
   code: string,
   result: string;
 }
