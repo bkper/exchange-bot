@@ -1,4 +1,4 @@
-abstract class EventHandlerBookUpdated extends EventHandler {
+class EventHandlerBookUpdated extends EventHandler {
 
   protected processObject(baseBook: Bkper.Book, connectedBook: Bkper.Book, event: bkper.Event): string {
     let connectedCode = BotService.getBaseCode(connectedBook);
@@ -30,13 +30,13 @@ abstract class EventHandlerBookUpdated extends EventHandler {
       const baseExcRatesUrl = baseBook.getProperty(EXC_RATES_URL_PROP);
       if (baseExcRatesUrl != connectedBook.getProperty(EXC_RATES_URL_PROP)) {
         connectedBook.setProperty(EXC_RATES_URL_PROP, baseExcRatesUrl)
-        response += ` ${EXC_RATES_URL_PROP}: ${baseBook.getTimeZone()}`
+        response += ` ${EXC_RATES_URL_PROP}: ${baseExcRatesUrl}`
       }
 
       const baseExcRatesCache = baseBook.getProperty(EXC_RATES_CACHE_PROP);
       if (baseExcRatesCache != connectedBook.getProperty(EXC_RATES_CACHE_PROP)) {
         connectedBook.setProperty(EXC_RATES_CACHE_PROP, baseExcRatesCache)
-        response += ` ${EXC_RATES_CACHE_PROP}: ${baseBook.getTimeZone()}`
+        response += ` ${EXC_RATES_CACHE_PROP}: ${baseExcRatesCache}`
       }
       
     }

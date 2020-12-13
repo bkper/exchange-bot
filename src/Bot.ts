@@ -67,7 +67,7 @@ function onGroupDeleted(event: bkper.Event) {
 }
 
 function onBookUpdated(event: bkper.Event) {
-  return new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
+  return new EventHandlerBookUpdated().handleEvent(event);
 }
 
 
