@@ -32,7 +32,13 @@ namespace GainLossUpdateService {
           //Verify Exchange account created
           let excAccount = book.getAccount(excAccountName);
           if (excAccount == null) {
-            excAccount = book.newAccount().setName(excAccountName).create();
+            excAccount = book.newAccount()
+            .setName(excAccountName);
+            let groups = getExcAccountGroups(book);
+            groups.forEach(group => excAccount.addGroup(group));  
+            let type = getExcAccountType(book);          
+            excAccount.setType(type);
+            excAccount.create();
           }
           if (account.isCredit()) {
             delta = delta * -1;
@@ -96,6 +102,56 @@ namespace GainLossUpdateService {
       }
     }
     return `Exchange_${connectedCode}`;
+  }
+
+  export function getExcAccountGroups(book: Bkper.Book): Set<Bkper.Group> {
+    let accountNames = new Set<string>();
+
+    book.getAccounts().forEach(account => {
+      let accountName = account.getProperty('exc_account');
+      if (accountName) {
+        accountNames.add(accountName);
+      }
+      if (account.getName().startsWith('Exchange_')) {
+        accountNames.add(account.getName());
+      }
+    });
+
+    let groups = new Set<Bkper.Group>();
+
+    accountNames.forEach(accountName => {
+      let account = book.getAccount(accountName);
+      if (account && account.getGroups()) {
+        account.getGroups().forEach(group => {groups.add(group)})
+      }
+    })
+
+    return groups;
+  }
+
+  export function getExcAccountType(book: Bkper.Book): Bkper.AccountType {
+    let accountNames = new Set<string>();
+
+    book.getAccounts().forEach(account => {
+      let accountName = account.getProperty('exc_account');
+      if (accountName) {
+        console.log(`Adding: ${accountName}`)
+        accountNames.add(accountName);
+      }
+      if (account.getName().startsWith('Exchange_')) {
+        console.log(`Adding: ${account.getName()}`)
+        accountNames.add(account.getName());
+      }
+    });
+
+    for (const accountName of accountNames) {
+      let account = book.getAccount(accountName);
+      if (account) {
+        return account.getType();
+      }
+    }
+    
+    return BkperApp.AccountType.LIABILITY;
   }
 
   function getAccountBalance(book: Bkper.Book, account: Bkper.Account, date: Date): number {
