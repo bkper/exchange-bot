@@ -62,6 +62,10 @@ class EventHandlerTransactionChecked extends EventHandlerTransaction {
       .setDescription(amountDescription.description)
       .addRemoteId(transaction.id);
 
+      if (amountDescription.taxAmount) {
+        newTransaction.setProperty('tax_amount', connectedBook.formatValue(amountDescription.taxAmount))
+      }
+
       let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.getName()} ${baseDebitAccount.getName()} ${amountDescription.description}`;
       Logger.log(record)
 

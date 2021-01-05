@@ -89,11 +89,14 @@ namespace BotService {
 
     let txExcCode = transaction.properties['exc_code'];
     let txExcAmount = transaction.properties['exc_amount'];
+    let taxAmountProp = transaction.properties['tax_amount'] ? book.parseValue(transaction.properties['tax_amount']) : null;
 
     if (txExcAmount && txExcCode && txExcCode == connectedCode) {
+      const amount = book.parseValue(txExcAmount);
       return {
-        amount: book.parseValue(txExcAmount),
-        description: transaction.description
+        amount: amount,
+        description: transaction.description,
+        taxAmount: taxAmountProp ? (amount/+transaction.amount)*taxAmountProp : null
       };
     }
 
@@ -103,9 +106,11 @@ namespace BotService {
     for (const part of parts) {
       if (part.startsWith(connectedCode)) {
         try {
+          const amount = book.parseValue(part.replace(connectedCode, ''));
           let ret =  {
-            amount: book.parseValue(part.replace(connectedCode, '')),
-            description: transaction.description.replace(part, `${base}${transaction.amount}`)
+            amount: amount,
+            description: transaction.description.replace(part, `${base}${transaction.amount}`),
+            taxAmount: taxAmountProp ? (amount/+transaction.amount)*taxAmountProp : null
           };
           if (ret.amount && ret.amount != 0) {
             return ret;
@@ -116,11 +121,10 @@ namespace BotService {
       }
     }
 
-    let amount = ExchangeApp.convert(+transaction.amount, base, connectedCode, exchangeRates);
-
     return {
-      amount: amount,
+      amount: ExchangeApp.convert(+transaction.amount, base, connectedCode, exchangeRates),
       description: `${transaction.description}`,
+      taxAmount: taxAmountProp ? ExchangeApp.convert(taxAmountProp, base, connectedCode, exchangeRates) : null
     };
   }  
 

@@ -35,7 +35,7 @@ class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
     let bookAnchor = super.buildBookAnchor(connectedBook);
 
-    this.updateConnectedTransaction(connectedTransaction, amountDescription, baseTransaction, connectedCreditAccount, connectedDebitAccount);
+    this.updateConnectedTransaction(connectedBook, connectedTransaction, amountDescription, baseTransaction, connectedCreditAccount, connectedDebitAccount);
 
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 
@@ -46,7 +46,7 @@ class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
 
 
-private updateConnectedTransaction(connectedTransaction: Bkper.Transaction, amountDescription: AmountDescription, transaction: bkper.Transaction, connectedCreditAccount: Bkper.Account, connectedDebitAccount: Bkper.Account) {
+private updateConnectedTransaction(connectedBook: Bkper.Book, connectedTransaction: Bkper.Transaction, amountDescription: AmountDescription, transaction: bkper.Transaction, connectedCreditAccount: Bkper.Account, connectedDebitAccount: Bkper.Account) {
   if (connectedTransaction.isChecked()) {
     connectedTransaction.uncheck();
   }
@@ -57,6 +57,10 @@ private updateConnectedTransaction(connectedTransaction: Bkper.Transaction, amou
     .setProperties(transaction.properties)
     .setCreditAccount(connectedCreditAccount)
     .setDebitAccount(connectedDebitAccount);
+
+    if (amountDescription.taxAmount) {
+      connectedTransaction.setProperty('tax_amount', connectedBook.formatValue(amountDescription.taxAmount))
+    }
 
   let urls = transaction.urls;
   if (!urls) {

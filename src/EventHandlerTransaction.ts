@@ -1,6 +1,7 @@
 interface AmountDescription {
   amount: number;
   description: string;
+  taxAmount: number;
 }
 
 abstract class EventHandlerTransaction extends EventHandler{
