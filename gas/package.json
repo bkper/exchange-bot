@@ -1,5 +1,5 @@
 {
-  "name": "exchange-bot",
+  "name": "exchange-bot-gas",
   "version": "1.0.0",
   "scripts": {
     "login": "clasp login",
