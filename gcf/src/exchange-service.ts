@@ -49,7 +49,7 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
     return rates;
   } else {
 
-    console.log(`Fetching rates from ${ratesEndpointUrl}`)
+    console.warn(`Fetching rates from ${ratesEndpointUrl}`)
 
     let req = await request({
       url: ratesEndpointUrl,
