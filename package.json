@@ -1,6 +1,6 @@
 {
   "name": "exchange-bot",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "scripts": {
     "open:gas": "yarn --cwd gas/ open",
     "open:gcf": "yarn --cwd gcf/ open",
