@@ -14,24 +14,24 @@ export abstract class EventHandler {
       return 'Please set the "exc_code" property of this book.'
     }
 
-    let responses: string[] = [];
+    let responsesPromises: Promise<string>[] = [];
     let connectedBooks = await getConnectedBooks(baseBook);
     
     for (const connectedBook of connectedBooks) {
       let connectedCode = getBaseCode(connectedBook);
       if (connectedCode != null && connectedCode != '') {
-        let response = await this.processObject(baseBook, connectedBook, event);
+        let response = this.processObject(baseBook, connectedBook, event);
         if (response) {
-          responses.push(response);
+          responsesPromises.push(response);
         }
       }      
     }
 
-    if (responses.length == 0) {
+    if (responsesPromises.length == 0) {
       return false;
     }
 
-    return responses;
+    return Promise.all(responsesPromises);
   }
 
 
