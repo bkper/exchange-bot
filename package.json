@@ -1,0 +1,19 @@
+{
+  "name": "exchange-bot",
+  "version": "2.0.4",
+  "scripts": {
+    "open:gas": "yarn --cwd gas/ open",
+    "open:gcf": "yarn --cwd gcf/ open",
+    "watch:gas": "yarn --cwd gas/ watch",
+    "watch:gcf": "yarn --cwd gcf/ watch",
+    "patch:gas": "yarn version --patch && yarn deploy:gas && yarn push",
+    "minor:gas": "yarn version --minor && yarn deploy:gas && yarn push",
+    "major:gas": "yarn version --major && yarn deploy:gas && yarn push",
+    "patch:gcf": "yarn version --patch && yarn deploy:gcf && yarn push",
+    "minor:gcf": "yarn version --minor && yarn deploy:gcf && yarn push",
+    "major:gcf": "yarn version --major && yarn deploy:gcf && yarn push",
+    "deploy:gas": "yarn --cwd gas/ deploy",
+    "deploy:gcf": "yarn --cwd gcf/ deploy",
+    "push": "git push && git push --tags && echo \"Successfully released version $npm_package_version!\""
+  }
+}
