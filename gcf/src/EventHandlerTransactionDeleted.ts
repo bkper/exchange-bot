@@ -21,7 +21,7 @@ export class EventHandlerTransactionDeleted extends EventHandlerTransaction {
 
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 
-    let record = `DELETED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getCreditAccountName()} ${connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+    let record = `DELETED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
 
     return `${bookAnchor}: ${record}`;
   }

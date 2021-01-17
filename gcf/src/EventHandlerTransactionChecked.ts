@@ -13,12 +13,12 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
     if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
       await connectedTransaction.check();
       let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
-      let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getCreditAccountName()} ${connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+      let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
       return `${bookAnchor}: ${record}`;
     } else if (!connectedTransaction.isPosted() && this.isReadyToPost(connectedTransaction)) {
       await connectedTransaction.post();
       await connectedTransaction.check();
-      let record = `${connectedTransaction.getDate()} ${connectedTransaction.getAmount()} ${connectedTransaction.getCreditAccountName()} ${connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+      let record = `${connectedTransaction.getDate()} ${connectedTransaction.getAmount()} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
       return `${bookAnchor}: ${record}`;
     } else {
       return `${bookAnchor}: DRAFT FOUND`;

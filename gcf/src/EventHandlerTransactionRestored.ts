@@ -17,7 +17,7 @@ export class EventHandlerTransactionRestored extends EventHandlerTransaction {
 
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 
-    let record = `RESTORED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getCreditAccountName()} ${connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+    let record = `RESTORED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
 
     return `${bookAnchor}: ${record}`;
   }
