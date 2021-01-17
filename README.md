@@ -34,7 +34,7 @@ In order to proper setup the Exchange Bot on your books, some book properties sh
 
 - ```exc_code```: Required - The book (currency) exchange code.
 - ```exc_rates_url```: Optional - The rates endpoint url to use. Default: [exchangeratesapi.io](https://exchangeratesapi.io/). 
-- ```exc_rates_cache```: Optional - The exchange rates endpoint url cache, **in seconds**. Default: ```3600```.
+
 
 You can associate multiple books.
 

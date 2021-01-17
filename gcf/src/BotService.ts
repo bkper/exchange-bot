@@ -12,12 +12,12 @@ interface RatesEndpointConfig {
     //Read from properties
     let ratesUrl = book.getProperty(EXC_RATES_URL_PROP, 'exchange_rates_url');
     let ratesCacheStr = book.getProperty(EXC_RATES_CACHE_PROP, 'exchange_rates_cache');
-    let ratesCache: number = ratesCacheStr != null && /^\d+$/.test(ratesCacheStr) ? parseInt(ratesCacheStr) : 0;
+    // let ratesCache: number = ratesCacheStr != null && /^\d+$/.test(ratesCacheStr) ? parseInt(ratesCacheStr) : 0;
 
     //Default values
     if (ratesUrl == null || ratesUrl.trim() == '') {
       ratesUrl = "https://api.exchangeratesapi.io/${date}";
-      ratesCache = 3600;
+      // ratesCache = 3600;
     }
 
     //deprecated
@@ -26,13 +26,13 @@ interface RatesEndpointConfig {
     ratesUrl = ratesUrl.replace("${date}", date);
     ratesUrl = ratesUrl.replace("${agent}", agent);
 
-    if (ratesCache < 300) {
-      ratesCache = 300;
-    }
+    // if (ratesCache < 300) {
+    //   ratesCache = 300;
+    // }
 
     return {
       url: ratesUrl,
-      cache: ratesCache
+      cache: 3600
     }
   }
 

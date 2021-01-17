@@ -1,5 +1,6 @@
 import { Bkper, Book } from "bkper";
-import { getBaseCode, getConnectedBooks } from "./BotService";
+import { getBaseCode, getConnectedBooks, getRatesEndpointConfig } from "./BotService";
+import { getRates } from "./exchange-service";
 
 export abstract class EventHandler {
 
@@ -14,9 +15,19 @@ export abstract class EventHandler {
       return 'Please set the "exc_code" property of this book.'
     }
 
+
+    if (event.type == 'TRANSACTION_CHECKED' || event.type == 'TRANSACTION_UPDATED') {
+      //Load and cache rates prior to pararllel run
+      let operation = event.data.object as bkper.TransactionOperation;
+      let transaction = operation.transaction;
+
+      let ratesEndpointConfig = getRatesEndpointConfig(baseBook, transaction.date, 'bot');
+      await getRates(ratesEndpointConfig.url, ratesEndpointConfig.cache)
+    }
+
     let responsesPromises: Promise<string>[] = [];
     let connectedBooks = await getConnectedBooks(baseBook);
-    
+
     for (const connectedBook of connectedBooks) {
       let connectedCode = getBaseCode(connectedBook);
       if (connectedCode != null && connectedCode != '') {

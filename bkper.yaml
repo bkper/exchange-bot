@@ -30,7 +30,6 @@ properties:
       keys: >
         exc_code
         exc_rates_url
-        exc_rates_cache
     group:
       keys: >
         exc_account
