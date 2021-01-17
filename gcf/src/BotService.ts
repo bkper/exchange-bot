@@ -1,7 +1,7 @@
 import { Bkper, Book } from "bkper";
+import { EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
 import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
-import { ExchangeRates } from "./ExchangeRates";
 
 interface RatesEndpointConfig {
   url: string,

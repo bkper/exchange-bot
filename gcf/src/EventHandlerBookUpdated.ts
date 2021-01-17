@@ -1,5 +1,6 @@
 import { Book } from "bkper";
 import { getBaseCode } from "./BotService";
+import { EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export class EventHandlerBookUpdated extends EventHandler {

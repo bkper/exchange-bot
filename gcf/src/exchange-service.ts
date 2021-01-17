@@ -49,6 +49,8 @@ async function getRates(ratesEndpointUrl: string, cacheInSeconds: number): Promi
     return rates;
   } else {
 
+    console.log(`Fetching rates from ${ratesEndpointUrl}`)
+
     let req = await request({
       url: ratesEndpointUrl,
       method: 'GET',
