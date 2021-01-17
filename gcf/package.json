@@ -2,7 +2,7 @@
   "name": "exchange-bot-gcf",
   "version": "1.0.0",
   "main": "index.js",
-  "projectId": "exchange-bot",
+  "projectId": "bkper-cc-bot",
   "functionName": "prod",
   "scripts": {
     "clean": "gts clean",
@@ -37,6 +37,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-http-context": "^1.2.4",
+    "gaxios": "^4.1.0",
+    "node-cache": "^5.1.2",
     "source-map-support": "^0.5.19"
   }
 }

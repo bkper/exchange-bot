@@ -1,4 +1,9 @@
 import { ExchangeRates } from "./ExchangeRates";
+import { GaxiosError, request } from 'gaxios';
+import https = require('https');
+
+import NodeCache = require("node-cache");
+const cache = new NodeCache();
 
 export async function convert(value: number, from: string, to: string, ratesEndpointUrl: string, cacheInSeconds: number): Promise<number> {
 
@@ -39,15 +44,23 @@ function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {
 }
 
 async function getRates(ratesEndpointUrl: string, cacheInSeconds: number): Promise<ExchangeRates> {
-  let cachedRatesJson = CacheService.getScriptCache().get(ratesEndpointUrl)
-  if (cachedRatesJson != null) {
-    return JSON.parse(cachedRatesJson);
+  let rates: ExchangeRates = cache.get(ratesEndpointUrl);
+  if (rates != null) {
+    return rates;
   } else {
-    let request = HttpRequestApp.newRequest(ratesEndpointUrl);
 
+    let req = await request({
+      url: ratesEndpointUrl,
+      method: 'GET',
+      agent: new https.Agent({keepAlive: true}),
+      retryConfig: {
+        retry: 5,
+        onRetryAttempt: (err: GaxiosError) => {console.log(`${err.message} - Retrying... `)},
+        retryDelay: 100
+      }
+    })
 
-    let ratesJson = request.fetch().getContentText();
-    let rates: ExchangeRates = JSON.parse(ratesJson);
+    rates = req.data as ExchangeRates;
 
     if (rates == null) {
       throw `Unable to get exchange rates from endpoint ${ratesEndpointUrl}`;
@@ -65,11 +78,13 @@ async function getRates(ratesEndpointUrl: string, cacheInSeconds: number): Promi
         `;
     }
 
-    if (!cacheInSeconds) {
+    if (cacheInSeconds == null || cacheInSeconds > 3600) {
       cacheInSeconds = 3600;
+    } else if (cacheInSeconds < 300) {
+      cacheInSeconds = 300;
     }
 
-    CacheService.getScriptCache().put(ratesEndpointUrl, ratesJson, cacheInSeconds);
+    cache.set( ratesEndpointUrl, rates, cacheInSeconds );
 
     return rates;
   }
