@@ -1,19 +1,27 @@
 {
   "name": "exchange-bot",
   "version": "2.0.4",
+  "license": "MIT",
   "scripts": {
     "open:gas": "yarn --cwd gas/ open",
     "open:gcf": "yarn --cwd gcf/ open",
+    "watch": "run-p watch:*",
     "watch:gas": "yarn --cwd gas/ watch",
     "watch:gcf": "yarn --cwd gcf/ watch",
-    "patch:gas": "yarn version --patch && yarn deploy:gas && yarn push",
-    "minor:gas": "yarn version --minor && yarn deploy:gas && yarn push",
-    "major:gas": "yarn version --major && yarn deploy:gas && yarn push",
-    "patch:gcf": "yarn version --patch && yarn deploy:gcf && yarn push",
-    "minor:gcf": "yarn version --minor && yarn deploy:gcf && yarn push",
-    "major:gcf": "yarn version --major && yarn deploy:gcf && yarn push",
+    "patch": "yarn version --patch && run-s deploy:gas deploy:gcf push",
+    "minor": "yarn version --minor && run-s deploy:gas deploy:gcf push",
+    "major": "yarn version --major && run-s deploy:gas deploy:gcf push",
+    "patch:gas": "yarn version --patch && run-s deploy:gas push",
+    "minor:gas": "yarn version --minor && run-s deploy:gas push",
+    "major:gas": "yarn version --major && run-s deploy:gas push",
+    "patch:gcf": "yarn version --patch && run-s deploy:gcf push",
+    "minor:gcf": "yarn version --minor && run-s deploy:gcf push",
+    "major:gcf": "yarn version --major && run-s deploy:gcf push",
     "deploy:gas": "yarn --cwd gas/ deploy",
     "deploy:gcf": "yarn --cwd gcf/ deploy",
     "push": "git push && git push --tags && echo \"Successfully released version $npm_package_version!\""
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }

@@ -3,6 +3,12 @@ interface RatesEndpointConfig {
   cache: number
 }
 
+interface AmountDescription {
+  amount: number;
+  description: string;
+  taxAmount: number;
+}
+
 namespace BotService {
 
   export function getRatesEndpointConfig(book: Bkper.Book, date: string, agent: string): RatesEndpointConfig {
