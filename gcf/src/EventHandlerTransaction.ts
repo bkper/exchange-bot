@@ -1,11 +1,11 @@
-import { Book, Transaction } from "bkper";
+import { Amount, Book, Transaction } from "bkper";
 import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig } from "./BotService";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {
-  amount: number;
+  amount: Amount;
   description: string;
-  taxAmount: number;
+  taxAmount: Amount;
 }
 
 export abstract class EventHandlerTransaction extends EventHandler {

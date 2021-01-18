@@ -1,4 +1,4 @@
-import { Bkper, Book } from "bkper";
+import { Amount, Bkper, Book } from "bkper";
 import { EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
 import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
@@ -99,7 +99,7 @@ interface RatesEndpointConfig {
       return {
         amount: amount,
         description: transaction.description,
-        taxAmount: taxAmountProp ? (amount/+transaction.amount)*taxAmountProp : null
+        taxAmount: taxAmountProp ? (amount.div(transaction.amount)).times(taxAmountProp) : null
       };
     }
 
@@ -113,9 +113,9 @@ interface RatesEndpointConfig {
           let ret =  {
             amount: amount,
             description: transaction.description.replace(part, `${base}${transaction.amount}`),
-            taxAmount: taxAmountProp ? (amount/+transaction.amount)*taxAmountProp : null
+            taxAmount: taxAmountProp ? (amount.div(transaction.amount)).times(taxAmountProp) : null
           };
-          if (ret.amount && ret.amount != 0) {
+          if (ret.amount && !ret.amount.eq(0)) {
             return ret;
           }
         } catch (error) {
@@ -125,7 +125,7 @@ interface RatesEndpointConfig {
     }
 
     return {
-      amount: await convert(+transaction.amount, base, connectedCode, ratesEndpointUrl, cacheInSeconds),
+      amount: await convert(new Amount(transaction.amount), base, connectedCode, ratesEndpointUrl, cacheInSeconds),
       description: `${transaction.description}`,
       taxAmount: taxAmountProp ? await convert(taxAmountProp, base, connectedCode, ratesEndpointUrl, cacheInSeconds) : null
     };

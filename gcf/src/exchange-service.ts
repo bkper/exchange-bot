@@ -3,9 +3,10 @@ import { GaxiosError, request } from 'gaxios';
 import https = require('https');
 
 import NodeCache = require("node-cache");
+import { Amount } from "bkper";
 const cache = new NodeCache();
 
-export async function convert(value: number, from: string, to: string, ratesEndpointUrl: string, cacheInSeconds: number): Promise<number> {
+export async function convert(value: Amount, from: string, to: string, ratesEndpointUrl: string, cacheInSeconds: number): Promise<Amount> {
 
   if (ratesEndpointUrl == null) {
     throw 'exchangeRatesUrl must be provided.'
@@ -23,11 +24,11 @@ export async function convert(value: number, from: string, to: string, ratesEndp
   if (rate == null) {
     throw `Code ${to} not found in ${JSON.stringify(rates)}`
   }
-  return rate * value;
+  return new Amount(rate).times(value);
 }
 
 function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {
-  rates.rates[rates.base] = 1
+  rates.rates[rates.base] = '1'
   if (rates.base == toBase) {
     return rates;
   }
@@ -35,10 +36,10 @@ function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {
   if (rate == null) {
     return null;
   }
-  let newRate = 1 / rate;
+  let newRate = new Amount('1').div(rate);
   rates.base = toBase;
   for (let [key, value] of Object.entries(rates.rates)) {
-    rates.rates[key] = value * newRate;
+    rates.rates[key] = new Amount(value).times(newRate).toString();
   }
   return rates;
 }
