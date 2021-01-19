@@ -1,6 +1,6 @@
 {
   "name": "exchange-bot",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "license": "MIT",
   "scripts": {
     "open:gas": "yarn --cwd gas/ open",
