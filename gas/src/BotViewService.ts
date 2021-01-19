@@ -41,11 +41,11 @@ namespace BotViewService {
     return template.evaluate().setTitle('Exchange Bot');
   }
 
-  export function loadRates(bookId: string, date: string): Bkper.ExchangeRates {
+  export function loadRates(bookId: string, date: string): ExchangeRates {
     let book = BkperApp.getBook(bookId);
     let ratesEndpointConfig = BotService.getRatesEndpointConfig(book, date, 'app');
     let ratesJSON = UrlFetchApp.fetch(ratesEndpointConfig.url).getContentText();
-    let exchangeRates = JSON.parse(ratesJSON) as Bkper.ExchangeRates;
+    let exchangeRates = JSON.parse(ratesJSON) as ExchangeRates;
 
     let codes: string[] = [];
     BotService.getConnectedBooks(book).add(book).forEach(book => codes.push(BotService.getBaseCode(book)));

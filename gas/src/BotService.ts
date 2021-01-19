@@ -4,9 +4,9 @@ interface RatesEndpointConfig {
 }
 
 interface AmountDescription {
-  amount: number;
+  amount: Bkper.Amount;
   description: string;
-  taxAmount: number;
+  taxAmount: Bkper.Amount;
 }
 
 namespace BotService {
@@ -91,18 +91,18 @@ namespace BotService {
   }
 
 
-  export function extractAmountDescription_(book: Bkper.Book, base: string, connectedCode: string, transaction: bkper.Transaction, exchangeRates?: Bkper.ExchangeRates): AmountDescription {
+  export function extractAmountDescription_(book: Bkper.Book, base: string, connectedCode: string, transaction: bkper.Transaction, exchangeRates?: ExchangeRates): AmountDescription {
 
     let txExcCode = transaction.properties['exc_code'];
     let txExcAmount = transaction.properties['exc_amount'];
-    let taxAmountProp = transaction.properties['tax_amount'] ? book.parseValue(transaction.properties['tax_amount']) : null;
+    let taxAmountProp = book.parseValue(transaction.properties['tax_amount']);
 
     if (txExcAmount && txExcCode && txExcCode == connectedCode) {
       const amount = book.parseValue(txExcAmount);
       return {
         amount: amount,
         description: transaction.description,
-        taxAmount: taxAmountProp ? (amount/+transaction.amount)*taxAmountProp : null
+        taxAmount: taxAmountProp ? amount.div(transaction.amount).times(taxAmountProp) : null
       };
     }
 
@@ -116,9 +116,9 @@ namespace BotService {
           let ret =  {
             amount: amount,
             description: transaction.description.replace(part, `${base}${transaction.amount}`),
-            taxAmount: taxAmountProp ? (amount/+transaction.amount)*taxAmountProp : null
+            taxAmount: taxAmountProp ? amount.div(transaction.amount).times(taxAmountProp) : null
           };
-          if (ret.amount && ret.amount != 0) {
+          if (ret.amount && !ret.amount.eq(0)) {
             return ret;
           }
         } catch (error) {
@@ -128,9 +128,9 @@ namespace BotService {
     }
 
     return {
-      amount: ExchangeApp.convert(+transaction.amount, base, connectedCode, exchangeRates),
+      amount: ExchangeService.convert(BkperApp.newAmount(transaction.amount), base, connectedCode, exchangeRates),
       description: `${transaction.description}`,
-      taxAmount: taxAmountProp ? ExchangeApp.convert(taxAmountProp, base, connectedCode, exchangeRates) : null
+      taxAmount: taxAmountProp ? ExchangeService.convert(taxAmountProp, base, connectedCode, exchangeRates) : null
     };
   }  
 
