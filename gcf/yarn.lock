@@ -431,15 +431,16 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
-bkper@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.5.1.tgz#51c726517a4e6003b73340cc3cd6f80f5a2680ad"
-  integrity sha512-nIGjU1oBvDd6CK33eRRSCnVKdgvFshyr+j9VCWjFb6ii+5rqIYeAWrrkdoaJ+pOtyxzlqSeLGOYQcwecxrNoWA==
+bkper@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.5.2.tgz#c13ce2ec35ae762d551f53d0d19b4fdd63d88a67"
+  integrity sha512-lhFK4HKefmvBOm0l/Y4OIv/EK6tRFaHnRRQZwmp3t/O/F2UhC+7ugCyyhe/wyK0ZnEWf0ANqh3dJgp9pr45yrQ==
   dependencies:
     "@bkper/bkper-api-types" "^3.7.2"
     "@google-cloud/local-auth" "^1.0.0"
     big.js "^6.0.3"
     commander "^6.2.1"
+    date-format "^3.0.0"
     google-auth-library "^6.1.4"
     moment-timezone "^0.5.32"
     node-fetch "^2.6.1"
@@ -734,6 +735,11 @@ crypto-random-string@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
+
+date-format@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/date-format/-/date-format-3.0.0.tgz#eb8780365c7d2b1511078fb491e6479780f3ad95"
+  integrity sha512-eyTcpKOcamdhWJXj56DpQMo1ylSQpcGtGKXcU0Tb97+K56/CF5amAqqqNj0+KvA0iw2ynxtHWFsPDSClCxe48w==
 
 debug@2.6.9, debug@^2.2.0:
   version "2.6.9"
