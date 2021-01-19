@@ -37,7 +37,7 @@ namespace TransactionsUpdateService {
               let baseTransactionRaw: bkper.Transaction = {
                 properties: baseTransaction.getProperties(),
                 description: baseTransaction.getDescription(),
-                amount: baseTransaction.getAmount()+'',
+                amount: baseTransaction.getAmount().toString(),
               }
               let amountDescription = BotService.extractAmountDescription_(connectedBook, baseCode, connectedCode, baseTransactionRaw, exchangeRates);
               if (connectedTransaction.getAmount() != amountDescription.amount) {
