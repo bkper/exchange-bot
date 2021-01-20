@@ -42,7 +42,14 @@ export abstract class EventHandler {
       return false;
     }
 
-    return Promise.all(responsesPromises);
+    let result = await Promise.all(responsesPromises);
+    result = result.filter(r => r != null && r.trim() != '');
+
+    if (result.length == 0) {
+      return false;
+    }
+
+    return result;
   }
 
 
