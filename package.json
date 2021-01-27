@@ -3,6 +3,7 @@
   "version": "2.0.12",
   "license": "MIT",
   "scripts": {
+    "bkper:sync": "bkper app -u",
     "open:gas": "yarn --cwd gas/ open",
     "open:gcf": "yarn --cwd gcf/ open",
     "watch": "run-p watch:*",
@@ -22,6 +23,7 @@
     "push": "git push && git push --tags && echo \"Successfully released version $npm_package_version!\""
   },
   "devDependencies": {
+    "bkper": "^1.7.0",
     "npm-run-all": "^4.1.5"
   }
 }

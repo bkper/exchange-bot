@@ -12,7 +12,7 @@
     "build": "yarn clean && tsc && cp package.json dist/",
     "watch": "run-p watch:*",
     "watch:compile": "tsc -w --incremental",
-    "watch:webhook": "node webhook",
+    "watch:webhook": "node webhook.js",
     "watch:nodemon": "nodemon --watch ./dist/ --exec yarn functions:dev",
     "functions:dev": "functions-framework --source=dist/ --target=doPost --port=3003",
     "functions:enable": "gcloud services enable cloudfunctions.googleapis.com --project $npm_package_projectId && gcloud services enable cloudbuild.googleapis.com --project $npm_package_projectId",
