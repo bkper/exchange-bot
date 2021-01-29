@@ -76,7 +76,7 @@ namespace BotService {
   }
 
   export function getBaseCode(book: Bkper.Book): string {
-    return book.getProperty('exc_code', 'exchange_code');
+    return book.getProperty(EXC_CODE_PROP, 'exchange_code');
   }
 
   export function parseDateParam(dateParam: string) {
@@ -93,9 +93,9 @@ namespace BotService {
 
   export function extractAmountDescription_(book: Bkper.Book, base: string, connectedCode: string, transaction: bkper.Transaction, exchangeRates?: ExchangeRates): AmountDescription {
 
-    let txExcCode = transaction.properties['exc_code'];
-    let txExcAmount = transaction.properties['exc_amount'];
-    let taxAmountProp = book.parseValue(transaction.properties['tax_amount']);
+    let txExcCode = transaction.properties[EXC_CODE_PROP];
+    let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
+    let taxAmountProp = book.parseValue(transaction.properties[TAX_AMOUNT_PROP]);
 
     if (txExcAmount && txExcCode && txExcCode == connectedCode) {
       const amount = book.parseValue(txExcAmount);

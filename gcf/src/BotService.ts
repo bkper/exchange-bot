@@ -1,5 +1,5 @@
 import { Amount, Bkper, Book } from "bkper";
-import { EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
+import { EXC_AMOUNT_PROP, EXC_CODE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP, TAX_AMOUNT_PROP } from "./constants";
 import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
 
@@ -73,7 +73,7 @@ interface RatesEndpointConfig {
   }
 
   export function getBaseCode(book: Book): string {
-    return book.getProperty('exc_code', 'exchange_code');
+    return book.getProperty(EXC_CODE_PROP, 'exchange_code');
   }
 
   export function parseDateParam(dateParam: string) {
@@ -90,9 +90,9 @@ interface RatesEndpointConfig {
 
   export async function extractAmountDescription_(book: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
 
-    let txExcCode = transaction.properties['exc_code'];
-    let txExcAmount = transaction.properties['exc_amount'];
-    let taxAmountProp = transaction.properties['tax_amount'] ? book.parseValue(transaction.properties['tax_amount']) : null;
+    let txExcCode = transaction.properties[EXC_CODE_PROP];
+    let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
+    let taxAmountProp = transaction.properties[TAX_AMOUNT_PROP] ? book.parseValue(transaction.properties[TAX_AMOUNT_PROP]) : null;
 
     if (txExcAmount && txExcCode && txExcCode == connectedCode) {
       const amount = book.parseValue(txExcAmount);

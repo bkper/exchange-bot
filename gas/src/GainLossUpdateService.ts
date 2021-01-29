@@ -95,7 +95,7 @@ namespace GainLossUpdateService {
     let groups = book.getGroups();
     if (groups != null) {
         groups.forEach(group => {
-          if (group.getProperty('exc_code') == code) {
+          if (group.getProperty(EXC_CODE_PROP) == code) {
             let groupAccounts = group.getAccounts();
             if (groupAccounts != null) {
               groupAccounts.forEach(account => {
@@ -114,7 +114,7 @@ namespace GainLossUpdateService {
     let groups = connectedAccount.getGroups(); 
     if (groups) {
       for (const group of groups) {
-        let excAccount = group.getProperty('exc_account')
+        let excAccount = group.getProperty(EXC_ACCOUNT_PROP)
         if (excAccount) {
           return excAccount;
         }
@@ -127,7 +127,7 @@ namespace GainLossUpdateService {
     let accountNames = new Set<string>();
 
     book.getAccounts().forEach(account => {
-      let accountName = account.getProperty('exc_account');
+      let accountName = account.getProperty(EXC_ACCOUNT_PROP);
       if (accountName) {
         accountNames.add(accountName);
       }
@@ -152,7 +152,7 @@ namespace GainLossUpdateService {
     let accountNames = new Set<string>();
 
     book.getAccounts().forEach(account => {
-      let accountName = account.getProperty('exc_account');
+      let accountName = account.getProperty(EXC_ACCOUNT_PROP);
       if (accountName) {
         console.log(`Adding: ${accountName}`)
         accountNames.add(accountName);
