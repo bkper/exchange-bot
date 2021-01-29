@@ -1,5 +1,6 @@
 import { Bkper, Book } from "bkper";
 import { getBaseCode, getConnectedBooks, getRatesEndpointConfig } from "./BotService";
+import { EXC_CODE_PROP } from "./constants";
 import { getRates } from "./exchange-service";
 
 export abstract class EventHandler {
@@ -12,7 +13,7 @@ export abstract class EventHandler {
     let baseCode = getBaseCode(baseBook);
 
     if (baseCode == null || baseCode == '') {
-      return 'Please set the "exc_code" property of this book.'
+      return `Please set the "${EXC_CODE_PROP}" property of this book.`
     }
 
 
