@@ -71,7 +71,7 @@
     <div class='body'>
       <div id='update-date-panel'>
         <label for="update-date">Date: </label>
-        <input type="date" id="update-date" name="update-date" value="<?!= today ?>" onchange="loadRates()"/>
+        <input type="date" id="update-date" name="update-date" value="<?!= today ?>" onblur="loadRates()"/>
       </div>
       <div id='waiting-panel'>
         <img src='https://storage.googleapis.com/bkper-public/addons/loading_3dots.gif'/>
