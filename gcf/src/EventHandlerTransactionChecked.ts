@@ -9,20 +9,23 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
   }
 
   protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
-    let bookAnchor = super.buildBookAnchor(connectedBook);
     if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
       await connectedTransaction.check();
-      let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
-      let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
-      return `${bookAnchor}: ${record}`;
+      return await this.buildCheckResponse(connectedBook, connectedTransaction);
     } else if (!connectedTransaction.isPosted() && this.isReadyToPost(connectedTransaction)) {
       await connectedTransaction.post();
       await connectedTransaction.check();
-      let record = `${connectedTransaction.getDate()} ${connectedTransaction.getAmount()} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
-      return `${bookAnchor}: ${record}`;
+      return await this.buildCheckResponse(connectedBook, connectedTransaction);
     } else {
-      return `${bookAnchor}: DRAFT FOUND`;
+      return await this.buildCheckResponse(connectedBook, connectedTransaction);
     }
+  }
+
+  private async buildCheckResponse(connectedBook: Book, connectedTransaction: Transaction) {
+    let bookAnchor = super.buildBookAnchor(connectedBook);
+    let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount());
+    let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+    return `${bookAnchor}: ${record}`;
   }
 
   protected async connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string> {

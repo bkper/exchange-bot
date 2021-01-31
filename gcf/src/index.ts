@@ -14,7 +14,7 @@ import { EventHandlerGroupCreatedOrUpdated } from './EventHandlerGroupCreatedOrU
 import { EventHandlerGroupDeleted } from './EventHandlerGroupDeleted';
 import { EventHandlerBookUpdated } from './EventHandlerBookUpdated';
 
-require('dotenv').config()
+require('dotenv').config({path:`${__dirname}/../../.env`})
 
 const app = express();
 app.use(httpContext.middleware);

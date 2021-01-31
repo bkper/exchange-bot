@@ -71,8 +71,8 @@ private async updateConnectedTransaction(connectedBook: Book, connectedTransacti
     urls = [];
   }
 
-  if (connectedTransaction.getUrls()) {
-    urls = urls.concat(connectedTransaction.getUrls());
+  if (transaction.urls) {
+    urls = transaction.urls;
   }
 
   if (transaction.files) {
