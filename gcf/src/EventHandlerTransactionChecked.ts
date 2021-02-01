@@ -12,7 +12,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
     if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
       await connectedTransaction.check();
       return await this.buildCheckResponse(connectedBook, connectedTransaction);
-    } else if (!connectedTransaction.isPosted() && this.isReadyToPost(connectedTransaction)) {
+    } else if (!connectedTransaction.isPosted() && await this.isReadyToPost(connectedTransaction)) {
       await connectedTransaction.post();
       await connectedTransaction.check();
       return await this.buildCheckResponse(connectedBook, connectedTransaction);
@@ -72,7 +72,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
 
       let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.getName()} ${baseDebitAccount.getName()} ${amountDescription.description}`;
 
-    if (this.isReadyToPost(newTransaction)) {
+    if (await this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
       await newTransaction.check();
     } else {
@@ -84,8 +84,8 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
   }
 
 
-  private isReadyToPost(newTransaction: Transaction) {
-    return newTransaction.getCreditAccount() != null && newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;
+  private async isReadyToPost(newTransaction: Transaction) {
+    return await newTransaction.getCreditAccount() != null && await newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;
   }
 
   private async createAccount(connectedBook: Book, baseAccount: Account): Promise<Account> {
