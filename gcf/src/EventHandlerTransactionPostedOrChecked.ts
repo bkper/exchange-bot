@@ -2,7 +2,7 @@ import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
-export class EventHandlerTransactionChecked extends EventHandlerTransaction {
+export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransaction {
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
     return `remoteId:${transaction.id}`;
@@ -75,6 +75,12 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
     if (await this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
       await newTransaction.check();
+      let baseTransaction = await baseBook.getTransaction(transaction.id);
+
+      if (!baseTransaction.isChecked()) {
+        await baseTransaction.check();
+      }
+
     } else {
       newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
       await newTransaction.create();

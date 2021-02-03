@@ -4,7 +4,7 @@ import { Bkper } from 'bkper';
 import { Request, Response } from 'express';
 import express = require('express');
 import httpContext = require('express-http-context');
-import { EventHandlerTransactionChecked } from './EventHandlerTransactionChecked';
+import { EventHandlerTransactionPostedOrChecked } from './EventHandlerTransactionPostedOrChecked';
 import { EventHandlerTransactionUpdated } from './EventHandlerTransactionUpdated';
 import { EventHandlerTransactionDeleted } from './EventHandlerTransactionDeleted';
 import { EventHandlerTransactionRestored } from './EventHandlerTransactionRestored';
@@ -47,8 +47,11 @@ async function handleEvent(req: Request, res: Response) {
 
     switch (event.type) {
 
+      case 'TRANSACTION_POSTED':
+        result.result = await new EventHandlerTransactionPostedOrChecked().handleEvent(event);
+        break;
       case 'TRANSACTION_CHECKED':
-        result.result = await new EventHandlerTransactionChecked().handleEvent(event);
+        result.result = await new EventHandlerTransactionPostedOrChecked().handleEvent(event);
         break;
       case 'TRANSACTION_UPDATED':
         result.result = await new EventHandlerTransactionUpdated().handleEvent(event);
