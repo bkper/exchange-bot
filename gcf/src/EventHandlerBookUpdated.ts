@@ -32,6 +32,23 @@ export class EventHandlerBookUpdated extends EventHandler {
         response += ` time zone: ${baseBook.getTimeZone()}`
       }
 
+      if (baseBook.getPageSize() != connectedBook.getPageSize()) {
+        connectedBook.setPageSize(baseBook.getPageSize())
+        response += ` page size: ${baseBook.getPageSize()}`
+      }
+
+      if (baseBook.getPeriod() != connectedBook.getPeriod()) {
+        connectedBook.setPeriod(baseBook.getPeriod())
+        response += ` period: ${baseBook.getPeriod()}`
+      }
+
+      console.log(baseBook.getPeriodStartMonth())
+
+      if (baseBook.getPeriodStartMonth() != connectedBook.getPeriodStartMonth()) {
+        connectedBook.setPeriodStartMonth(baseBook.getPeriodStartMonth())
+        response += ` period start month: ${baseBook.getPeriodStartMonth()}`
+      }
+
       const baseExcRatesUrl = baseBook.getProperty(EXC_RATES_URL_PROP);
       if (baseExcRatesUrl && baseExcRatesUrl != connectedBook.getProperty(EXC_RATES_URL_PROP)) {
         connectedBook.setProperty(EXC_RATES_URL_PROP, baseExcRatesUrl)

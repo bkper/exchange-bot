@@ -23,15 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@bkper/bkper-api-types@^3.7.1":
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-3.7.2.tgz#81b3970cea516f0be7838689499d1148576916a1"
-  integrity sha512-b2HFF+xReM72gvvHzyUoLgAnMlkzoKjMn06NX5Fj17AtdyKjKC5l7kcQd4xqC6m4LE++bQ/2blTxSgtaqB935Q==
-
-"@bkper/bkper-api-types@^3.7.5":
-  version "3.7.5"
-  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-3.7.5.tgz#f16514d569f64b7d62c8bc9caf0859f4cbca0432"
-  integrity sha512-KrVMm1/zTYvuqZGvkr6a3FEKF1pH59TZmn1m7pY5pKOG2UTN5Z7ztg7/JELI9PE5D8HPUkNw7I4fxrvmJvsOEw==
+"@bkper/bkper-api-types@^3.7.6":
+  version "3.7.6"
+  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-3.7.6.tgz#31242a1462da7b1a652ed77aa40478d7df6fc676"
+  integrity sha512-yLs+q8oGMWG4KyAAC5vi3k/JgktpkzqTnKTm5kaDp2Dm9oijuYRGb3dZJhpvaQWIB+KGDDnUwwlZ2T6q+o5iJA==
 
 "@eslint/eslintrc@^0.3.0":
   version "0.3.0"
@@ -436,12 +431,12 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
-bkper@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.7.0.tgz#a889692427152562970aeb65be707fe5a92c4c82"
-  integrity sha512-JDMgqh2/6D1KHCZXAkUDCY82zyXeAdIc/SP0t90Wib/HyPdNvUK6WZOLcMtkelNMNbt5tNSXd8nbY26QCTxrZA==
+bkper@^1.7.6:
+  version "1.7.6"
+  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.7.6.tgz#887dc78ec3e5b008380dc5c29cbb780e21323ece"
+  integrity sha512-AM5ykgYmEBTnuerh5KYRfPnFzTOC0WlA2oLdNhA+pczyi5+LTbqF1f8Ll6gjbqw1TFTwo3wVkNPUwv2QSqiduw==
   dependencies:
-    "@bkper/bkper-api-types" "^3.7.5"
+    "@bkper/bkper-api-types" "^3.7.6"
     "@google-cloud/local-auth" "^1.0.0"
     big.js "^6.0.3"
     commander "^6.2.1"
