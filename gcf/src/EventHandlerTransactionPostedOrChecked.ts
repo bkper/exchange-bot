@@ -1,5 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
+import { EXC_AUTO_CHECK_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransaction {
@@ -72,12 +73,15 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
       let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.getName()} ${baseDebitAccount.getName()} ${amountDescription.description}`;
 
+    const autoCheck = baseBook.getProperty(EXC_AUTO_CHECK_PROP);
     if (await this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
-      await newTransaction.check();
+      if (autoCheck) {
+        await newTransaction.check();
+      }
       let baseTransaction = await baseBook.getTransaction(transaction.id);
 
-      if (!baseTransaction.isChecked()) {
+      if (autoCheck && !baseTransaction.isChecked()) {
         await baseTransaction.check();
       }
 

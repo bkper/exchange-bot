@@ -37,7 +37,8 @@
     "book": {
       "keys": [
         "exc_code",
-        "exc_rates_url"
+        "exc_rates_url",
+        "exc_auto_check"
       ]
     },
     "group": {
