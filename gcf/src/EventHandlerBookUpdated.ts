@@ -1,6 +1,6 @@
 import { Book } from "bkper";
 import { getBaseCode } from "./BotService";
-import { EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
+import { EXC_AUTO_CHECK_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export class EventHandlerBookUpdated extends EventHandler {
@@ -59,6 +59,12 @@ export class EventHandlerBookUpdated extends EventHandler {
       if (baseExcRatesCache && baseExcRatesCache != connectedBook.getProperty(EXC_RATES_CACHE_PROP)) {
         connectedBook.setProperty(EXC_RATES_CACHE_PROP, baseExcRatesCache)
         response += ` ${EXC_RATES_CACHE_PROP}: ${baseExcRatesCache}`
+      }
+      
+      const excAutoCheck = baseBook.getProperty(EXC_AUTO_CHECK_PROP);
+      if (excAutoCheck && excAutoCheck != connectedBook.getProperty(EXC_AUTO_CHECK_PROP)) {
+        connectedBook.setProperty(EXC_AUTO_CHECK_PROP, excAutoCheck)
+        response += ` ${EXC_AUTO_CHECK_PROP}: ${excAutoCheck}`
       }
       
     }
