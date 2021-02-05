@@ -4,4 +4,4 @@ export const EXC_ACCOUNT_PROP = 'exc_account';
 export const EXC_CODE_PROP = 'exc_code';
 export const EXC_AUTO_CHECK_PROP = 'exc_auto_check';
 export const EXC_AMOUNT_PROP = 'exc_amount';
-export const TAX_AMOUNT_PROP = 'tax_amount';
+export const TAX_INCLUDED_AMOUNT_PROP = 'tax_included_amount';

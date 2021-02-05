@@ -5,7 +5,7 @@ const EXC_RATES_CACHE_PROP = 'exc_rates_cache';
 const EXC_ACCOUNT_PROP = 'exc_account';
 const EXC_CODE_PROP = 'exc_code';
 const EXC_AMOUNT_PROP = 'exc_amount';
-const TAX_AMOUNT_PROP = 'tax_amount';
+const TAX_INCLUDED_AMOUNT_PROP = 'tax_included_amount';
 
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
   //@ts-ignore

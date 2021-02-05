@@ -48,7 +48,7 @@ namespace TransactionsUpdateService {
                 }
                 connectedTransaction.setAmount(amountDescription.amount).update();
                 if (amountDescription.taxAmount) {
-                  connectedTransaction.setProperty('tax_amount', connectedBook.formatValue(amountDescription.taxAmount))
+                  connectedTransaction.setProperty(TAX_INCLUDED_AMOUNT_PROP, connectedBook.formatValue(amountDescription.taxAmount))
                 }
                 if (wasChecked) {
                   connectedTransaction.check();

@@ -1,6 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
-import { EXC_AUTO_CHECK_PROP } from "./constants";
+import { EXC_AUTO_CHECK_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransaction {
@@ -68,7 +68,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       .addRemoteId(transaction.id);
 
       if (amountDescription.taxAmount) {
-        newTransaction.setProperty('tax_amount', connectedBook.formatValue(amountDescription.taxAmount))
+        newTransaction.setProperty(TAX_INCLUDED_AMOUNT_PROP, connectedBook.formatValue(amountDescription.taxAmount))
       }
 
       let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.getName()} ${baseDebitAccount.getName()} ${amountDescription.description}`;

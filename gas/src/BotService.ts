@@ -95,7 +95,7 @@ namespace BotService {
 
     let txExcCode = transaction.properties[EXC_CODE_PROP];
     let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
-    let taxAmountProp = book.parseValue(transaction.properties[TAX_AMOUNT_PROP]);
+    let taxAmountProp = book.parseValue(transaction.properties[TAX_INCLUDED_AMOUNT_PROP]);
 
     if (txExcAmount && txExcCode && txExcCode == connectedCode) {
       const amount = book.parseValue(txExcAmount);

@@ -1,5 +1,5 @@
 import { Amount, Bkper, Book } from "bkper";
-import { EXC_AMOUNT_PROP, EXC_CODE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP, TAX_AMOUNT_PROP } from "./constants";
+import { EXC_AMOUNT_PROP, EXC_CODE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
 import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
 
@@ -92,7 +92,7 @@ interface RatesEndpointConfig {
 
     let txExcCode = transaction.properties[EXC_CODE_PROP];
     let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
-    let taxAmountProp = transaction.properties[TAX_AMOUNT_PROP] ? book.parseValue(transaction.properties[TAX_AMOUNT_PROP]) : null;
+    let taxAmountProp = transaction.properties[TAX_INCLUDED_AMOUNT_PROP] ? book.parseValue(transaction.properties[TAX_INCLUDED_AMOUNT_PROP]) : null;
 
     if (txExcAmount && txExcCode && txExcCode == connectedCode) {
       const amount = book.parseValue(txExcAmount);
