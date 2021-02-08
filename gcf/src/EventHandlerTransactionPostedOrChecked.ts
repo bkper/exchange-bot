@@ -53,10 +53,13 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       }
     }
 
-    let excAmount = transaction.properties[EXC_AMOUNT_PROP];
-    if (excAmount && +excAmount == 0) {
-      //Bypass if excAmount zero
-      return null;
+    let excAmountProp = transaction.properties[EXC_AMOUNT_PROP];
+    if (excAmountProp) {
+      let extAmount = baseBook.parseValue(excAmountProp);
+      if (extAmount && extAmount.eq(0)) {
+        //Bypass if excAmount zero
+        return null;
+      }
     } 
 
 
