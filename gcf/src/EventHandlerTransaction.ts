@@ -1,5 +1,6 @@
 import { Amount, Book, Transaction } from "bkper";
 import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig } from "./BotService";
+import { EXC_AMOUNT_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {
@@ -28,6 +29,16 @@ export abstract class EventHandlerTransaction extends EventHandler {
     if (!transaction.posted) {
       return null;
     }
+
+    let excAmountProp = transaction.properties[EXC_AMOUNT_PROP];
+    if (excAmountProp) {
+      let extAmount = baseBook.parseValue(excAmountProp);
+      console.log(excAmountProp)
+      if (extAmount && extAmount.eq(0)) {
+        //Bypass if excAmount zero
+        return null;
+      }
+    } 
 
     let connectedCode = getBaseCode(connectedBook);
     if (connectedCode != null && connectedCode != '') {
