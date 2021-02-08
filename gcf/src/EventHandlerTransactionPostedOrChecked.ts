@@ -1,6 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
-import { EXC_AUTO_CHECK_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
+import { EXC_AMOUNT_PROP, EXC_AUTO_CHECK_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransaction {
@@ -52,6 +52,14 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
         //OK
       }
     }
+
+    let excAmount = transaction.properties[EXC_AMOUNT_PROP];
+    if (excAmount && +excAmount == 0) {
+      //Bypass if excAmount zero
+      return null;
+    } 
+
+
     let amountDescription = await super.extractAmountDescription_(connectedBook, baseCode, connectedCode, transaction);
 
     if (amountDescription.amount == null || amountDescription.amount.eq(0)) {
