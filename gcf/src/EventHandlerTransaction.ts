@@ -30,16 +30,6 @@ export abstract class EventHandlerTransaction extends EventHandler {
       return null;
     }
 
-    let excAmountProp = transaction.properties[EXC_AMOUNT_PROP];
-    if (excAmountProp) {
-      let extAmount = baseBook.parseValue(excAmountProp);
-      console.log(excAmountProp)
-      if (extAmount && extAmount.eq(0)) {
-        //Bypass if excAmount zero
-        return null;
-      }
-    } 
-
     let connectedCode = getBaseCode(connectedBook);
     if (connectedCode != null && connectedCode != '') {
       let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
