@@ -65,13 +65,14 @@ namespace GainLossUpdateService {
       });
     });
 
+    let stringResult: {[key: string]: string} = {}
     for (const key in result) {
       if (Object.prototype.hasOwnProperty.call(result, key)) {
-        result[key] = book.round(result[key])
+        stringResult[key] = book.round(result[key]).toFixed(book.getFractionDigits())
       }
     }
 
-    return {code: baseCode, result: JSON.stringify(result)};
+    return {code: baseCode, result: JSON.stringify(stringResult)};
   }
 
   function aknowledgeResult(result: {[key: string]: Bkper.Amount}, excAccount: Bkper.Account, delta: Bkper.Amount) {
