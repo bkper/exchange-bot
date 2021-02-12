@@ -6,6 +6,7 @@ const EXC_ACCOUNT_PROP = 'exc_account';
 const EXC_CODE_PROP = 'exc_code';
 const EXC_AMOUNT_PROP = 'exc_amount';
 const TAX_INCLUDED_AMOUNT_PROP = 'tax_included_amount';
+const EXC_AUTO_CHECK_PROP = 'exc_auto_check';
 
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
   //@ts-ignore
