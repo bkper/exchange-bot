@@ -40,7 +40,7 @@ namespace TransactionsUpdateService {
                 amount: baseTransaction.getAmount().toString(),
               }
               let amountDescription = BotService.extractAmountDescription_(connectedBook, baseCode, connectedCode, baseTransactionRaw, exchangeRates);
-              if (connectedTransaction.getAmount() != amountDescription.amount) {
+              if (!connectedTransaction.getAmount().round(baseBook.getFractionDigits()).eq(amountDescription.amount.round(baseBook.getFractionDigits()))) {
                 let wasChecked = false;
                 if (connectedTransaction.isChecked()) {
                   wasChecked = true;
