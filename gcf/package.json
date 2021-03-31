@@ -23,7 +23,7 @@
     "deploy:dist": "gcloud functions deploy $npm_package_functionName --runtime nodejs12 --trigger-http --entry-point doPost --max-instances 1 --memory 256MB --timeout 360 --project $npm_package_projectId"
   },
   "devDependencies": {
-    "@bkper/bkper-api-types": "^3.7.6",
+    "@bkper/bkper-api-types": "^3.8.2",
     "@types/express": "^4.17.10",
     "@types/node": "^14.11.2",
     "gts": "^3.0.3",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^1.7.1",
-    "bkper": "^1.7.7",
+    "bkper": "^1.8.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-http-context": "^1.2.4",
