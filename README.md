@@ -67,10 +67,15 @@ The first ```exc_account``` property found will be used, so, make sure to have o
 
 To bypass dynamic rates from the endpoint and force use of fixed amount for a given exc_code, just use the following transaction properties:
 
-- ```exc_code```: The book (currency) exchange code.
+- ```exc_code```: The exchange code to override.
 - ```exc_amount```: The amount for that transaction, in the specified exchange code.
 
 This is specially useful for remitences, when fees and spread will be processed later on gain/loss updates.
+
+Some additional properties uses to track converted amounts:
+
+- ```exc_base_code```: The exchange base code used to convert the transaction.
+- ```exc_base_rate```: The exchange base rate used to convert the transaction.
 
 
 Example:

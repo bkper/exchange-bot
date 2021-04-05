@@ -7,6 +7,8 @@ export interface AmountDescription {
   amount: Amount;
   description: string;
   taxAmount: Amount;
+  excBaseCode: string;
+  excBaseRate: Amount;
 }
 
 export abstract class EventHandlerTransaction extends EventHandler {

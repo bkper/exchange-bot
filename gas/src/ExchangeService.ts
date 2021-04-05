@@ -6,6 +6,12 @@ interface ExchangeRates {
   }
 }
 
+interface ConvertedAmount {
+  amount?: Bkper.Amount;
+  base: string;
+  rate: Bkper.Amount;
+}
+
 namespace ExchangeService {
 
   export function getRates(ratesEndpointUrl: string, cacheInSeconds: number): ExchangeRates {
@@ -68,7 +74,7 @@ namespace ExchangeService {
     }
   }
 
-  export function convert(value: Bkper.Amount, from: string, to: string, rates: ExchangeRates): Bkper.Amount {
+  export function convert(value: Bkper.Amount, from: string, to: string, rates: ExchangeRates): ConvertedAmount {
 
     if (rates == null) {
       throw 'rates must be provided.'
@@ -84,7 +90,12 @@ namespace ExchangeService {
     if (rate == null) {
       throw `Code ${to} not found in ${JSON.stringify(rates)}`
     }
-    return BkperApp.newAmount(rate).times(value);
+
+    return {
+      base: rates.base,
+      rate: BkperApp.newAmount(rate),
+      amount: BkperApp.newAmount(rate).times(value)
+    }
   }
 
   function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {

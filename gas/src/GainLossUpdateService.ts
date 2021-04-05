@@ -27,7 +27,7 @@ namespace GainLossUpdateService {
           let expectedBalance = ExchangeService.convert(connectedAccountBalanceOnDate, connectedCode, baseCode, exchangeRates);
 
           let accountBalanceOnDate = getAccountBalance(book, account, date);
-          let delta = accountBalanceOnDate.minus(expectedBalance);
+          let delta = accountBalanceOnDate.minus(expectedBalance.amount);
 
           let excAccountName = getExcAccountName(connectedAccount, connectedCode);
 

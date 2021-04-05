@@ -98,8 +98,10 @@ interface RatesEndpointConfig {
       const amount = book.parseValue(txExcAmount);
       return {
         amount: amount,
+        excBaseCode: base,
+        excBaseRate: amount.div(transaction.amount),
         description: transaction.description,
-        taxAmount: taxAmountProp ? (amount.div(transaction.amount)).times(taxAmountProp) : null
+        taxAmount: taxAmountProp ? (amount.div(transaction.amount)).times(taxAmountProp) : null,
       };
     }
 
@@ -112,6 +114,8 @@ interface RatesEndpointConfig {
           const amount = book.parseValue(part.replace(connectedCode, ''));
           let ret =  {
             amount: amount,
+            excBaseCode: base,
+            excBaseRate: amount.div(transaction.amount),            
             description: transaction.description.replace(part, `${base}${transaction.amount}`),
             taxAmount: taxAmountProp ? (amount.div(transaction.amount)).times(taxAmountProp) : null
           };
@@ -124,9 +128,14 @@ interface RatesEndpointConfig {
       }
     }
 
+    const convertedAmount = await convert(new Amount(transaction.amount), base, connectedCode, ratesEndpointUrl, cacheInSeconds);
+    const convertedTaxAmount = taxAmountProp ? await convert(taxAmountProp, base, connectedCode, ratesEndpointUrl, cacheInSeconds) : null;
+
     return {
-      amount: await convert(new Amount(transaction.amount), base, connectedCode, ratesEndpointUrl, cacheInSeconds),
+      amount: convertedAmount.amount,
+      excBaseCode: convertedAmount.base,
+      excBaseRate: convertedAmount.rate,
       description: `${transaction.description}`,
-      taxAmount: taxAmountProp ? await convert(taxAmountProp, base, connectedCode, ratesEndpointUrl, cacheInSeconds) : null
+      taxAmount: convertedTaxAmount ? convertedTaxAmount.amount : null
     };
   }  

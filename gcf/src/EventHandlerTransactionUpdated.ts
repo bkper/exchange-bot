@@ -1,6 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
-import { TAX_INCLUDED_AMOUNT_PROP } from "./constants";
+import { EXC_BASE_CODE_PROP, EXC_BASE_RATE_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
 import { AmountDescription, EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
@@ -65,6 +65,14 @@ private async updateConnectedTransaction(connectedBook: Book, connectedTransacti
 
     if (amountDescription.taxAmount) {
       connectedTransaction.setProperty(TAX_INCLUDED_AMOUNT_PROP, connectedBook.formatValue(amountDescription.taxAmount))
+    }
+
+    if (amountDescription.excBaseCode) {
+      connectedTransaction.setProperty(EXC_BASE_CODE_PROP, amountDescription.excBaseCode);
+    }
+
+    if (amountDescription.excBaseRate) {
+      connectedTransaction.setProperty(EXC_BASE_RATE_PROP, amountDescription.excBaseRate.toString())
     }
 
   let urls = transaction.urls;

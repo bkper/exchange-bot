@@ -23,9 +23,6 @@ namespace TransactionsUpdateService {
       let baseTransaction = iterator.next();
       if (baseTransaction.getAgentId() != 'exchange-bot') {
 
-        console.log(`Processing TX on base book ${baseBook.getName()}`)
-
-
         connectedBooks.forEach(connectedBook => {
           let connectedCode = BotService.getBaseCode(connectedBook);
 
@@ -40,16 +37,29 @@ namespace TransactionsUpdateService {
                 amount: baseTransaction.getAmount().toString(),
               }
               let amountDescription = BotService.extractAmountDescription_(connectedBook, baseCode, connectedCode, baseTransactionRaw, exchangeRates);
+
               if (!connectedTransaction.getAmount().round(baseBook.getFractionDigits()).eq(amountDescription.amount.round(baseBook.getFractionDigits()))) {
                 let wasChecked = false;
                 if (connectedTransaction.isChecked()) {
                   wasChecked = true;
                   connectedTransaction = connectedTransaction.uncheck()
                 }
-                connectedTransaction.setAmount(amountDescription.amount).update();
+                connectedTransaction.setAmount(amountDescription.amount)
+
                 if (amountDescription.taxAmount) {
                   connectedTransaction.setProperty(TAX_INCLUDED_AMOUNT_PROP, connectedBook.formatValue(amountDescription.taxAmount))
                 }
+
+                if (amountDescription.excBaseCode) {
+                  connectedTransaction.setProperty(EXC_BASE_CODE_PROP, amountDescription.excBaseCode);
+                }
+            
+                if (amountDescription.excBaseRate) {
+                  connectedTransaction.setProperty(EXC_BASE_RATE_PROP, amountDescription.excBaseRate.toString())
+                }
+
+                connectedTransaction.update();
+
                 if (wasChecked) {
                   connectedTransaction.check();
                 }

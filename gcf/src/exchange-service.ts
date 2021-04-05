@@ -6,7 +6,13 @@ import NodeCache = require("node-cache");
 import { Amount } from "bkper";
 const cache = new NodeCache();
 
-export async function convert(value: Amount, from: string, to: string, ratesEndpointUrl: string, cacheInSeconds: number): Promise<Amount> {
+interface ConvertedAmount {
+  amount?: Amount;
+  base: string;
+  rate: Amount;
+}
+
+export async function convert(value: Amount, from: string, to: string, ratesEndpointUrl: string, cacheInSeconds: number): Promise<ConvertedAmount> {
 
   if (ratesEndpointUrl == null) {
     throw 'exchangeRatesUrl must be provided.'
@@ -24,7 +30,12 @@ export async function convert(value: Amount, from: string, to: string, ratesEndp
   if (rate == null) {
     throw `Code ${to} not found in ${JSON.stringify(rates)}`
   }
-  return new Amount(rate).times(value);
+
+  return {
+    base: rates.base,
+    rate: new Amount(rate),
+    amount: new Amount(rate).times(value)
+  };
 }
 
 function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {
