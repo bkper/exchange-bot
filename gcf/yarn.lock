@@ -491,10 +491,10 @@ binary@^0.3.0:
     buffers "~0.1.1"
     chainsaw "~0.1.0"
 
-bkper@^1.8.1:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.8.1.tgz#559d7661c373c0349f0eb06f569d68eb269c55d0"
-  integrity sha512-hmKwDwP1vc7ucLz5GWBXO1e45Q9SDeSTmMcY+07I8A1AjaLnUtGEMNnsJ/RAinclzQxDFMwCueaF87AB/IdIaA==
+bkper@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.8.2.tgz#144fce5cce012a5391387a54f69387e4d499fd44"
+  integrity sha512-YTsHFRp+ZRE113sSF3Ujss731UcJMN0KNrrxl3IjX/4wBObGIogRCVwvFXa5o/z+M0dbSJZgKkMLEp8lYS/WjQ==
   dependencies:
     "@bkper/bkper-api-types" "^3.8.2"
     "@google-cloud/local-auth" "^1.0.0"
