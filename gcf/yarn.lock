@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@bkper/bkper-api-types@^3.8.2":
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-3.8.2.tgz#57b9997a67a504272b8337aa264454e900f842ab"
-  integrity sha512-qN5zO3KEXuCcV5rkGl0RKdpuFZuedYycp27o1HSGmcZ1R2rnysTz8dqjIa9lkkEVwQUJHTjvhM63n9QH8507xQ==
+"@bkper/bkper-api-types@^3.8.5":
+  version "3.8.5"
+  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-3.8.5.tgz#712a622a90136109562a06ef78c8a09a7dcfd660"
+  integrity sha512-27Q8nSKDuD6+Ya7Gxxii22NHw2pJ1yEvek92Lye4+j1DDhWdsmU9nQvhAcT6rD6GbE2MBuRfoznjgB0qSAP23g==
 
 "@eslint/eslintrc@^0.3.0":
   version "0.3.0"
@@ -491,12 +491,12 @@ binary@^0.3.0:
     buffers "~0.1.1"
     chainsaw "~0.1.0"
 
-bkper@^1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.8.2.tgz#144fce5cce012a5391387a54f69387e4d499fd44"
-  integrity sha512-YTsHFRp+ZRE113sSF3Ujss731UcJMN0KNrrxl3IjX/4wBObGIogRCVwvFXa5o/z+M0dbSJZgKkMLEp8lYS/WjQ==
+bkper@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.9.2.tgz#8d8e18918f215fcfd133b20882a499d5f765b1ce"
+  integrity sha512-fubL0lqARJw3MR7pg5BfaNeabus5O1jcJ3jXymuazkLHv4zf65VyUGQojNmawEDWTwEhg5XHJZxMXv3V22BJXA==
   dependencies:
-    "@bkper/bkper-api-types" "^3.8.2"
+    "@bkper/bkper-api-types" "^3.8.5"
     "@google-cloud/local-auth" "^1.0.0"
     big.js "^6.0.3"
     commander "^6.2.1"
