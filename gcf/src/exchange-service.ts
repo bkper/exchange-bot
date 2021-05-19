@@ -50,7 +50,11 @@ function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {
   let newRate = new Amount('1').div(rate);
   rates.base = toBase;
   for (let [key, value] of Object.entries(rates.rates)) {
-    rates.rates[key] = new Amount(value).times(newRate).toString();
+    try {
+      rates.rates[key] = new Amount(value).times(newRate).toString();
+    } catch (error) {
+      //ok
+    }
   }
   return rates;
 }
