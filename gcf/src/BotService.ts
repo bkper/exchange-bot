@@ -63,7 +63,7 @@ interface RatesEndpointConfig {
     let collectionBooks = book.getCollection() != null ? book.getCollection().getBooks() : null;
     if (collectionBooks) {
       for (const b of collectionBooks) {
-        if ((b.getId() != book.getId()) && getBaseCode(b) != null) {
+        if ((b.getId() != book.getId()) && getBaseCode(b) != null && getBaseCode(b) != 'TEMPLATE') {
           books.add(b);
         }
       }
