@@ -1,5 +1,5 @@
 import { Amount, Bkper, Book } from "bkper";
-import { EXC_AMOUNT_PROP, EXC_CODE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
+import { EXC_AMOUNT_PROP, EXC_BASE_PROP, EXC_CODE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
 import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
 
@@ -70,6 +70,31 @@ interface RatesEndpointConfig {
     }
 
     return books;
+  }
+
+  export function isBaseBook(book: Book): boolean {
+    if (book.getProperty(EXC_BASE_PROP)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  export function hasBaseBookInCollection(book: Book): boolean {
+    if (book.getProperties() == null) {
+      return false;
+    }
+
+    let collectionBooks = book.getCollection() != null ? book.getCollection().getBooks() : null;
+    if (collectionBooks) {
+      for (const b of collectionBooks) {
+        if (isBaseBook(b)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   export function getBaseCode(book: Book): string {

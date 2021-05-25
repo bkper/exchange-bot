@@ -1,6 +1,6 @@
-import { Amount, Book, Transaction } from "bkper";
-import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig } from "./BotService";
-import { EXC_AMOUNT_PROP } from "./constants";
+import { Account, Amount, Bkper, Book, Transaction } from "bkper";
+import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig, hasBaseBookInCollection, isBaseBook } from "./BotService";
+import { EXC_AUTO_CHECK_PROP, EXC_CODE_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {
@@ -33,16 +33,62 @@ export abstract class EventHandlerTransaction extends EventHandler {
     }
 
     let connectedCode = getBaseCode(connectedBook);
-    if (connectedCode != null && connectedCode != '') {
-      let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
-      if (await iterator.hasNext()) {
-        let connectedTransaction = await iterator.next();
-        return this.connectedTransactionFound(baseBook, connectedBook, transaction, connectedTransaction);
-      } else {
-        return this.connectedTransactionNotFound(baseBook, connectedBook, transaction)
+
+    
+    
+    let ret: Promise<string> = null;
+    
+    if (!hasBaseBookInCollection(baseBook) || isBaseBook(connectedBook) || await this.match(baseBook, connectedCode, transaction)) {
+      if (connectedCode != null && connectedCode != '') {
+        let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
+        if (await iterator.hasNext()) {
+          let connectedTransaction = await iterator.next();
+          ret = this.connectedTransactionFound(baseBook, connectedBook, transaction, connectedTransaction);
+        } else {
+          ret = this.connectedTransactionNotFound(baseBook, connectedBook, transaction)
+        }
       }
     }
-    return null;
+
+    return ret;
+  }
+
+  private async match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
+    let matchingAccounts = await this.getMatchingAccounts(baseBook, connectedCode)
+    for (const account of matchingAccounts) {
+      console.log(account.getName())
+      if (transaction.creditAccount.id == account.getId() || transaction.debitAccount.id == account.getId()) {
+        return true;
+      }
+    }
+    return false;
+  }
+  private async getMatchingAccounts(book: Book, code: string): Promise<Set<Account>> {
+    let accounts = new Set<Account>();
+    let group = await book.getGroup(code);
+    if (group != null) {
+      let groupAccounts = await group.getAccounts();
+      if (groupAccounts != null) {
+        groupAccounts.forEach(account => {
+          accounts.add(account);
+        })
+      }
+    }
+    let groups = await book.getGroups();
+    if (groups != null) {
+      for (const group of groups) {
+          if (group.getProperty(EXC_CODE_PROP) == code) {
+            let groupAccounts = await group.getAccounts();
+            if (groupAccounts != null) {
+              groupAccounts.forEach(account => {
+                accounts.add(account);
+              })
+            }
+          }
+        }
+    }
+
+    return accounts;
   }
 
   protected async extractAmountDescription_(book: Book, base: string, connectedCode: string, transaction: bkper.Transaction): Promise<AmountDescription> {

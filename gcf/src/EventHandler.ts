@@ -1,6 +1,6 @@
 import { Bkper, Book } from "bkper";
 import { getBaseCode, getConnectedBooks, getRatesEndpointConfig } from "./BotService";
-import { EXC_CODE_PROP } from "./constants";
+import { EXC_AUTO_CHECK_PROP, EXC_CODE_PROP } from "./constants";
 import { getRates } from "./exchange-service";
 
 export abstract class EventHandler {
@@ -17,7 +17,7 @@ export abstract class EventHandler {
     }
 
 
-    if (event.type == 'TRANSACTION_CHECKED' || event.type == 'TRANSACTION_UPDATED') {
+    if (event.type == 'TRANSACTION_CHECKED' || event.type == 'TRANSACTION_POSTED' || event.type == 'TRANSACTION_UPDATED') {
       //Load and cache rates prior to pararllel run
       let operation = event.data.object as bkper.TransactionOperation;
       let transaction = operation.transaction;
@@ -45,6 +45,18 @@ export abstract class EventHandler {
 
     let result = await Promise.all(responsesPromises);
     result = result.filter(r => r != null && r.trim() != '');
+
+    if (event.type == 'TRANSACTION_POSTED') {
+      let operation = event.data.object as bkper.TransactionOperation;
+      let transaction = operation.transaction;
+      let baseTransaction = await baseBook.getTransaction(transaction.id);
+      const autoCheck = baseBook.getProperty(EXC_AUTO_CHECK_PROP);
+  
+      if (autoCheck && !baseTransaction.isChecked() && !baseTransaction.isTrashed()) {
+        await baseTransaction.check();
+      }
+    }
+
 
     if (result.length == 0) {
       return false;

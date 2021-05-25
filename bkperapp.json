@@ -38,7 +38,8 @@
       "keys": [
         "exc_code",
         "exc_rates_url",
-        "exc_auto_check"
+        "exc_auto_check",
+        "exc_base"
       ]
     },
     "group": {

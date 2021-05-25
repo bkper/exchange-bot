@@ -93,12 +93,6 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       if (autoCheck) {
         await newTransaction.check();
       }
-      let baseTransaction = await baseBook.getTransaction(transaction.id);
-
-      if (autoCheck && !baseTransaction.isChecked()) {
-        await baseTransaction.check();
-      }
-
     } else {
       newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
       await newTransaction.create();
