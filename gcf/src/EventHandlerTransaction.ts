@@ -56,7 +56,6 @@ export abstract class EventHandlerTransaction extends EventHandler {
   private async match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
     let matchingAccounts = await this.getMatchingAccounts(baseBook, connectedCode)
     for (const account of matchingAccounts) {
-      console.log(account.getName())
       if (transaction.creditAccount.id == account.getId() || transaction.debitAccount.id == account.getId()) {
         return true;
       }
