@@ -10,16 +10,24 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
   }
 
   protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
+    console.time(`connectedTransactionFound`);
     if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
       await connectedTransaction.check();
-      return await this.buildCheckResponse(connectedBook, connectedTransaction);
+      const resp = await this.buildCheckResponse(connectedBook, connectedTransaction);
+      console.timeEnd(`connectedTransactionFound`);
+      return resp;
     } else if (!connectedTransaction.isPosted() && await this.isReadyToPost(connectedTransaction)) {
       await connectedTransaction.post();
       await connectedTransaction.check();
-      return await this.buildCheckResponse(connectedBook, connectedTransaction);
+      const resp = await this.buildCheckResponse(connectedBook, connectedTransaction);
+      console.timeEnd(`connectedTransactionFound`);
+      return resp;
     } else {
-      return await this.buildCheckResponse(connectedBook, connectedTransaction);
+      const resp = await this.buildCheckResponse(connectedBook, connectedTransaction);
+      console.timeEnd(`connectedTransactionFound`);
+      return resp;
     }
+
   }
 
   private async buildCheckResponse(connectedBook: Book, connectedTransaction: Transaction) {
@@ -30,6 +38,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
   }
 
   protected async connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string> {
+    console.time(`connectedTransactionNotFound`);
     let baseCreditAccount = await baseBook.getAccount(transaction.creditAccount.id);
     let baseDebitAccount = await baseBook.getAccount(transaction.debitAccount.id);
     let baseCode = getBaseCode(baseBook);
@@ -97,7 +106,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
       await newTransaction.create();
     }
-
+    console.timeEnd(`connectedTransactionNotFound`);
     return `${connectedBookAnchor}: ${record}`;
   }
 

@@ -54,12 +54,15 @@ export abstract class EventHandlerTransaction extends EventHandler {
   }
 
   private async match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
+    console.time("match");
+
     let matchingAccounts = await this.getMatchingAccounts(baseBook, connectedCode)
     for (const account of matchingAccounts) {
       if (transaction.creditAccount.id == account.getId() || transaction.debitAccount.id == account.getId()) {
         return true;
       }
     }
+    console.timeEnd("match")
     return false;
   }
   private async getMatchingAccounts(book: Book, code: string): Promise<Set<Account>> {
