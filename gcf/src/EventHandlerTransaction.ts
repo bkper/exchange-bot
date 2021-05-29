@@ -38,7 +38,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
     
     let ret: Promise<string> = null;
     
-    if (event.type == 'TRANSACTION_UPDATED' || !hasBaseBookInCollection(baseBook) || isBaseBook(connectedBook) || await this.match(baseBook, connectedCode, transaction)) {
+    if (event.type == 'TRANSACTION_UPDATED'|| isBaseBook(connectedBook) || !hasBaseBookInCollection(baseBook) || await this.match(baseBook, connectedCode, transaction)) {
       if (connectedCode != null && connectedCode != '') {
         let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
         if (await iterator.hasNext()) {
@@ -54,15 +54,15 @@ export abstract class EventHandlerTransaction extends EventHandler {
   }
 
   private async match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
-    console.time("match");
-
+    console.time(`match_${connectedCode}`)
     let matchingAccounts = await this.getMatchingAccounts(baseBook, connectedCode)
     for (const account of matchingAccounts) {
       if (transaction.creditAccount.id == account.getId() || transaction.debitAccount.id == account.getId()) {
+        console.timeEnd(`match_${connectedCode}`)
         return true;
       }
     }
-    console.timeEnd("match")
+    console.timeEnd(`match_${connectedCode}`)
     return false;
   }
   private async getMatchingAccounts(book: Book, code: string): Promise<Set<Account>> {

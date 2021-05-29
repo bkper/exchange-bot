@@ -81,10 +81,6 @@ interface RatesEndpointConfig {
   }
 
   export function hasBaseBookInCollection(book: Book): boolean {
-    if (book.getProperties() == null) {
-      return false;
-    }
-
     let collectionBooks = book.getCollection() != null ? book.getCollection().getBooks() : null;
     if (collectionBooks) {
       for (const b of collectionBooks) {

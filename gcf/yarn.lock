@@ -496,10 +496,10 @@ binary@^0.3.0:
     buffers "~0.1.1"
     chainsaw "~0.1.0"
 
-bkper@^1.10.0:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.10.0.tgz#e921c33201bfefca9ca04e1febfdcd40897dc5c8"
-  integrity sha512-3XFKsYwDjKH/dXdyzb3TGZpNtYqG4lpd0+lxC5h1mWzDqJQrA+fFHjhQ+LiGVhUZ+NXA+dI9qSo20p4vlNHQgQ==
+bkper@^1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.10.1.tgz#3fc3a2992b5ec63aaa313adc149e569d79af5aac"
+  integrity sha512-lzSrtvyqp1ta3M6oyJH1t/gNa9fHKVa2bKQLMO/ofGwWT/yxUO65WVisNG4xbKoJrroxCAcvUELQU5S6oRxlrQ==
   dependencies:
     "@bkper/bkper-api-types" "^3.8.7"
     "@google-cloud/local-auth" "^1.0.0"
