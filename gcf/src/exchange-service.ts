@@ -60,7 +60,8 @@ function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {
 }
 
 export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number): Promise<ExchangeRates> {
-  console.time('getRates')
+  const random = Math.random()
+  console.time(`getRates ${random}`)
   let rates: ExchangeRates = cache.get(ratesEndpointUrl);
   if (rates != null) {
     return rates;
@@ -105,7 +106,7 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
 
     cache.set( ratesEndpointUrl, rates, cacheInSeconds );
 
-    console.timeEnd('getRates')
+    console.timeEnd(`getRates ${random}`)
 
     return rates;
   }
