@@ -29,7 +29,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
   private async buildCheckResponse(connectedBook: Book, connectedTransaction: Transaction) {
     let bookAnchor = super.buildBookAnchor(connectedBook);
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount());
-    let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+    let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getDescription()}`;
     return `${bookAnchor}: ${record}`;
   }
 
