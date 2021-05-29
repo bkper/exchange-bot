@@ -36,7 +36,6 @@ function init(req: Request, res: Response) {
 
 async function handleEvent(req: Request, res: Response) {
 
-  console.time(`handleEvent`)
 
   init(req, res);
 
@@ -89,7 +88,6 @@ async function handleEvent(req: Request, res: Response) {
 
     }
 
-    console.timeEnd(`handleEvent`)
 
     console.log(`Result: ${JSON.stringify(result)}`)
     res.send(response(result))

@@ -16,8 +16,9 @@ export abstract class EventHandler {
       return `Please set the "${EXC_CODE_PROP}" property of this book.`
     }
 
-    console.log(`Handling ${event.type} event on book ${baseBook.getName()} from user ${event.user.username}...`)
+    const logtag = `Handling ${event.type} event on book ${baseBook.getName()} from user ${event.user.username}`;
 
+    console.time(logtag)
 
     if (event.type == 'TRANSACTION_CHECKED' || event.type == 'TRANSACTION_POSTED' || event.type == 'TRANSACTION_UPDATED') {
       //Load and cache rates prior to pararllel run
@@ -59,6 +60,7 @@ export abstract class EventHandler {
       }
     }
 
+    console.timeEnd(logtag)
 
     if (result.length == 0) {
       return false;
