@@ -52,11 +52,12 @@ export abstract class EventHandler {
     if (event.type == 'TRANSACTION_POSTED') {
       let operation = event.data.object as bkper.TransactionOperation;
       let transaction = operation.transaction;
-      let baseTransaction = await baseBook.getTransaction(transaction.id);
       const autoCheck = baseBook.getProperty(EXC_AUTO_CHECK_PROP);
-  
-      if (autoCheck && !baseTransaction.isChecked() && !baseTransaction.isTrashed()) {
-        await baseTransaction.check();
+      if (autoCheck) {
+        let baseTransaction = await baseBook.getTransaction(transaction.id);
+        if (!baseTransaction.isChecked() && !baseTransaction.isTrashed()) {
+          await baseTransaction.check();
+        }
       }
     }
 
