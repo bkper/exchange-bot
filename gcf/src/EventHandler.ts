@@ -1,5 +1,5 @@
 import { Bkper, Book } from "bkper";
-import { getBaseCode, getConnectedBooks, getRatesEndpointConfig } from "./BotService";
+import { getBaseCode, getConnectedBooks, getRatesEndpointConfig, isBaseBook } from "./BotService";
 import { EXC_AUTO_CHECK_PROP, EXC_CODE_PROP } from "./constants";
 import { getRates } from "./exchange-service";
 
@@ -56,7 +56,10 @@ export abstract class EventHandler {
       if (autoCheck) {
         let baseTransaction = await baseBook.getTransaction(transaction.id);
         if (!baseTransaction.isChecked() && !baseTransaction.isTrashed()) {
-          await baseTransaction.check();
+          //
+          if (isBaseBook(baseBook) || result.length > 0) {
+            await baseTransaction.check();
+          }
         }
       }
     }
