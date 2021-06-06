@@ -11,7 +11,7 @@ The Bot also adds a menu item to your books too update gains and losses, based o
 
 ![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=1200&h=400)
 
-The Exchange Bot uses rates from [exchangeratesapi.io](https://exchangeratesapi.io/) by default, but any rates source endpoint can be used.
+The Exchange Bot uses rates from [Open Exchange Rates](https://openexchangerates.org/) by default, but any rates source endpoint can be used.
 
 <!-- ## Sponsors ❤
 
