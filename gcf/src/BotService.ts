@@ -1,5 +1,5 @@
 import { Account, Amount, Bkper, Book } from "bkper";
-import { EXC_AMOUNT_PROP, EXC_BASE_PROP, EXC_CODE_PROP, EXC_BASE_RATE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
+import { EXC_AMOUNT_PROP, EXC_BASE_PROP, EXC_CODE_PROP, EXC_RATE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
 import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
 
@@ -113,7 +113,7 @@ interface RatesEndpointConfig {
   export async function extractAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
 
     let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
-    let txExcRate = transaction.properties[EXC_BASE_RATE_PROP];
+    let txExcRate = transaction.properties[EXC_RATE_PROP];
 
     if (txExcAmount && match(baseBook, connectedCode, transaction)) {
       const amount = connectedBook.parseValue(txExcAmount);

@@ -1,6 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
-import { EXC_BASE_CODE_PROP, EXC_BASE_RATE_PROP } from "./constants";
+import { EXC_CODE_PROP, EXC_RATE_PROP } from "./constants";
 import { AmountDescription, EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
@@ -64,11 +64,11 @@ private async updateConnectedTransaction(connectedBook: Book, connectedTransacti
     .setDebitAccount(connectedDebitAccount);
 
     if (amountDescription.excBaseCode) {
-      connectedTransaction.setProperty(EXC_BASE_CODE_PROP, amountDescription.excBaseCode);
+      connectedTransaction.setProperty(EXC_CODE_PROP, amountDescription.excBaseCode);
     }
 
     if (amountDescription.excBaseRate) {
-      connectedTransaction.setProperty(EXC_BASE_RATE_PROP, amountDescription.excBaseRate.toString())
+      connectedTransaction.setProperty(EXC_RATE_PROP, amountDescription.excBaseRate.toString())
     }
 
   let urls = transaction.urls;

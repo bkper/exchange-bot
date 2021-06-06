@@ -76,8 +76,8 @@ This is specially useful for remitences, when fees and spread will be processed 
 
 Some additional properties uses to track converted amounts:
 
-- ```exc_base_code```: The exchange base code used to convert the transaction.
-- ```exc_base_rate```: The exchange base rate used to convert the transaction.
+- ```exc_code```: The exchange base code used to convert the transaction.
+- ```exc_rate```: The exchange base rate used to convert the transaction.
 
 
 Example:

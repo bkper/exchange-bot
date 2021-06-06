@@ -51,11 +51,11 @@ namespace TransactionsUpdateService {
                 }
 
                 if (amountDescription.excBaseCode) {
-                  connectedTransaction.setProperty(EXC_BASE_CODE_PROP, amountDescription.excBaseCode);
+                  connectedTransaction.setProperty(EXC_CODE_PROP, amountDescription.excBaseCode);
                 }
             
                 if (amountDescription.excBaseRate) {
-                  connectedTransaction.setProperty(EXC_BASE_RATE_PROP, amountDescription.excBaseRate.toString())
+                  connectedTransaction.setProperty(EXC_RATE_PROP, amountDescription.excBaseRate.toString())
                 }
 
                 connectedTransaction.update();
