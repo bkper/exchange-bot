@@ -1,6 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
-import { EXC_AMOUNT_PROP, EXC_AUTO_CHECK_PROP, EXC_BASE_CODE_PROP, EXC_BASE_RATE_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
+import { EXC_AMOUNT_PROP, EXC_AUTO_CHECK_PROP, EXC_BASE_CODE_PROP, EXC_BASE_RATE_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransaction {
@@ -58,7 +58,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
     }
 
 
-    let amountDescription = await super.extractAmountDescription_(connectedBook, baseCode, connectedCode, transaction);
+    let amountDescription = await super.extractAmountDescription_(baseBook, connectedBook, baseCode, connectedCode, transaction);
 
     if (amountDescription.amount == null) {
       throw `Exchange rate NOT found for code  ${connectedCode} on ${transaction.date}`;
@@ -77,9 +77,6 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       .setDescription(amountDescription.description)
       .addRemoteId(transaction.id);
 
-      if (amountDescription.taxAmount) {
-        newTransaction.setProperty(TAX_INCLUDED_AMOUNT_PROP, connectedBook.formatValue(amountDescription.taxAmount))
-      }
 
       if (amountDescription.excBaseCode) {
         newTransaction.setProperty(EXC_BASE_CODE_PROP, amountDescription.excBaseCode);

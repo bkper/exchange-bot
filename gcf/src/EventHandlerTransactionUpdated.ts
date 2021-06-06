@@ -1,6 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
-import { EXC_BASE_CODE_PROP, EXC_BASE_RATE_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
+import { EXC_BASE_CODE_PROP, EXC_BASE_RATE_PROP } from "./constants";
 import { AmountDescription, EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
@@ -36,7 +36,7 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     }
 
 
-    let amountDescription = await super.extractAmountDescription_(connectedBook, baseCode, connectedCode, baseTransaction);
+    let amountDescription = await super.extractAmountDescription_(baseBook, connectedBook, baseCode, connectedCode, baseTransaction);
 
     let bookAnchor = super.buildBookAnchor(connectedBook);
 
@@ -62,10 +62,6 @@ private async updateConnectedTransaction(connectedBook: Book, connectedTransacti
     .setProperties(transaction.properties)
     .setCreditAccount(connectedCreditAccount)
     .setDebitAccount(connectedDebitAccount);
-
-    if (amountDescription.taxAmount) {
-      connectedTransaction.setProperty(TAX_INCLUDED_AMOUNT_PROP, connectedBook.formatValue(amountDescription.taxAmount))
-    }
 
     if (amountDescription.excBaseCode) {
       connectedTransaction.setProperty(EXC_BASE_CODE_PROP, amountDescription.excBaseCode);

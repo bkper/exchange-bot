@@ -1,5 +1,5 @@
-import { Amount, Bkper, Book } from "bkper";
-import { EXC_AMOUNT_PROP, EXC_BASE_PROP, EXC_CODE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP, TAX_INCLUDED_AMOUNT_PROP } from "./constants";
+import { Account, Amount, Bkper, Book } from "bkper";
+import { EXC_AMOUNT_PROP, EXC_BASE_PROP, EXC_CODE_PROP, EXC_BASE_RATE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
 import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
 
@@ -109,20 +109,28 @@ interface RatesEndpointConfig {
   }
 
 
-  export async function extractAmountDescription_(book: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
+  export async function extractAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
 
-    let txExcCode = transaction.properties[EXC_CODE_PROP];
     let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
-    let taxAmountProp = transaction.properties[TAX_INCLUDED_AMOUNT_PROP] ? book.parseValue(transaction.properties[TAX_INCLUDED_AMOUNT_PROP]) : null;
+    let txExcRate = transaction.properties[EXC_BASE_RATE_PROP];
 
-    if (txExcAmount && txExcCode && txExcCode == connectedCode) {
-      const amount = book.parseValue(txExcAmount);
+    if (txExcAmount && match(baseBook, connectedCode, transaction)) {
+      const amount = connectedBook.parseValue(txExcAmount);
       return {
         amount: amount,
         excBaseCode: base,
         excBaseRate: amount.div(transaction.amount),
         description: transaction.description,
-        taxAmount: taxAmountProp ? (amount.div(transaction.amount)).times(taxAmountProp) : null,
+      };
+    }
+
+    if (txExcRate && match(baseBook, connectedCode, transaction)) {
+      const excRate = connectedBook.parseValue(txExcRate);
+      return {
+        amount: excRate.times(transaction.amount),
+        excBaseCode: base,
+        excBaseRate: excRate,
+        description: transaction.description,
       };
     }
 
@@ -132,13 +140,12 @@ interface RatesEndpointConfig {
     for (const part of parts) {
       if (part.startsWith(connectedCode)) {
         try {
-          const amount = book.parseValue(part.replace(connectedCode, ''));
+          const amount = connectedBook.parseValue(part.replace(connectedCode, ''));
           let ret =  {
             amount: amount,
             excBaseCode: base,
             excBaseRate: amount.div(transaction.amount),            
             description: transaction.description.replace(part, `${base}${transaction.amount}`),
-            taxAmount: taxAmountProp ? (amount.div(transaction.amount)).times(taxAmountProp) : null
           };
           if (ret.amount && !ret.amount.eq(0)) {
             return ret;
@@ -150,13 +157,52 @@ interface RatesEndpointConfig {
     }
 
     const convertedAmount = await convert(new Amount(transaction.amount), base, connectedCode, ratesEndpointUrl, cacheInSeconds);
-    const convertedTaxAmount = taxAmountProp ? await convert(taxAmountProp, base, connectedCode, ratesEndpointUrl, cacheInSeconds) : null;
 
     return {
       amount: convertedAmount.amount,
       excBaseCode: convertedAmount.base,
       excBaseRate: convertedAmount.rate,
       description: `${transaction.description}`,
-      taxAmount: convertedTaxAmount ? convertedTaxAmount.amount : null
     };
   }  
+
+
+
+  export async function match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
+    let matchingAccounts = await getMatchingAccounts(baseBook, connectedCode)
+    for (const account of matchingAccounts) {
+      if (transaction.creditAccount.id == account.getId() || transaction.debitAccount.id == account.getId()) {
+        return true;
+      }
+    }
+    return false;
+  }
+  export async function getMatchingAccounts(book: Book, code: string): Promise<Set<Account>> {
+    let accounts = new Set<Account>();
+    let group = await book.getGroup(code);
+    if (group != null) {
+      let groupAccounts = await group.getAccounts();
+      if (groupAccounts != null) {
+        groupAccounts.forEach(account => {
+          accounts.add(account);
+        })
+      }
+    }
+
+    let groups = await book.getGroups();
+
+    if (groups != null) {
+      for (const group of groups) {
+          if (group.getProperty(EXC_CODE_PROP) == code) {
+            let groupAccounts = await group.getAccounts();
+            if (groupAccounts != null) {
+              groupAccounts.forEach(account => {
+                accounts.add(account);
+              })
+            }
+          }
+        }
+    }
+
+    return accounts;
+  }

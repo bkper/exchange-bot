@@ -1,12 +1,10 @@
-import { Account, Amount, Bkper, Book, Transaction } from "bkper";
-import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig, hasBaseBookInCollection, isBaseBook } from "./BotService";
-import { EXC_AUTO_CHECK_PROP, EXC_CODE_PROP } from "./constants";
+import { Amount, Book, Transaction } from "bkper";
+import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig, hasBaseBookInCollection, isBaseBook, match } from "./BotService";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {
   amount: Amount;
   description: string;
-  taxAmount: Amount;
   excBaseCode: string;
   excBaseRate: Amount;
 }
@@ -23,11 +21,6 @@ export abstract class EventHandlerTransaction extends EventHandler {
       return null;
     } 
 
-    if (transaction.agentId == 'sales-tax-bot') {
-      console.log("Skiping Tax Bot agent.");
-      return null;
-    } 
-
     if (!transaction.posted) {
       return null;
     }
@@ -38,7 +31,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
     
     let ret: Promise<string> = null;
     
-    if (event.type == 'TRANSACTION_UPDATED'|| isBaseBook(connectedBook) || !hasBaseBookInCollection(baseBook) || await this.match(baseBook, connectedCode, transaction)) {
+    if (event.type == 'TRANSACTION_UPDATED'|| isBaseBook(connectedBook) || !hasBaseBookInCollection(baseBook) || await match(baseBook, connectedCode, transaction)) {
       if (connectedCode != null && connectedCode != '') {
         let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
         if (await iterator.hasNext()) {
@@ -53,50 +46,12 @@ export abstract class EventHandlerTransaction extends EventHandler {
     return ret;
   }
 
-  private async match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
-    let matchingAccounts = await this.getMatchingAccounts(baseBook, connectedCode)
-    for (const account of matchingAccounts) {
-      if (transaction.creditAccount.id == account.getId() || transaction.debitAccount.id == account.getId()) {
-        return true;
-      }
-    }
-    return false;
-  }
-  private async getMatchingAccounts(book: Book, code: string): Promise<Set<Account>> {
-    let accounts = new Set<Account>();
-    let group = await book.getGroup(code);
-    if (group != null) {
-      let groupAccounts = await group.getAccounts();
-      if (groupAccounts != null) {
-        groupAccounts.forEach(account => {
-          accounts.add(account);
-        })
-      }
-    }
 
-    let groups = await book.getGroups();
+  protected async extractAmountDescription_(baseBook: Book, connectedBook: Book, baseCode: string, connectedCode: string, transaction: bkper.Transaction): Promise<AmountDescription> {
 
-    if (groups != null) {
-      for (const group of groups) {
-          if (group.getProperty(EXC_CODE_PROP) == code) {
-            let groupAccounts = await group.getAccounts();
-            if (groupAccounts != null) {
-              groupAccounts.forEach(account => {
-                accounts.add(account);
-              })
-            }
-          }
-        }
-    }
+    let ratesEndpointConfig = getRatesEndpointConfig(connectedBook, transaction.date, 'bot');
 
-    return accounts;
-  }
-
-  protected async extractAmountDescription_(book: Book, base: string, connectedCode: string, transaction: bkper.Transaction): Promise<AmountDescription> {
-
-    let ratesEndpointConfig = getRatesEndpointConfig(book, transaction.date, 'bot');
-
-    return await extractAmountDescription_(book, base, connectedCode, transaction, ratesEndpointConfig.url, ratesEndpointConfig.cache)
+    return await extractAmountDescription_(baseBook, connectedBook, baseCode, connectedCode, transaction, ratesEndpointConfig.url, ratesEndpointConfig.cache)
   }
 
   protected abstract getTransactionQuery(transaction: bkper.Transaction): string;
