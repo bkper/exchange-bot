@@ -74,6 +74,7 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
       method: 'GET',
       agent: new https.Agent({keepAlive: true}),
       retryConfig: {
+        statusCodesToRetry: [[100, 199], [400, 429], [500, 599]],
         retry: 5,
         onRetryAttempt: (err: GaxiosError) => {console.log(`${err.message} - Retrying... `)},
         retryDelay: 100
