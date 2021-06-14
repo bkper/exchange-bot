@@ -6,7 +6,6 @@ interface RatesEndpointConfig {
 interface AmountDescription {
   amount: Bkper.Amount;
   description: string;
-  taxAmount: Bkper.Amount;
   excBaseCode: string;
   excBaseRate: Bkper.Amount;  
 }
@@ -97,7 +96,6 @@ namespace BotService {
 
     let txExcCode = transaction.properties[EXC_CODE_PROP];
     let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
-    let taxAmountProp = book.parseValue(transaction.properties[TAX_INCLUDED_AMOUNT_PROP]);
 
     if (txExcAmount && txExcCode && txExcCode == connectedCode) {
       const amount = book.parseValue(txExcAmount);
@@ -106,7 +104,6 @@ namespace BotService {
         excBaseCode: base,
         excBaseRate: amount.div(transaction.amount),        
         description: transaction.description,
-        taxAmount: taxAmountProp ? amount.div(transaction.amount).times(taxAmountProp) : null
       };
     }
 
@@ -122,7 +119,6 @@ namespace BotService {
             excBaseCode: base,
             excBaseRate: amount.div(transaction.amount),            
             description: transaction.description.replace(part, `${base}${transaction.amount}`),
-            taxAmount: taxAmountProp ? amount.div(transaction.amount).times(taxAmountProp) : null
           };
           if (ret.amount && !ret.amount.eq(0)) {
             return ret;
@@ -134,13 +130,11 @@ namespace BotService {
     }
 
     const convertedAmount = ExchangeService.convert(BkperApp.newAmount(transaction.amount), base, connectedCode, exchangeRates);
-    const convertedTaxAmount = taxAmountProp ? ExchangeService.convert(taxAmountProp, base, connectedCode, exchangeRates) : null;
     return {
       amount: convertedAmount.amount,
       excBaseCode: convertedAmount.base,
       excBaseRate: convertedAmount.rate,
       description: `${transaction.description}`,
-      taxAmount: convertedTaxAmount ? convertedTaxAmount.amount : null
     };
   }  
 

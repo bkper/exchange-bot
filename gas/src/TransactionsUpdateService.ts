@@ -46,10 +46,6 @@ namespace TransactionsUpdateService {
                 }
                 connectedTransaction.setAmount(amountDescription.amount)
 
-                if (amountDescription.taxAmount) {
-                  connectedTransaction.setProperty(TAX_INCLUDED_AMOUNT_PROP, connectedBook.formatValue(amountDescription.taxAmount))
-                }
-
                 if (amountDescription.excBaseCode) {
                   connectedTransaction.setProperty(EXC_CODE_PROP, amountDescription.excBaseCode);
                 }
