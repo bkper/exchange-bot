@@ -110,6 +110,13 @@ interface RatesEndpointConfig {
 
 
   export async function extractAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
+    let amountDescription = await getAmountDescription_(baseBook, connectedBook, base, connectedCode, transaction, ratesEndpointUrl, cacheInSeconds);
+    amountDescription.amount = amountDescription.amount.round(8);
+    amountDescription.excBaseRate = amountDescription.amount.div(transaction.amount);
+    return amountDescription;
+  }
+
+  async function getAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
 
     let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
     let txExcRate = transaction.properties[EXC_RATE_PROP];
@@ -119,7 +126,6 @@ interface RatesEndpointConfig {
       return {
         amount: amount,
         excBaseCode: base,
-        excBaseRate: amount.div(transaction.amount),
         description: transaction.description,
       };
     }
@@ -129,7 +135,6 @@ interface RatesEndpointConfig {
       return {
         amount: excRate.times(transaction.amount),
         excBaseCode: base,
-        excBaseRate: excRate,
         description: transaction.description,
       };
     }
@@ -141,10 +146,9 @@ interface RatesEndpointConfig {
       if (part.startsWith(connectedCode)) {
         try {
           const amount = connectedBook.parseValue(part.replace(connectedCode, ''));
-          let ret =  {
+          let ret: AmountDescription =  {
             amount: amount,
             excBaseCode: base,
-            excBaseRate: amount.div(transaction.amount),            
             description: transaction.description.replace(part, `${base}${transaction.amount}`),
           };
           if (ret.amount && !ret.amount.eq(0)) {
@@ -161,7 +165,6 @@ interface RatesEndpointConfig {
     return {
       amount: convertedAmount.amount,
       excBaseCode: convertedAmount.base,
-      excBaseRate: convertedAmount.rate,
       description: `${transaction.description}`,
     };
   }  
