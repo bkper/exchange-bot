@@ -56,6 +56,10 @@ namespace BotViewService {
       }
     }
 
+    if (exchangeRates.rates[exchangeRates.base]) {
+      delete exchangeRates.rates[exchangeRates.base];
+    }
+
     return exchangeRates;
   }
 
