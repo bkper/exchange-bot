@@ -12,26 +12,7 @@ export class EventHandlerBookUpdated extends EventHandler {
 
     if (connectedCode != null && connectedCode != '') {
 
-      if (baseBook.getFractionDigits() != connectedBook.getFractionDigits()) {
-        connectedBook.setFractionDigits(baseBook.getFractionDigits())
-        response += ` decimal places: ${baseBook.getFractionDigits()}`
-      }
       
-      if (baseBook.getDatePattern() != connectedBook.getDatePattern()) {
-        connectedBook.setDatePattern(baseBook.getDatePattern())
-        response += ` date pattern: ${baseBook.getDatePattern()}`
-      }
-      
-      if (baseBook.getDecimalSeparator() != connectedBook.getDecimalSeparator()) {
-        connectedBook.setDecimalSeparator(baseBook.getDecimalSeparator())
-        response += ` decimal separator: ${baseBook.getDecimalSeparator()}`
-      }
-      
-      if (baseBook.getTimeZone() != connectedBook.getTimeZone()) {
-        connectedBook.setTimeZone(baseBook.getTimeZone())
-        response += ` time zone: ${baseBook.getTimeZone()}`
-      }
-
       if (baseBook.getPageSize() != connectedBook.getPageSize()) {
         connectedBook.setPageSize(baseBook.getPageSize())
         response += ` page size: ${baseBook.getPageSize()}`
