@@ -20,7 +20,7 @@ namespace BotService {
 
     //Default values
     if (ratesUrl == null || ratesUrl.trim() == '') {
-      ratesUrl = "https://api.exchangeratesapi.io/${date}";
+      ratesUrl = "https://openexchangerates.org/api/historical/${date}.json?show_alternative=true&app_id="+PropertiesService.getScriptProperties().getProperty('open_exchange_rates_app_id');
       ratesCache = 3600;
     }
 

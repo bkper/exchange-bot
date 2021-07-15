@@ -16,7 +16,6 @@ interface RatesEndpointConfig {
 
     //Default values
     if (ratesUrl == null || ratesUrl.trim() == '') {
-      ratesUrl = "https://api.exchangeratesapi.io/${date}?access_key="+process.env.exchange_rates_api_access_key;
       ratesUrl = "https://openexchangerates.org/api/historical/${date}.json?show_alternative=true&app_id="+process.env.open_exchange_rates_app_id;
       // ratesCache = 3600;
     }
