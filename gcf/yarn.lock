@@ -28,11 +28,6 @@
   resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-3.8.5.tgz#712a622a90136109562a06ef78c8a09a7dcfd660"
   integrity sha512-27Q8nSKDuD6+Ya7Gxxii22NHw2pJ1yEvek92Lye4+j1DDhWdsmU9nQvhAcT6rD6GbE2MBuRfoznjgB0qSAP23g==
 
-"@bkper/bkper-api-types@^3.8.7":
-  version "3.8.7"
-  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-3.8.7.tgz#403eab3ae63fc6f2ccbf748a84c8dfab334129b1"
-  integrity sha512-RlBoXfxKozuu6xevNxmUj7UC8GqiAEObSvlU/lqKPcIFn7bb7L9trqv+u/z0uLeY0746heU7pSKJ8KardITbmw==
-
 "@eslint/eslintrc@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.3.0.tgz#d736d6963d7003b6514e6324bec9c602ac340318"
@@ -496,20 +491,19 @@ binary@^0.3.0:
     buffers "~0.1.1"
     chainsaw "~0.1.0"
 
-bkper@^1.10.9:
-  version "1.10.9"
-  resolved "https://registry.yarnpkg.com/bkper/-/bkper-1.10.9.tgz#8b244b6fc5134362a52386c96d20e99835260b24"
-  integrity sha512-tkD9N7HF555EHHZdUH8fgsQOprsPSPuJKYPoxLW1jcxn+BRvRor2N2cdWgTURoN6k+tolEjMT5qD4+sRpRsf0Q==
+bkper@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/bkper/-/bkper-2.0.0.tgz#7feb5edf4358ddabc2b8e5cc492b76e7245b589f"
+  integrity sha512-Iq7T1KqDmrMSpplURqZgmrRciTD3h4FssP3RX9fCc1/i4z3T9J49ZfAZBMOjDn+S8XVo31uLqBuDQJvkuh06WA==
   dependencies:
-    "@bkper/bkper-api-types" "^3.8.7"
     "@google-cloud/local-auth" "^1.0.0"
     big.js "^6.0.3"
     commander "^6.2.1"
     dayjs "^1.10.3"
     dotenv "^8.2.0"
+    gaxios "^4.3.0"
     google-auth-library "^6.1.4"
     luxon "^1.25.0"
-    node-fetch "^2.6.1"
     open "^7.3.1"
 
 body-parser@1.19.0, body-parser@^1.18.3:
@@ -1450,7 +1444,7 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
-gaxios@^4.0.0:
+gaxios@^4.0.0, gaxios@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/gaxios/-/gaxios-4.3.0.tgz#ad4814d89061f85b97ef52aed888c5dbec32f774"
   integrity sha512-pHplNbslpwCLMyII/lHPWFQbJWOX0B3R1hwBEOvzYi1GmdKZruuEHK4N9V6f7tf1EaPYyF80mui1+344p6SmLg==
@@ -2397,7 +2391,7 @@ node-cache@^5.1.2:
   dependencies:
     clone "2.x"
 
-node-fetch@^2.3.0, node-fetch@^2.6.1:
+node-fetch@^2.3.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
