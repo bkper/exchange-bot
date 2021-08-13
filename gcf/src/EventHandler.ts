@@ -16,7 +16,7 @@ export abstract class EventHandler {
       return `Please set the "${EXC_CODE_PROP}" property of this book.`
     }
 
-    const logtag = `Handling ${event.type} event on book ${baseBook.getName()} from user ${event.user.username}`;
+    const logtag = `Handling ${event.type} event on book ${baseBook.getName()} from user ${event.user.username} ${Math.random()}`;
 
     console.time(logtag)
 
@@ -43,6 +43,7 @@ export abstract class EventHandler {
     }
 
     if (responsesPromises.length == 0) {
+      console.timeEnd(logtag)
       return false;
     }
 

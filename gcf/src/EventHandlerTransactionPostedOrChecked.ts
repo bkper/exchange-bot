@@ -10,17 +10,27 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
   }
 
   protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
+
+    const timeTag = `PostedOrChecked found ${Math.random()}`
+    console.time(timeTag)
+
     if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
       await connectedTransaction.check();
       const resp = await this.buildCheckResponse(connectedBook, connectedTransaction);
+      console.timeEnd(timeTag)
+
       return resp;
     } else if (!connectedTransaction.isPosted() && await this.isReadyToPost(connectedTransaction)) {
       await connectedTransaction.post();
       await connectedTransaction.check();
       const resp = await this.buildCheckResponse(connectedBook, connectedTransaction);
+      console.timeEnd(timeTag)
+
       return resp;
     } else {
       const resp = await this.buildCheckResponse(connectedBook, connectedTransaction);
+      console.timeEnd(timeTag)
+
       return resp;
     }
 
@@ -34,6 +44,11 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
   }
 
   protected async connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string> {
+
+    const timeTag = `PostedOrChecked not found ${Math.random()}`
+    console.time()
+
+
     let baseCode = getBaseCode(baseBook);
     let baseCreditAccount = await baseBook.getAccount(transaction.creditAccount.id);
     let baseDebitAccount = await baseBook.getAccount(transaction.debitAccount.id);
@@ -65,6 +80,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
     }
 
     if (amountDescription.amount.eq(0)) {
+      console.timeEnd(timeTag)
       return null;
     }
 
@@ -98,6 +114,9 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
       await newTransaction.create();
     }
+
+    console.timeEnd(timeTag)
+
     return `${connectedBookAnchor}: ${record}`;
   }
 

@@ -64,10 +64,11 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
   console.time(`getRates ${random}`)
   let rates: ExchangeRates = cache.get(ratesEndpointUrl);
   if (rates != null) {
+    console.timeEnd(`getRates ${random}`)
     return rates;
   } else {
 
-    console.warn(`Fetching rates from ${ratesEndpointUrl}`)
+    console.warn(`Fetching rates...`)
 
     let req = await request({
       url: ratesEndpointUrl,

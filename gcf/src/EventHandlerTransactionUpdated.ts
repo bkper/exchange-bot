@@ -13,6 +13,10 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     return null;
   }
   protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
+
+    const timeTag = `Deleted found ${Math.random()}`
+    console.time(timeTag)
+
     let baseCreditAccount = await baseBook.getAccount(baseTransaction.creditAccount.id);
     let baseDebitAccount = await baseBook.getAccount(baseTransaction.debitAccount.id);
     let baseCode = getBaseCode(baseBook);
@@ -45,6 +49,8 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 
     let record = `EDITED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+
+    console.timeEnd(timeTag)
 
     return `${bookAnchor}: ${record}`;
   }

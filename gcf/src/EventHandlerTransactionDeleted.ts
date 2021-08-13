@@ -11,6 +11,10 @@ export class EventHandlerTransactionDeleted extends EventHandlerTransaction {
     return null;
   }
   protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
+
+    const timeTag = `Deleted found ${Math.random()}`
+    console.time(timeTag)
+
     let bookAnchor = super.buildBookAnchor(connectedBook);
 
     if (connectedTransaction.isChecked()) {
@@ -22,6 +26,8 @@ export class EventHandlerTransactionDeleted extends EventHandlerTransaction {
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 
     let record = `DELETED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getDescription()}`;
+
+    console.timeEnd(timeTag)
 
     return `${bookAnchor}: ${record}`;
   }
