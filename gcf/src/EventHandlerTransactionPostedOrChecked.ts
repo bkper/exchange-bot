@@ -46,7 +46,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
   protected async connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string> {
 
     const timeTag = `PostedOrChecked not found ${Math.random()}`
-    console.time()
+    console.time(timeTag)
 
 
     let baseCode = getBaseCode(baseBook);
