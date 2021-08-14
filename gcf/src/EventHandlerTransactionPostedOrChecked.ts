@@ -45,8 +45,8 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
   protected async connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string> {
 
-    const timeTag = `PostedOrChecked not found ${Math.random()}`
-    console.time(timeTag)
+    const timeTagRead = `PostedOrChecked not found read ${Math.random()}`
+    console.time(timeTagRead)
 
 
     let baseCode = getBaseCode(baseBook);
@@ -79,10 +79,15 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       throw `Exchange rate NOT found for code  ${connectedCode} on ${transaction.date}`;
     }
 
+    console.timeEnd(timeTagRead)
+
+
     if (amountDescription.amount.eq(0)) {
-      console.timeEnd(timeTag)
       return null;
     }
+
+    const timeTagWrite = `PostedOrChecked not found write ${Math.random()}`
+    console.time(timeTagWrite)
 
     let newTransaction = connectedBook.newTransaction()
       .setDate(transaction.date)
@@ -115,7 +120,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       await newTransaction.create();
     }
 
-    console.timeEnd(timeTag)
+    console.timeEnd(timeTagWrite)
 
     return `${connectedBookAnchor}: ${record}`;
   }
