@@ -1,6 +1,6 @@
 {
   "name": "exchange-bot",
-  "version": "2.2.80",
+  "version": "2.2.81",
   "license": "MIT",
   "scripts": {
     "bkper:sync": "bkper app -u",
