@@ -108,15 +108,7 @@ interface RatesEndpointConfig {
     return date;
   }
 
-
   export async function extractAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
-    let amountDescription = await getAmountDescription_(baseBook, connectedBook, base, connectedCode, transaction, ratesEndpointUrl, cacheInSeconds);
-    amountDescription.amount = amountDescription.amount.round(connectedBook.getFractionDigits());
-    amountDescription.excBaseRate = amountDescription.amount.div(transaction.amount);
-    return amountDescription;
-  }
-
-  async function getAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
 
     let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
     let txExcRate = transaction.properties[EXC_RATE_PROP];
@@ -127,6 +119,7 @@ interface RatesEndpointConfig {
         amount: amount,
         excBaseCode: base,
         description: transaction.description,
+        excBaseRate: amount.div(transaction.amount)
       };
     }
 
@@ -136,6 +129,7 @@ interface RatesEndpointConfig {
         amount: excRate.times(transaction.amount),
         excBaseCode: base,
         description: transaction.description,
+        excBaseRate: excRate
       };
     }
 
@@ -150,6 +144,7 @@ interface RatesEndpointConfig {
             amount: amount,
             excBaseCode: base,
             description: transaction.description.replace(part, `${base}${transaction.amount}`),
+            excBaseRate: amount.div(transaction.amount)
           };
           if (ret.amount && !ret.amount.eq(0)) {
             return ret;
@@ -166,6 +161,7 @@ interface RatesEndpointConfig {
       amount: convertedAmount.amount,
       excBaseCode: convertedAmount.base,
       description: `${transaction.description}`,
+      excBaseRate: convertedAmount.rate
     };
   }  
 

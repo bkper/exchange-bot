@@ -14,7 +14,7 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
   }
   protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
 
-    const timeTag = `Deleted found ${Math.random()}`
+    const timeTag = `Updated found ${Math.random()}`
     console.time(timeTag)
 
     let baseCreditAccount = await baseBook.getAccount(baseTransaction.creditAccount.id);
