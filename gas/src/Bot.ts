@@ -5,7 +5,7 @@ const EXC_RATES_CACHE_PROP = 'exc_rates_cache';
 const EXC_ACCOUNT_PROP = 'exc_account';
 const EXC_CODE_PROP = 'exc_code';
 const EXC_AMOUNT_PROP = 'exc_amount';
-const EXC_AUTO_CHECK_PROP = 'exc_auto_check';
+// const EXC_AUTO_CHECK_PROP = 'exc_auto_check';
 const EXC_RATE_PROP = 'exc_rate';
 
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {

@@ -34,7 +34,7 @@ In order to proper setup the Exchange Bot on your books, some book properties sh
 
 - ```exc_code```: Required - The book (currency) exchange code.
 - ```exc_rates_url```: Optional - The rates endpoint url to use. Default: [exchangeratesapi.io](https://exchangeratesapi.io/). 
-- ```exc_auto_check```: Optional - true/false - Automatically perform check transaction after apply exchange rate.
+rate.
 - ```exc_base```: Optional - true/false - Define a book as a base and only mirror transactions to other books that matches the exchange base from accounts.
 
 

@@ -1,6 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
-import { EXC_AMOUNT_PROP, EXC_AUTO_CHECK_PROP, EXC_CODE_PROP, EXC_RATE_PROP } from "./constants";
+import { EXC_AMOUNT_PROP, EXC_CODE_PROP, EXC_RATE_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransaction {
@@ -109,12 +109,12 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
       let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.getName()} ${baseDebitAccount.getName()} ${amountDescription.description}`;
 
-    const autoCheck = baseBook.getProperty(EXC_AUTO_CHECK_PROP);
+    // const autoCheck = baseBook.getProperty(EXC_AUTO_CHECK_PROP);
     if (await this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
-      if (autoCheck) {
-        await newTransaction.check();
-      }
+      // if (autoCheck) {
+      //   await newTransaction.check();
+      // }
     } else {
       newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
       await newTransaction.create();

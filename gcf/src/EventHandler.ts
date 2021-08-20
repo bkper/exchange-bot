@@ -1,6 +1,6 @@
 import { Bkper, Book } from "bkper";
 import { getBaseCode, getConnectedBooks, getRatesEndpointConfig, isBaseBook } from "./BotService";
-import { EXC_AUTO_CHECK_PROP, EXC_CODE_PROP } from "./constants";
+import {  EXC_CODE_PROP } from "./constants";
 import { getRates } from "./exchange-service";
 
 export abstract class EventHandler {
@@ -53,16 +53,16 @@ export abstract class EventHandler {
     if (event.type == 'TRANSACTION_POSTED') {
       let operation = event.data.object as bkper.TransactionOperation;
       let transaction = operation.transaction;
-      const autoCheck = baseBook.getProperty(EXC_AUTO_CHECK_PROP);
-      if (autoCheck) {
-        let baseTransaction = await baseBook.getTransaction(transaction.id);
-        if (!baseTransaction.isChecked() && !baseTransaction.isTrashed()) {
-          //
-          if (isBaseBook(baseBook) || result.length > 0) {
-            await baseTransaction.check();
-          }
-        }
-      }
+      // const autoCheck = baseBook.getProperty(EXC_AUTO_CHECK_PROP);
+      // if (autoCheck) {
+      //   let baseTransaction = await baseBook.getTransaction(transaction.id);
+      //   if (!baseTransaction.isChecked() && !baseTransaction.isTrashed()) {
+      //     //
+      //     if (isBaseBook(baseBook) || result.length > 0) {
+      //       await baseTransaction.check();
+      //     }
+      //   }
+      // }
     }
 
     console.timeEnd(logtag)

@@ -5,5 +5,5 @@ export const EXC_CODE_PROP = 'exc_code';
 export const EXC_AMOUNT_PROP = 'exc_amount';
 export const EXC_BASE_PROP = 'exc_base';
 export const EXC_RATE_PROP = 'exc_rate';
-export const EXC_AUTO_CHECK_PROP = 'exc_auto_check';
+// export const EXC_AUTO_CHECK_PROP = 'exc_auto_check';
 export const CHILD_BOOK_ID_PROP = 'child_book_id';
