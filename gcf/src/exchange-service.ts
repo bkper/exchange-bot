@@ -115,8 +115,12 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
 
     return rates;
     } catch (err) {
-      //@ts-ignore
-      throw err.response.data.description;
+      try {
+        //@ts-ignore
+        throw err.response.data.description;
+      } catch (other) {
+        throw err
+      }
     }
   }
   
