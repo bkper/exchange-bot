@@ -115,12 +115,8 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
 
     return rates;
     } catch (err) {
-      try {
-        //@ts-ignore
-        throw err.response.data.description;
-      } catch (other) {
-        throw err
-      }
+      //@ts-ignore
+      throw err?.response?.data?.description || err;
     }
   }
   
