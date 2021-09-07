@@ -151,7 +151,7 @@ interface RatesEndpointConfig {
             excBaseCode: base,
             description: transaction.description.replace(part, `${base}${transaction.amount}`),
           };
-          if (ret.amount && !ret.amount.eq(0)) {
+          if (ret.amount) {
             return ret;
           }
         } catch (error) {
