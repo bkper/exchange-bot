@@ -1,6 +1,6 @@
 import { Bkper, Book } from "bkper";
 import { getBaseCode, getConnectedBooks, getRatesEndpointConfig, isBaseBook } from "./BotService";
-import {  EXC_CODE_PROP } from "./constants";
+import {  EXC_AUTO_CHECK_PROP, EXC_CODE_PROP } from "./constants";
 import { getRates } from "./exchange-service";
 
 export abstract class EventHandler {
@@ -19,6 +19,10 @@ export abstract class EventHandler {
     const logtag = `Handling ${event.type} event on book ${baseBook.getName()} from user ${event.user.username} ${Math.random()}`;
 
     console.time(logtag)
+
+    if (event.type == 'TRANSACTION_POSTED' && baseBook.getProperty(EXC_AUTO_CHECK_PROP)) {
+      return false;
+    }
 
     if (event.type == 'TRANSACTION_CHECKED' || event.type == 'TRANSACTION_POSTED' || event.type == 'TRANSACTION_UPDATED') {
       //Load and cache rates prior to pararllel run

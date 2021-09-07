@@ -67,8 +67,11 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
     console.timeEnd(`getRates ${random}`)
     return rates;
   } else {
-
+    
     console.warn(`Fetching rates...`)
+
+    try {
+
 
     let req = await request({
       url: ratesEndpointUrl,
@@ -77,7 +80,7 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
       retryConfig: {
         statusCodesToRetry: [[100, 199], [400, 429], [500, 599]],
         retry: 5,
-        onRetryAttempt: (err: GaxiosError) => {console.log(`${err.message} - Retrying... `)},
+        onRetryAttempt: (err: GaxiosError) => {console.log(`${err.response.data.description} - Retrying... `)},
         retryDelay: 100
       }
     })
@@ -111,5 +114,10 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
     console.timeEnd(`getRates ${random}`)
 
     return rates;
+    } catch (err) {
+      //@ts-ignore
+      throw err.response.data.description;
+    }
   }
+  
 }

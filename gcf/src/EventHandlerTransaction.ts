@@ -1,5 +1,6 @@
 import { Amount, Book, Transaction } from "bkper";
 import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig, hasBaseBookInCollection, isBaseBook, match } from "./BotService";
+import { EXC_AUTO_CHECK_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {
@@ -27,8 +28,6 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
     let connectedCode = getBaseCode(connectedBook);
 
-    
-    
     let ret: Promise<string> = null;
     
     if (event.type == 'TRANSACTION_UPDATED'|| isBaseBook(connectedBook) || !hasBaseBookInCollection(baseBook) || await match(baseBook, connectedCode, transaction)) {
