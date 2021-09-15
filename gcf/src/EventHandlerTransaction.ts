@@ -1,6 +1,5 @@
 import { Amount, Book, Transaction } from "bkper";
 import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig, hasBaseBookInCollection, isBaseBook, match } from "./BotService";
-import { EXC_AUTO_CHECK_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {

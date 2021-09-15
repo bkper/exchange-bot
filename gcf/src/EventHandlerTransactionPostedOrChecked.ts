@@ -109,7 +109,6 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
       let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.getName()} ${baseDebitAccount.getName()} ${amountDescription.description}`;
 
-    // const autoCheck = baseBook.getProperty(EXC_AUTO_CHECK_PROP);
     if (await this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
       if (transaction.checked) {

@@ -36,6 +36,7 @@ In order to proper setup the Exchange Bot on your books, some book properties sh
 - ```exc_rates_url```: Optional - The rates endpoint url to use. Default: [exchangeratesapi.io](https://exchangeratesapi.io/). 
 rate.
 - ```exc_base```: Optional - true/false - Define a book as a base and only mirror transactions to other books that matches the exchange base from accounts.
+- ```exc_on_check```: Optional - true/false - True to only exchange on CHECK event. Default is false, performing exchange on POST events.
 
 
 
