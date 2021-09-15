@@ -103,8 +103,10 @@
     var date = document.getElementById("update-date").value;
     var rates = getExchangeRates();
     <? for (var i = 0; i < books.length; i++) { ?>
+      <? if (books[i].base) { ?>
       showCodeWaiting('<?!= books[i].code ?>')
       google.script.run.withSuccessHandler(hideCodeWaiting).withFailureHandler(showError).updateGainLoss('<?!= books[i].id ?>', date, rates)
+      <? } ?>
     <? } ?>
   }
 

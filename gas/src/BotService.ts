@@ -138,6 +138,26 @@ namespace BotService {
     };
   }  
 
+  export function isBaseBook(book: Bkper.Book): boolean {
+    if (book.getProperty(EXC_BASE_PROP)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  export function hasBaseBookInCollection(book: Bkper.Book): boolean {
+    let collectionBooks = book.getCollection() != null ? book.getCollection().getBooks() : null;
+    if (collectionBooks) {
+      for (const b of collectionBooks) {
+        if (isBaseBook(b)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 
   
 

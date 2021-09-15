@@ -19,19 +19,23 @@ namespace BotViewService {
 
     template.books = [];
 
+    const hasBaseBookInCollection = BotService.hasBaseBookInCollection(book);
+
     let connectedBooks = BotService.getConnectedBooks(book);
-    connectedBooks.forEach(connectedBook => {
-      template.books.push({
-        id: connectedBook.getId(),
-        name: connectedBook.getName(),
-        code: BotService.getBaseCode(connectedBook)
-      })
-    });
+    for (const connectedBook of connectedBooks) {
+        template.books.push({
+          id: connectedBook.getId(),
+          name: connectedBook.getName(),
+          code: BotService.getBaseCode(connectedBook),
+          base: BotService.isBaseBook(connectedBook) || !hasBaseBookInCollection
+        })
+    }
 
     template.book = {
       id: book.getId(),
       name: book.getName(),
-      code: BotService.getBaseCode(book)
+      code: BotService.getBaseCode(book),
+      base: BotService.isBaseBook(book) || !hasBaseBookInCollection
     }
 
     template.books.push(template.book)
