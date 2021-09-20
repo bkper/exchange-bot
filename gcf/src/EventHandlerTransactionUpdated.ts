@@ -42,11 +42,21 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
     let amountDescription = await super.extractAmountDescription_(baseBook, connectedBook, baseCode, connectedCode, baseTransaction);
 
+    
+    let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
+
+
+    if (amountDescription.amount.eq(0)) {
+      await connectedTransaction.remove();
+      console.timeEnd(timeTag)
+      let record = `DELETED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+      return record
+    }
+
     let bookAnchor = super.buildBookAnchor(connectedBook);
 
     await this.updateConnectedTransaction(connectedBook, connectedTransaction, amountDescription, baseTransaction, connectedCreditAccount, connectedDebitAccount);
 
-    let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 
     let record = `EDITED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
 
@@ -58,6 +68,7 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
 
 private async updateConnectedTransaction(connectedBook: Book, connectedTransaction: Transaction, amountDescription: AmountDescription, transaction: bkper.Transaction, connectedCreditAccount: Account, connectedDebitAccount: Account) {
+
   if (connectedTransaction.isChecked()) {
     await connectedTransaction.uncheck();
   }
