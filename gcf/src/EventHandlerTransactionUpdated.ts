@@ -47,6 +47,9 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
 
     if (amountDescription.amount.eq(0)) {
+      if (connectedTransaction.isChecked()) {
+        await connectedTransaction.uncheck();
+      }
       await connectedTransaction.remove();
       console.timeEnd(timeTag)
       let record = `DELETED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
