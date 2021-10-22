@@ -1,4 +1,4 @@
-import { Account, Amount, Bkper, Book } from "bkper";
+import { Account, Amount, Bkper, Book, Group } from "bkper";
 import { EXC_AMOUNT_PROP, EXC_BASE_PROP, EXC_CODE_PROP, EXC_RATE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
 import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
@@ -73,13 +73,9 @@ interface RatesEndpointConfig {
   }
 
   export function isBaseBook(book: Book): boolean {
-    const tag = `isBaseBook [Book ${book.getName()}] ${Math.random()}`
-    console.time(tag)
     if (book.getProperty(EXC_BASE_PROP)) {
-      console.timeEnd(tag)
       return true;
     } else {
-      console.timeEnd(tag)
       return false;
     }
   }
@@ -176,44 +172,43 @@ interface RatesEndpointConfig {
 
 
   export async function match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
-    const logTag = `match [Book ${baseBook.getName()}] ${Math.random()}`
+    const logTag = `match [Book ${baseBook.getName()}] [Code: ${connectedCode}] ${Math.random()}`
     console.time(logTag)
-    let matchingAccounts = await getMatchingAccounts(baseBook, connectedCode)
-    for (const account of matchingAccounts) {
-      if (transaction.creditAccount.id == account.getId() || transaction.debitAccount.id == account.getId()) {
-        console.timeEnd(logTag)
-        return true;
+
+    const creditDebitAccounts = await Promise.all([baseBook.getAccount(transaction.creditAccount.id), baseBook.getAccount(transaction.debitAccount.id), baseBook.getGroups()])
+
+    const creditAccount = creditDebitAccounts[0];
+    const debitAccount = creditDebitAccounts[1];
+    
+    const creditGroups = await creditAccount.getGroups();
+    const debitGroups = await debitAccount.getGroups();
+    
+    if (creditGroups != null) {
+      for (const group of creditGroups) {
+        if (group.getName() == connectedCode) {
+          console.timeEnd(logTag)
+          return true;
+        }
+        if (group.getProperty(EXC_CODE_PROP) == connectedCode) {
+          console.timeEnd(logTag)
+          return true;
+        }
+      }
+    }
+
+    if (debitGroups != null) {
+      for (const group of debitGroups) {
+        if (group.getName() == connectedCode) {
+          console.timeEnd(logTag)
+          return true;
+        }
+        if (group.getProperty(EXC_CODE_PROP) == connectedCode) {
+          console.timeEnd(logTag)
+          return true;
+        }
       }
     }
     console.timeEnd(logTag)
     return false;
   }
-  export async function getMatchingAccounts(book: Book, code: string): Promise<Set<Account>> {
-    let accounts = new Set<Account>();
-    let group = await book.getGroup(code);
-    if (group != null) {
-      let groupAccounts = await group.getAccounts();
-      if (groupAccounts != null) {
-        groupAccounts.forEach(account => {
-          accounts.add(account);
-        })
-      }
-    }
-
-    let groups = await book.getGroups();
-
-    if (groups != null) {
-      for (const group of groups) {
-          if (group.getProperty(EXC_CODE_PROP) == code) {
-            let groupAccounts = await group.getAccounts();
-            if (groupAccounts != null) {
-              groupAccounts.forEach(account => {
-                accounts.add(account);
-              })
-            }
-          }
-        }
-    }
-
-    return accounts;
-  }
+  
