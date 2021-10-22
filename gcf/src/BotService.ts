@@ -73,9 +73,13 @@ interface RatesEndpointConfig {
   }
 
   export function isBaseBook(book: Book): boolean {
+    const tag = `isBaseBook [Book ${book.getName()}] ${Math.random()}`
+    console.time(tag)
     if (book.getProperty(EXC_BASE_PROP)) {
+      console.timeEnd(tag)
       return true;
     } else {
+      console.timeEnd(tag)
       return false;
     }
   }
@@ -172,12 +176,16 @@ interface RatesEndpointConfig {
 
 
   export async function match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
+    const logTag = `match [Book ${baseBook.getName()}] ${Math.random()}`
+    console.time(logTag)
     let matchingAccounts = await getMatchingAccounts(baseBook, connectedCode)
     for (const account of matchingAccounts) {
       if (transaction.creditAccount.id == account.getId() || transaction.debitAccount.id == account.getId()) {
+        console.timeEnd(logTag)
         return true;
       }
     }
+    console.timeEnd(logTag)
     return false;
   }
   export async function getMatchingAccounts(book: Book, code: string): Promise<Set<Account>> {
