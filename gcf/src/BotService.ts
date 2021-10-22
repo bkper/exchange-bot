@@ -172,16 +172,13 @@ interface RatesEndpointConfig {
 
 
   export async function match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
-    const logTag = `match [Book ${baseBook.getName()}] [Code: ${connectedCode}] ${Math.random()}`
+    const logTag = `match 2 [Book ${baseBook.getName()}] [Code: ${connectedCode}] ${Math.random()}`
     console.time(logTag)
 
-    const creditDebitAccounts = await Promise.all([baseBook.getAccount(transaction.creditAccount.id), baseBook.getAccount(transaction.debitAccount.id), baseBook.getGroups()])
+    const creditDebitGroups = await Promise.all([baseBook.getGroupsByAccount(transaction.creditAccount.id), baseBook.getGroupsByAccount(transaction.debitAccount.id), baseBook.getGroups()])
 
-    const creditAccount = creditDebitAccounts[0];
-    const debitAccount = creditDebitAccounts[1];
-    
-    const creditGroups = await creditAccount.getGroups();
-    const debitGroups = await debitAccount.getGroups();
+    const creditGroups = creditDebitGroups[0];
+    const debitGroups = creditDebitGroups[1];
     
     if (creditGroups != null) {
       for (const group of creditGroups) {
