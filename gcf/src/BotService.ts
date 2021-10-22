@@ -175,7 +175,7 @@ interface RatesEndpointConfig {
     const logTag = `match 2 [Book ${baseBook.getName()}] [Code: ${connectedCode}] ${Math.random()}`
     console.time(logTag)
 
-    const creditDebitGroups = await Promise.all([baseBook.getGroupsByAccount(transaction.creditAccount.id), baseBook.getGroupsByAccount(transaction.debitAccount.id), baseBook.getGroups()])
+    const creditDebitGroups = await Promise.all([baseBook.getGroupsByAccount(transaction.creditAccount.id), baseBook.getGroupsByAccount(transaction.debitAccount.id)])
 
     const creditGroups = creditDebitGroups[0];
     const debitGroups = creditDebitGroups[1];
