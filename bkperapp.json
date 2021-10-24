@@ -19,6 +19,7 @@
   "clientId": "321364005933-28d88ahs0ltmpkvvmq57oclaitakmpq8.apps.googleusercontent.com",
   "scopes": ["https://www.googleapis.com/auth/userinfo.email"],
   "webhookUrl": "https://us-central1-bkper-cc-bot.cloudfunctions.net/prod",
+  "apiVersion": "v5",
   "events": [
     "TRANSACTION_POSTED",
     "TRANSACTION_CHECKED",

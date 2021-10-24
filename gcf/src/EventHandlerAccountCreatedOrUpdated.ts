@@ -26,8 +26,8 @@ export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
       .setProperties(baseAccount.properties)
       .setArchived(baseAccount.archived);
     if (baseAccount.groups) {
-      for (const baseGroupId of baseAccount.groups) {
-        let baseGroup = await baseBook.getGroup(baseGroupId);
+      for (const g of baseAccount.groups) {
+        let baseGroup = await baseBook.getGroup(g.id);
         if (baseGroup) {
           let connectedGroup = await connectedBook.getGroup(baseGroup.getName());
           if (connectedGroup == null) {
