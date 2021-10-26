@@ -172,8 +172,6 @@ interface RatesEndpointConfig {
 
 
   export function match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): boolean {
-    const logTag = `match 2 [Book ${baseBook.getName()}] [Code: ${connectedCode}] ${Math.random()}`
-    console.time(logTag)
 
 
     const creditGroups = transaction.creditAccount.groups;
@@ -182,11 +180,9 @@ interface RatesEndpointConfig {
     if (creditGroups != null) {
       for (const group of creditGroups) {
         if (group.name == connectedCode) {
-          console.timeEnd(logTag)
           return true;
         }
         if (group.properties[EXC_CODE_PROP] == connectedCode) {
-          console.timeEnd(logTag)
           return true;
         }
       }
@@ -195,16 +191,13 @@ interface RatesEndpointConfig {
     if (debitGroups != null) {
       for (const group of debitGroups) {
         if (group.name == connectedCode) {
-          console.timeEnd(logTag)
           return true;
         }
         if (group.properties[EXC_CODE_PROP] == connectedCode) {
-          console.timeEnd(logTag)
           return true;
         }
       }
     }
-    console.timeEnd(logTag)
     return false;
   }
   
