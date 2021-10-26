@@ -8,8 +8,7 @@ export abstract class EventHandler {
   protected abstract processObject(baseBook: Book, connectedBook: Book, event: bkper.Event): Promise<string>;
 
   async handleEvent(event: bkper.Event): Promise<string[] | string | boolean> {
-    let bookId = event.bookId;
-    let baseBook = await Bkper.getBook(bookId);
+    let baseBook = Bkper.newBook(event.book);
     let baseCode = getBaseCode(baseBook);
 
     if (baseCode == null || baseCode == '') {
@@ -35,6 +34,7 @@ export abstract class EventHandler {
 
     let responsesPromises: Promise<string>[] = [];
     let connectedBooks = await getConnectedBooks(baseBook);
+
 
     for (const connectedBook of connectedBooks) {
       let connectedCode = getBaseCode(connectedBook);

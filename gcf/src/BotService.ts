@@ -171,22 +171,21 @@ interface RatesEndpointConfig {
 
 
 
-  export async function match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): Promise<boolean> {
+  export function match(baseBook: Book, connectedCode: string, transaction: bkper.Transaction): boolean {
     const logTag = `match 2 [Book ${baseBook.getName()}] [Code: ${connectedCode}] ${Math.random()}`
     console.time(logTag)
 
-    const creditDebitGroups = await Promise.all([baseBook.getGroupsByAccount(transaction.creditAccount.id), baseBook.getGroupsByAccount(transaction.debitAccount.id)])
 
-    const creditGroups = creditDebitGroups[0];
-    const debitGroups = creditDebitGroups[1];
-    
+    const creditGroups = transaction.creditAccount.groups;
+    const debitGroups = transaction.debitAccount.groups;
+
     if (creditGroups != null) {
       for (const group of creditGroups) {
-        if (group.getName() == connectedCode) {
+        if (group.name == connectedCode) {
           console.timeEnd(logTag)
           return true;
         }
-        if (group.getProperty(EXC_CODE_PROP) == connectedCode) {
+        if (group.properties[EXC_CODE_PROP] == connectedCode) {
           console.timeEnd(logTag)
           return true;
         }
@@ -195,11 +194,11 @@ interface RatesEndpointConfig {
 
     if (debitGroups != null) {
       for (const group of debitGroups) {
-        if (group.getName() == connectedCode) {
+        if (group.name == connectedCode) {
           console.timeEnd(logTag)
           return true;
         }
-        if (group.getProperty(EXC_CODE_PROP) == connectedCode) {
+        if (group.properties[EXC_CODE_PROP] == connectedCode) {
           console.timeEnd(logTag)
           return true;
         }
