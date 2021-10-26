@@ -8,7 +8,7 @@ export abstract class EventHandler {
   protected abstract processObject(baseBook: Book, connectedBook: Book, event: bkper.Event): Promise<string>;
 
   async handleEvent(event: bkper.Event): Promise<string[] | string | boolean> {
-    let baseBook = Bkper.newBook(event.book);
+    let baseBook = new Book(event.book);
     let baseCode = getBaseCode(baseBook);
 
     if (baseCode == null || baseCode == '') {
