@@ -1,4 +1,4 @@
-import { Account, Book, Transaction } from "bkper";
+import { Account, AccountType, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
 import { EXC_AMOUNT_PROP, EXC_CODE_PROP, EXC_RATE_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
@@ -50,12 +50,14 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
 
     let baseCode = getBaseCode(baseBook);
-    let baseCreditAccount = await baseBook.getAccount(transaction.creditAccount.id);
-    let baseDebitAccount = await baseBook.getAccount(transaction.debitAccount.id);
+    let baseCreditAccount = transaction.creditAccount;
+    let baseDebitAccount = transaction.debitAccount;
     let connectedCode = getBaseCode(connectedBook);
     let connectedBookAnchor = super.buildBookAnchor(connectedBook);
 
-    let connectedCreditAccount = await connectedBook.getAccount(baseCreditAccount.getName());
+    let connectedCreditDebitAccounts = await Promise.all([connectedBook.getAccount(baseCreditAccount.name), connectedBook.getAccount(baseDebitAccount.name)])
+
+    let connectedCreditAccount = connectedCreditDebitAccounts[0] ;
     if (connectedCreditAccount == null) {
       try {
         connectedCreditAccount = await this.createAccount(connectedBook, baseCreditAccount);
@@ -63,7 +65,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
         //OK
       }
     }
-    let connectedDebitAccount = await connectedBook.getAccount(baseDebitAccount.getName());
+    let connectedDebitAccount = connectedCreditDebitAccounts[1] ;
     if (connectedDebitAccount == null) {
       try {
         connectedDebitAccount = await this.createAccount(connectedBook, baseDebitAccount);
@@ -93,8 +95,8 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       .setDate(transaction.date)
       .setProperties(transaction.properties)
       .setAmount(amountDescription.amount)
-      .setCreditAccount(await connectedBook.getAccount(baseCreditAccount.getName()))
-      .setDebitAccount(await connectedBook.getAccount(baseDebitAccount.getName()))
+      .setCreditAccount(await connectedBook.getAccount(baseCreditAccount.name))
+      .setDebitAccount(await connectedBook.getAccount(baseDebitAccount.name))
       .setDescription(amountDescription.description)
       .addRemoteId(transaction.id);
 
@@ -107,7 +109,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
         newTransaction.setProperty(EXC_RATE_PROP, amountDescription.excBaseRate.toString())
       }
 
-      let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.getName()} ${baseDebitAccount.getName()} ${amountDescription.description}`;
+      let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.name} ${baseDebitAccount.name} ${amountDescription.description}`;
 
     if (await this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
@@ -115,7 +117,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
         await newTransaction.check();
       }
     } else {
-      newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
+      newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.name : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.name : ''} ${newTransaction.getDescription()}`.trim())
       await newTransaction.create();
     }
 
@@ -129,17 +131,17 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
     return await newTransaction.getCreditAccount() != null && await newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;
   }
 
-  private async createAccount(connectedBook: Book, baseAccount: Account): Promise<Account> {
+  private async createAccount(connectedBook: Book, baseAccount: bkper.Account): Promise<Account> {
     let newConnectedAccount = connectedBook.newAccount()
-      .setName(baseAccount.getName())
-      .setType(baseAccount.getType())
-      .setProperties(baseAccount.getProperties());
-    const baseGroups = await baseAccount.getGroups();
+      .setName(baseAccount.name)
+      .setType(baseAccount.type as AccountType)
+      .setProperties(baseAccount.properties);
+    const baseGroups = baseAccount.groups;
     if (baseGroups) {
       for (const baseGroup of baseGroups) {
-        let connectedGroup = await connectedBook.getGroup(baseGroup.getName());
+        let connectedGroup = await connectedBook.getGroup(baseGroup.name);
         if (connectedGroup == null) {
-          connectedGroup = await connectedBook.newGroup().setName(baseGroup.getName()).setProperties(baseGroup.getProperties()).create();
+          connectedGroup = await connectedBook.newGroup().setName(baseGroup.name).setProperties(baseGroup.properties).create();
         }
         await newConnectedAccount.addGroup(connectedGroup);        
       }
