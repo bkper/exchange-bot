@@ -120,8 +120,9 @@ interface RatesEndpointConfig {
 
     let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
     let txExcRate = transaction.properties[EXC_RATE_PROP];
+    let txExcCode = transaction.properties[EXC_CODE_PROP];
 
-    if (txExcAmount && match(baseBook, connectedCode, transaction)) {
+    if (txExcAmount && (connectedCode == txExcCode || match(baseBook, connectedCode, transaction))) {
       const amount = connectedBook.parseValue(txExcAmount);
       return {
         amount: amount,
@@ -130,7 +131,7 @@ interface RatesEndpointConfig {
       };
     }
 
-    if (txExcRate && match(baseBook, connectedCode, transaction)) {
+    if (txExcRate && (connectedCode == txExcCode || match(baseBook, connectedCode, transaction))) {
       const excRate = connectedBook.parseValue(txExcRate);
       return {
         amount: excRate.times(transaction.amount),
