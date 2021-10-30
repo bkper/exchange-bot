@@ -16,19 +16,19 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
     if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
       await connectedTransaction.check();
-      const resp = await this.buildCheckResponse(connectedBook, connectedTransaction);
+      const resp = this.buildCheckResponse(connectedBook, connectedTransaction);
       console.timeEnd(timeTag)
 
       return resp;
-    } else if (!connectedTransaction.isPosted() && await this.isReadyToPost(connectedTransaction)) {
+    } else if (!connectedTransaction.isPosted() && this.isReadyToPost(connectedTransaction.json())) {
       await connectedTransaction.post();
       await connectedTransaction.check();
-      const resp = await this.buildCheckResponse(connectedBook, connectedTransaction);
+      const resp = this.buildCheckResponse(connectedBook, connectedTransaction);
       console.timeEnd(timeTag)
 
       return resp;
     } else {
-      const resp = await this.buildCheckResponse(connectedBook, connectedTransaction);
+      const resp = this.buildCheckResponse(connectedBook, connectedTransaction);
       console.timeEnd(timeTag)
 
       return resp;
@@ -36,7 +36,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
   }
 
-  private async buildCheckResponse(connectedBook: Book, connectedTransaction: Transaction) {
+  private buildCheckResponse(connectedBook: Book, connectedTransaction: Transaction) {
     let bookAnchor = super.buildBookAnchor(connectedBook);
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount());
     let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getDescription()}`;
@@ -81,12 +81,17 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       throw `Exchange rate NOT found for code  ${connectedCode} on ${transaction.date}`;
     }
 
-    console.timeEnd(timeTagRead)
-
 
     if (amountDescription.amount.eq(0)) {
       return null;
     }
+
+
+    const creditDebitAccounts = await Promise.all([connectedBook.getAccount(baseCreditAccount.name), connectedBook.getAccount(baseDebitAccount.name)])
+
+    console.timeEnd(timeTagRead)
+
+
 
     const timeTagWrite = `PostedOrChecked not found write. [Book ${connectedBook.getName()}] ${Math.random()}`
     console.time(timeTagWrite)
@@ -95,8 +100,8 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
       .setDate(transaction.date)
       .setProperties(transaction.properties)
       .setAmount(amountDescription.amount)
-      .setCreditAccount(await connectedBook.getAccount(baseCreditAccount.name))
-      .setDebitAccount(await connectedBook.getAccount(baseDebitAccount.name))
+      .setCreditAccount(creditDebitAccounts[0])
+      .setDebitAccount(creditDebitAccounts[1])
       .setDescription(amountDescription.description)
       .addRemoteId(transaction.id);
 
@@ -111,11 +116,11 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
       let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${baseCreditAccount.name} ${baseDebitAccount.name} ${amountDescription.description}`;
 
-    if (await this.isReadyToPost(newTransaction)) {
+    if (this.isReadyToPost(newTransaction.json())) {
       await newTransaction.post();
-      if (transaction.checked) {
-        await newTransaction.check();
-      }
+      // if (transaction.checked) {
+      //   await newTransaction.check();
+      // }
     } else {
       newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.name : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.name : ''} ${newTransaction.getDescription()}`.trim())
       await newTransaction.create();
@@ -127,8 +132,8 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
   }
 
 
-  private async isReadyToPost(newTransaction: Transaction) {
-    return await newTransaction.getCreditAccount() != null && await newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;
+  private isReadyToPost(newTransaction: bkper.Transaction) {
+    return newTransaction.creditAccount != null && newTransaction.debitAccount != null && newTransaction.amount != null;
   }
 
   private async createAccount(connectedBook: Book, baseAccount: bkper.Account): Promise<Account> {
