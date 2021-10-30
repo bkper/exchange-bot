@@ -118,9 +118,9 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
     if (this.isReadyToPost(newTransaction.json())) {
       await newTransaction.post();
-      // if (transaction.checked) {
-      //   await newTransaction.check();
-      // }
+      if (transaction.checked) {
+        await newTransaction.check();
+      }
     } else {
       newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? baseCreditAccount.name : ''} ${newTransaction.getDebitAccount() == null ? baseDebitAccount.name : ''} ${newTransaction.getDescription()}`.trim())
       await newTransaction.create();
