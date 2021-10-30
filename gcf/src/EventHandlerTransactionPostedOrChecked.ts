@@ -45,7 +45,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
   protected async connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string> {
 
-    const timeTagRead = `PostedOrChecked not found read [Book: ${baseBook.getName()}]${Math.random()}`
+    const timeTagRead = `PostedOrChecked not found read [Book: ${baseBook.getName()}] [Owner ${connectedBook.getOwnerName()}] ${Math.random()}`
     console.time(timeTagRead)
 
 
@@ -93,7 +93,7 @@ export class EventHandlerTransactionPostedOrChecked extends EventHandlerTransact
 
 
 
-    const timeTagWrite = `PostedOrChecked not found write. [Book ${connectedBook.getName()}] ${Math.random()}`
+    const timeTagWrite = `PostedOrChecked not found write. [Book ${connectedBook.getName()}] [Owner ${connectedBook.getOwnerName()}] ${Math.random()}`
     console.time(timeTagWrite)
 
     let newTransaction = connectedBook.newTransaction()
