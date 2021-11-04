@@ -5,10 +5,16 @@ export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
 
   public async connectedAccountNotFound(baseBook: Book, connectedBook: Book, baseAccount: bkper.Account): Promise<string> {
 
+    const timeTagWrite = `AccountCreatedOrUpdated not found write. [Book ${connectedBook.getName()}] [Owner ${connectedBook.getOwnerName()}] ${Math.random()}`
+    console.time(timeTagWrite)
+
     let connectedAccount = connectedBook.newAccount();
     this.syncAccounts(baseBook, connectedBook, baseAccount, connectedAccount);
     await connectedAccount.create();
     let bookAnchor = super.buildBookAnchor(connectedBook);
+    
+    console.timeEnd(timeTagWrite)
+
     return `${bookAnchor}: ACCOUNT ${connectedAccount.getName()} CREATED`;
   }
 
