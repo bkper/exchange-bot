@@ -20,27 +20,11 @@ export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
   }
 
   protected async syncAccounts(baseBook: Book, connectedBook: Book, baseAccount: bkper.Account, connectedAccount: Account) {
-    connectedAccount.setGroups([]);
+    connectedAccount.setGroups(baseAccount.groups);
     connectedAccount.setName(baseAccount.name)
       .setType(baseAccount.type as AccountType)
       .setProperties(baseAccount.properties)
       .setArchived(baseAccount.archived);
-    if (baseAccount.groups) {
-      for (const g of baseAccount.groups) {
-        let baseGroup = await baseBook.getGroup(g.id);
-        if (baseGroup) {
-          let connectedGroup = await connectedBook.getGroup(baseGroup.getName());
-          if (connectedGroup == null) {
-            connectedGroup = await connectedBook.newGroup()
-              .setHidden(baseGroup.isHidden())
-              .setName(baseGroup.getName())
-              .setProperties(baseGroup.getProperties())
-              .create();
-          }
-          connectedAccount.addGroup(connectedGroup);
-        }
-      }
-    }
   }
 
 }
