@@ -6,20 +6,23 @@ export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
   public async connectedAccountNotFound(baseBook: Book, connectedBook: Book, baseAccount: bkper.Account): Promise<string> {
 
     let connectedAccount = connectedBook.newAccount();
-    await this.syncAccounts(baseBook, connectedBook, baseAccount, connectedAccount);
+    this.syncAccounts(baseBook, connectedBook, baseAccount, connectedAccount);
     await connectedAccount.create();
     let bookAnchor = super.buildBookAnchor(connectedBook);
     return `${bookAnchor}: ACCOUNT ${connectedAccount.getName()} CREATED`;
   }
 
   protected async connectedAccountFound(baseBook: Book, connectedBook: Book, baseAccount: bkper.Account, connectedAccount: Account): Promise<string> {
-    await this.syncAccounts(baseBook, connectedBook, baseAccount, connectedAccount);
+    const timeTagWrite = `AccountCreatedOrUpdated found write. [Book ${connectedBook.getName()}] [Owner ${connectedBook.getOwnerName()}] ${Math.random()}`
+    console.time(timeTagWrite)
+    this.syncAccounts(baseBook, connectedBook, baseAccount, connectedAccount);
     await connectedAccount.update();
     let bookAnchor = super.buildBookAnchor(connectedBook);
+    console.timeEnd(timeTagWrite)
     return `${bookAnchor}: ACCOUNT ${connectedAccount.getName()} UPDATED`;
   }
 
-  protected async syncAccounts(baseBook: Book, connectedBook: Book, baseAccount: bkper.Account, connectedAccount: Account) {
+  protected syncAccounts(baseBook: Book, connectedBook: Book, baseAccount: bkper.Account, connectedAccount: Account) {
     connectedAccount.setGroups(baseAccount.groups);
     connectedAccount.setName(baseAccount.name)
       .setType(baseAccount.type as AccountType)

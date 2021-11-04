@@ -10,10 +10,15 @@ export abstract class EventHandlerAccount extends EventHandler {
 
     if (connectedCode != null && connectedCode != '') {
 
+      const timeTagWrite = `EventHandlerAccount getAccount. [Book ${connectedBook.getName()}] [Owner ${connectedBook.getOwnerName()}] ${Math.random()}`
+      console.time(timeTagWrite)
+
       let connectedAccount = await connectedBook.getAccount(account.name);
       if (connectedAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
         connectedAccount = await connectedBook.getAccount(event.data.previousAttributes['name']);
       }
+
+      console.timeEnd(timeTagWrite)
 
       if (connectedAccount) {
         return this.connectedAccountFound(baseBook, connectedBook, account, connectedAccount);
