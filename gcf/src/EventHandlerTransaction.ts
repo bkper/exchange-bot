@@ -29,7 +29,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
     let ret: Promise<string> = null;
     
-    if (event.type == 'TRANSACTION_UPDATED'|| isBaseBook(connectedBook) || !hasBaseBookInCollection(baseBook) || await match(baseBook, connectedCode, transaction)) {
+    if (event.type == 'TRANSACTION_UPDATED'|| isBaseBook(connectedBook) || !hasBaseBookInCollection(baseBook) || match(baseBook, connectedCode, transaction)) {
       if (connectedCode != null && connectedCode != '') {
         let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
         if (await iterator.hasNext()) {
