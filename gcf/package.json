@@ -25,7 +25,7 @@
     "preversion": "yarn build",
     "deploy": "yarn build && yarn --cwd dist/ deploy:dist",
     "deploy:dist": "gcloud functions deploy $npm_package_functionName --runtime nodejs12 --trigger-http --entry-point doPost --max-instances 15 --memory 256MB --timeout 360 --env-vars-file .env.yaml --project $npm_package_projectId",
-    "postversion": "git add -A && git commit -m \"gcf $npm_package_version\" && git push && yarn deploy && echo \"Successfully released version $npm_package_version!\""
+    "postversion": "git add -A && git commit -m \"gcf-$npm_package_version\" && git push && yarn deploy && echo \"Successfully released version $npm_package_version!\""
   },
   "devDependencies": {
     "@bkper/bkper-api-types": "^5.1.1",

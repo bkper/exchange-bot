@@ -16,7 +16,7 @@
     "major": "yarn version --major --no-git-tag-version",    
     "predeploy": "yarn push",
     "deploy": "clasp deploy --description $npm_package_version --deploymentId AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM",
-    "postversion": "git add -A && git commit -m \"gas $npm_package_version\" && git push && yarn deploy && echo \"Successfully released version $npm_package_version!\""
+    "postversion": "git add -A && git commit -m \"gas-$npm_package_version\" && git push && yarn deploy && echo \"Successfully released version $npm_package_version!\""
   },
   "devDependencies": {
     "@bkper/bkper-api-types": "^3.7.1",
