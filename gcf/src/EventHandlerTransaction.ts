@@ -49,7 +49,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
     let ratesEndpointConfig = getRatesEndpointConfig(connectedBook, transaction.date, 'bot');
 
-    return await extractAmountDescription_(baseBook, connectedBook, baseCode, connectedCode, transaction, ratesEndpointConfig.url, ratesEndpointConfig.cache)
+    return await extractAmountDescription_(baseBook, connectedBook, baseCode, connectedCode, transaction, ratesEndpointConfig.url)
   }
 
   protected abstract getTransactionQuery(transaction: bkper.Transaction): string;

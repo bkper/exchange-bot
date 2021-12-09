@@ -107,14 +107,14 @@ interface RatesEndpointConfig {
   }
 
 
-  export async function extractAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
-    let amountDescription = await getAmountDescription_(baseBook, connectedBook, base, connectedCode, transaction, ratesEndpointUrl, cacheInSeconds);
+  export async function extractAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string): Promise<AmountDescription> {
+    let amountDescription = await getAmountDescription_(baseBook, connectedBook, base, connectedCode, transaction, ratesEndpointUrl);
     amountDescription.amount = amountDescription.amount.round(8);
     amountDescription.excBaseRate = amountDescription.amount.div(transaction.amount);
     return amountDescription;
   }
 
-  async function getAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string, cacheInSeconds: number): Promise<AmountDescription> {
+  async function getAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string): Promise<AmountDescription> {
 
     let txExcAmount = transaction.properties[EXC_AMOUNT_PROP];
     let txExcRate = transaction.properties[EXC_RATE_PROP];
