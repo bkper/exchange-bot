@@ -29,7 +29,7 @@ export abstract class EventHandler {
       let transaction = operation.transaction;
 
       let ratesEndpointConfig = getRatesEndpointConfig(baseBook, transaction.date, 'bot');
-      await getRates(ratesEndpointConfig.url, ratesEndpointConfig.cache)
+      await getRates(ratesEndpointConfig.url)
     }
 
     let responsesPromises: Promise<string>[] = [];

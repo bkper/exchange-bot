@@ -12,13 +12,13 @@ interface ConvertedAmount {
   rate: Amount;
 }
 
-export async function convert(value: Amount, from: string, to: string, ratesEndpointUrl: string, cacheInSeconds: number): Promise<ConvertedAmount> {
+export async function convert(value: Amount, from: string, to: string, ratesEndpointUrl: string): Promise<ConvertedAmount> {
 
   if (ratesEndpointUrl == null) {
     throw 'exchangeRatesUrl must be provided.'
   }
 
-  let rates = await getRates(ratesEndpointUrl, cacheInSeconds);
+  let rates = await getRates(ratesEndpointUrl);
 
   rates = convertBase(rates, from);
 
@@ -59,8 +59,8 @@ function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {
   return rates;
 }
 
-export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number): Promise<ExchangeRates> {
-  const cacheKey = `1_${ratesEndpointUrl}`;
+export async function getRates(ratesEndpointUrl: string): Promise<ExchangeRates> {
+  const cacheKey = `2_${ratesEndpointUrl}`;
   const random = Math.random()
   console.time(`getRates ${random}`)
   let rates: ExchangeRates = cache.get(cacheKey);
@@ -104,13 +104,8 @@ export async function getRates(ratesEndpointUrl: string, cacheInSeconds: number)
         `;
     }
 
-    if (cacheInSeconds == null || cacheInSeconds > 3600) {
-      cacheInSeconds = 3600;
-    } else if (cacheInSeconds < 300) {
-      cacheInSeconds = 300;
-    }
 
-    cache.set(cacheKey, rates, cacheInSeconds );
+    cache.set(cacheKey, rates, 1800);
 
     console.timeEnd(`getRates ${random}`)
 

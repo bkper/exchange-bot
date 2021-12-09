@@ -4,8 +4,7 @@ import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
 
 interface RatesEndpointConfig {
-  url: string,
-  cache: number
+  url: string
 }
 
   export function getRatesEndpointConfig(book: Book, date: string, agent: string): RatesEndpointConfig {
@@ -31,8 +30,7 @@ interface RatesEndpointConfig {
     // }
 
     return {
-      url: ratesUrl,
-      cache: 3600
+      url: ratesUrl
     }
   }
 
@@ -161,7 +159,7 @@ interface RatesEndpointConfig {
       }
     }
 
-    const convertedAmount = await convert(new Amount(transaction.amount), base, connectedCode, ratesEndpointUrl, cacheInSeconds);
+    const convertedAmount = await convert(new Amount(transaction.amount), base, connectedCode, ratesEndpointUrl);
 
     return {
       amount: convertedAmount.amount,
