@@ -55,9 +55,15 @@ namespace GainLossUpdateService {
 
           if (delta.gt(0)) {
             transaction.from(account).to(excAccount).setDescription('#exchange_loss').post();
+            if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
+              transaction.check();
+            }
             aknowledgeResult(result, excAccount, delta);
           } else if (delta.lt(0)) {
             transaction.from(excAccount).to(account).setDescription('#exchange_gain').post();
+            if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
+              transaction.check();
+            }
             aknowledgeResult(result, excAccount, delta);
           }
 

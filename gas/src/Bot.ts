@@ -7,6 +7,7 @@ const EXC_CODE_PROP = 'exc_code';
 const EXC_AMOUNT_PROP = 'exc_amount';
 const EXC_BASE_PROP = 'exc_base';
 const EXC_RATE_PROP = 'exc_rate';
+const EXC_ON_CHECK = 'exc_on_check';
 
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
   //@ts-ignore
