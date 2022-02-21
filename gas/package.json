@@ -1,6 +1,6 @@
 {
   "name": "exchange-bot-gas",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "scripts": {
     "login": "clasp login",
@@ -13,7 +13,7 @@
     "watch": "yarn push --watch --force",
     "patch": "yarn version --patch --no-git-tag-version",
     "minor": "yarn version --minor --no-git-tag-version",
-    "major": "yarn version --major --no-git-tag-version",    
+    "major": "yarn version --major --no-git-tag-version",
     "predeploy": "yarn push",
     "deploy": "clasp deploy --description $npm_package_version --deploymentId AKfycbxz1Fl1A_KpvAtWLSXtGh1oRaFdWibPweoJfa3yYrFRAAC6gRM",
     "postversion": "git add -A && git commit -m \"gas-$npm_package_version\" && git push && yarn deploy && echo \"Successfully released version $npm_package_version!\""
