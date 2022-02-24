@@ -10,24 +10,16 @@ interface RatesEndpointConfig {
   export function getRatesEndpointConfig(book: Book, date: string, agent: string): RatesEndpointConfig {
     //Read from properties
     let ratesUrl = book.getProperty(EXC_RATES_URL_PROP, 'exchange_rates_url');
-    let ratesCacheStr = book.getProperty(EXC_RATES_CACHE_PROP, 'exchange_rates_cache');
-    // let ratesCache: number = ratesCacheStr != null && /^\d+$/.test(ratesCacheStr) ? parseInt(ratesCacheStr) : 0;
 
     //Default values
     if (ratesUrl == null || ratesUrl.trim() == '') {
       ratesUrl = "https://openexchangerates.org/api/historical/${date}.json?show_alternative=true&app_id="+process.env.open_exchange_rates_app_id;
-      // ratesCache = 3600;
     }
 
     //deprecated
     ratesUrl = ratesUrl.replace("${transaction.date}", date);
-
     ratesUrl = ratesUrl.replace("${date}", date);
     ratesUrl = ratesUrl.replace("${agent}", agent);
-
-    // if (ratesCache < 300) {
-    //   ratesCache = 300;
-    // }
 
     return {
       url: ratesUrl

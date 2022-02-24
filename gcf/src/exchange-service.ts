@@ -79,7 +79,7 @@ export async function getRates(ratesEndpointUrl: string): Promise<ExchangeRates>
       method: 'GET',
       agent: new https.Agent({keepAlive: true}),
       retryConfig: {
-        statusCodesToRetry: [[100, 199], [400, 429], [500, 599]],
+        statusCodesToRetry: [[100, 199], [401, 429], [500, 599]],
         retry: 5,
         onRetryAttempt: (err: GaxiosError) => {console.log(`${err.response.data.description} - Retrying... `)},
         retryDelay: 100
@@ -87,6 +87,10 @@ export async function getRates(ratesEndpointUrl: string): Promise<ExchangeRates>
     })
 
     rates = req.data as ExchangeRates;
+
+    if (rates.error) {
+      throw rates.description || rates.message || 'Error reading rates'
+    }
 
     if (rates == null) {
       throw `Unable to get exchange rates from endpoint ${ratesEndpointUrl}`;
