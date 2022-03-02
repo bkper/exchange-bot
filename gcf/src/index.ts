@@ -4,7 +4,7 @@ import { Bkper } from 'bkper';
 import { Request, Response } from 'express';
 import express = require('express');
 import httpContext = require('express-http-context');
-import { EventHandlerTransactionPostedOrChecked } from './EventHandlerTransactionPostedOrChecked';
+import { EventHandlerTransactionChecked } from './EventHandlerTransactionEventChecked';
 import { EventHandlerTransactionUpdated } from './EventHandlerTransactionUpdated';
 import { EventHandlerTransactionDeleted } from './EventHandlerTransactionDeleted';
 import { EventHandlerTransactionRestored } from './EventHandlerTransactionRestored';
@@ -13,6 +13,7 @@ import { EventHandlerAccountDeleted } from './EventHandlerAccountDeleted';
 import { EventHandlerGroupCreatedOrUpdated } from './EventHandlerGroupCreatedOrUpdated';
 import { EventHandlerGroupDeleted } from './EventHandlerGroupDeleted';
 import { EventHandlerBookUpdated } from './EventHandlerBookUpdated';
+import { EventHandlerTransactionPosted } from './EventHandlerTransactionEventPosted';
 
 require('dotenv').config({path:`${__dirname}/../../.env`})
 
@@ -47,10 +48,10 @@ async function handleEvent(req: Request, res: Response) {
     switch (event.type) {
 
       case 'TRANSACTION_POSTED':
-        result.result = await new EventHandlerTransactionPostedOrChecked().handleEvent(event);
+        result.result = await new EventHandlerTransactionPosted().handleEvent(event);
         break;
       case 'TRANSACTION_CHECKED':
-        result.result = await new EventHandlerTransactionPostedOrChecked().handleEvent(event);
+        result.result = await new EventHandlerTransactionChecked().handleEvent(event);
         break;
       case 'TRANSACTION_UPDATED':
         result.result = await new EventHandlerTransactionUpdated().handleEvent(event);

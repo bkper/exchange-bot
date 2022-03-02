@@ -29,6 +29,7 @@ export abstract class EventHandler {
       let transaction = operation.transaction;
 
       let ratesEndpointConfig = getRatesEndpointConfig(baseBook, transaction.date, 'bot');
+      //Call to put rates on cache
       await getRates(ratesEndpointConfig.url)
     }
 
