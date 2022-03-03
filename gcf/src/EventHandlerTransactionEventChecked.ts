@@ -14,32 +14,52 @@ export class EventHandlerTransactionChecked extends EventHandlerTransactionEvent
     const timeTag = `Checked found ${Math.random()}`
     console.time(timeTag)
 
-    if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
-      await connectedTransaction.check();
-      const resp = this.buildCheckResponse(connectedBook, connectedTransaction);
-      console.timeEnd(timeTag)
+    let baseCode = getBaseCode(baseBook);
+    let connectedCode = getBaseCode(connectedBook);
 
-      return resp;
+    var currAmout = connectedTransaction.getAmount();
+
+    let amountDescription = await super.extractAmountDescription_(baseBook, connectedBook, baseCode, connectedCode, transaction);
+    
+    let resp = null;
+
+    var NUM_OF_DECIMAL_PLACES = 3;
+
+    if(!currAmout.round(NUM_OF_DECIMAL_PLACES).eq(amountDescription.amount.round(NUM_OF_DECIMAL_PLACES) )){
+      
+      connectedTransaction.setAmount(amountDescription.amount)
+      connectedTransaction.setProperty(EXC_RATE_PROP, amountDescription.excBaseRate.toString())
+
+      if(connectedTransaction.isChecked()){
+        await connectedTransaction.uncheck()
+      }
+      await (await connectedTransaction.update()).check();
+
+      resp = this.buildCheckResponse("UPDATED AND CHECKED", connectedBook, connectedTransaction);
+
+    } else if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
+      await connectedTransaction.check();
+      resp = this.buildCheckResponse("CHECKED", connectedBook, connectedTransaction);
+      
     } else if (!connectedTransaction.isPosted() && this.isReadyToPost(connectedTransaction.json())) {
       await connectedTransaction.post();
       await connectedTransaction.check();
-      const resp = this.buildCheckResponse(connectedBook, connectedTransaction);
-      console.timeEnd(timeTag)
+      resp = this.buildCheckResponse("POSTED AND CHECKED", connectedBook, connectedTransaction);
 
-      return resp;
     } else {
-      const resp = this.buildCheckResponse(connectedBook, connectedTransaction);
-      console.timeEnd(timeTag)
-
-      return resp;
+      resp = this.buildCheckResponse("ALREADY CHECKED", connectedBook, connectedTransaction);
     }
+
+    console.timeEnd(timeTag)
+    return resp;
+    
 
   }
 
-  private buildCheckResponse(connectedBook: Book, connectedTransaction: Transaction) {
+  private buildCheckResponse(tag: string, connectedBook: Book, connectedTransaction: Transaction) {
     let bookAnchor = super.buildBookAnchor(connectedBook);
     let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount());
-    let record = `CHECKED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getDescription()}`;
+    let record = `${tag}: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getDescription()}`;
     return `${bookAnchor}: ${record}`;
   }
 
