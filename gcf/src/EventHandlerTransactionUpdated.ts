@@ -60,8 +60,7 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
     await this.updateConnectedTransaction(connectedBook, connectedTransaction, amountDescription, baseTransaction, connectedCreditAccount, connectedDebitAccount);
 
-
-    let record = `EDITED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+    let record = `EDITED: ${connectedTransaction.getDateFormatted()} ${connectedBook.formatValue(connectedTransaction.getAmount())}  ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
 
     console.timeEnd(timeTag)
 
