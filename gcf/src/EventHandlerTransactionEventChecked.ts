@@ -70,12 +70,12 @@ export class EventHandlerTransactionChecked extends EventHandlerTransactionEvent
 
     let newTransaction = await super.mirrorTransaction(baseBook, connectedBook, transaction);
 
-    if (newTransaction.isPosted()) {
+    if (newTransaction && newTransaction.isPosted()) {
       await newTransaction.check();
     }
 
     console.timeEnd(timeTagWrite)
-    return `${super.buildBookAnchor(connectedBook)}: ${newTransaction.getDate()} ${newTransaction.getAmount()} ${newTransaction.getDescription()}`;
+    return newTransaction ? `${super.buildBookAnchor(connectedBook)}: ${newTransaction.getDate()} ${newTransaction.getAmount()} ${newTransaction.getDescription()}` : null;
   }
 
 }
