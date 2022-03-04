@@ -17,7 +17,7 @@
     "functions:dev": "functions-framework --source=dist/ --target=doPost --port=3003",
     "functions:enable": "gcloud services enable cloudfunctions.googleapis.com --project $npm_package_projectId && gcloud services enable cloudbuild.googleapis.com --project $npm_package_projectId",
     "functions:authorize": "gcloud alpha functions add-iam-policy-binding $npm_package_functionName --member=serviceAccount:bkper-hrd@appspot.gserviceaccount.com --role=roles/cloudfunctions.invoker --project $npm_package_projectId",
-    "functions:open": "open \"https://console.cloud.google.com/functions/details/us-central1/$npm_package_functionName?organizationId=305881217394&project=$npm_package_projectId&tab=logs\"",
+    "functions:open": "open-cli \"https://console.cloud.google.com/functions/details/us-central1/$npm_package_functionName?organizationId=305881217394&project=$npm_package_projectId&tab=logs\"",
     "open": "yarn functions:open",
     "patch": "yarn version --patch --no-git-tag-version",
     "minor": "yarn version --minor --no-git-tag-version",
@@ -35,6 +35,7 @@
     "ngrok": "^3.4.0",
     "nodemon": "^2.0.7",
     "npm-run-all": "^4.1.5",
+    "open-cli": "^7.0.1",
     "typescript": "^4.0.3"
   },
   "dependencies": {
