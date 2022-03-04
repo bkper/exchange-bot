@@ -20,7 +20,8 @@ export class EventHandlerTransactionPosted extends EventHandlerTransactionEvent 
     let newTransaction = await super.mirrorTransaction(baseBook, connectedBook, transaction);
 
     console.timeEnd(timeTagWrite)
-    return `${super.buildBookAnchor(connectedBook)}: ${newTransaction.getDate()} ${newTransaction.getAmount()} ${newTransaction.getDescription()}`;
+
+    return newTransaction ? `${super.buildBookAnchor(connectedBook)}: ${newTransaction.getDate()} ${newTransaction.getAmount()} ${newTransaction.getDescription()}` : null;
   }
 
 
