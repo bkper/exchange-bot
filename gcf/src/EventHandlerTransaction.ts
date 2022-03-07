@@ -16,10 +16,10 @@ export abstract class EventHandlerTransaction extends EventHandler {
     let operation = event.data.object as bkper.TransactionOperation;
     let transaction = operation.transaction;
 
-    if (transaction.agentId == 'exchange-bot') {
+    if (transaction.agentId == 'exchange-bot' && event.type != 'TRANSACTION_DELETED') {
       console.log("Same payload agent. Preventing bot loop.");
       return null;
-    } 
+    }
 
     if (!transaction.posted) {
       return null;
@@ -36,7 +36,17 @@ export abstract class EventHandlerTransaction extends EventHandler {
           let connectedTransaction = await iterator.next();
           ret = this.connectedTransactionFound(baseBook, connectedBook, transaction, connectedTransaction);
         } else {
+
           ret = this.connectedTransactionNotFound(baseBook, connectedBook, transaction)
+          if (!ret && transaction.remoteIds && event.type == 'TRANSACTION_DELETED') {
+
+            for (const remoteId of transaction.remoteIds) {
+              let connectedTransaction = await connectedBook.getTransaction(remoteId);
+              if(connectedTransaction){
+                ret = this.connectedTransactionFound(connectedBook, baseBook, transaction, connectedTransaction);
+              }
+            }
+          }
         }
       }
     }
