@@ -20,6 +20,10 @@ export async function convert(value: Amount, from: string, to: string, ratesEndp
 
   let rates = await getRates(ratesEndpointUrl);
 
+  if (rates.error) {
+    throw rates.description || rates.message || 'Error reading rates'
+  }
+
   rates = convertBase(rates, from);
 
   if (rates == null) {
@@ -34,7 +38,7 @@ export async function convert(value: Amount, from: string, to: string, ratesEndp
   return {
     base: rates.base,
     rate: new Amount(rate),
-    amount: new Amount(rate).times(value)
+    amount: new Amount(rate).times(value),
   };
 }
 
@@ -88,15 +92,16 @@ export async function getRates(ratesEndpointUrl: string): Promise<ExchangeRates>
 
     rates = req.data as ExchangeRates;
 
-    if (rates.error) {
-      throw rates.description || rates.message || 'Error reading rates'
-    }
+  } catch (err) {
+    //@ts-ignore
+    rates = err?.response?.data || null;
+  }    
 
     if (rates == null) {
       throw `Unable to get exchange rates from endpoint ${ratesEndpointUrl}`;
     }
 
-    if (rates.base == null || rates.rates == null) {
+    if (!rates.error && (rates.base == null || rates.rates == null)) {
       throw `Rates json from ${ratesEndpointUrl} in wrong format. Expected:
         {
           base: string;
@@ -114,10 +119,7 @@ export async function getRates(ratesEndpointUrl: string): Promise<ExchangeRates>
     console.timeEnd(`getRates ${random}`)
 
     return rates;
-    } catch (err) {
-      //@ts-ignore
-      throw err?.response?.data?.description || err;
-    }
+
   }
   
 }

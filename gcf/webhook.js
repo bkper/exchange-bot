@@ -9,9 +9,14 @@ process.env.NODE_ENV='development';
 const app = Bkper.setApiKey(process.env.BKPER_API_KEY);
 
 (async function() {
-  const url = await ngrok.connect({ port: 3003 });
-  console.log(`Started ngrok at ${url}`);
-  await app.setWebhookUrlDev(url).patch()
+  try {
+    const url = await ngrok.connect({ port: 3003 });
+    console.log(`Started ngrok at ${url}`);
+    await app.setWebhookUrlDev(url).patch()
+  } catch (err) {
+    console.log(err)
+    throw err;
+  }
 })();
 
 
