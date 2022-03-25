@@ -3,7 +3,10 @@
   "version": "2.6.10",
   "license": "MIT",
   "scripts": {
-    "bkper:sync": "bkper app -u"
+    "bkper:sync": "bkper app -u",
+    "clasp:login": "clasp login && yarn clasp:store",
+    "clasp:store": "cp ~/.clasprc.json ~/.clasprc-bkper.json",
+    "clasp:activate": "cp ~/.clasprc-bkper.json ~/.clasprc.json"       
   },
   "devDependencies": {
     "bkper": "^1.7.0",

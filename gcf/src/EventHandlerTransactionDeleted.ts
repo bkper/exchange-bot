@@ -3,33 +3,32 @@ import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionDeleted extends EventHandlerTransaction {
 
-  protected getTransactionQuery(transaction: bkper.Transaction): string {
-    return `remoteId:${transaction.id}`;
-  }
-
-  protected connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string> {
-    return null;
-  }
-  protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
-
-    const timeTag = `Deleted found ${Math.random()}`
-    console.time(timeTag)
-
-    let bookAnchor = super.buildBookAnchor(connectedBook);
-
-    if (connectedTransaction.isChecked()) {
-      await connectedTransaction.uncheck();
+    protected getTransactionQuery(transaction: bkper.Transaction): string {
+        return `remoteId:${transaction.id}`;
     }
 
-    await connectedTransaction.remove();
+    protected connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string> {
+        return null;
+    }
+    protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
 
-    let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
+        const timeTag = `Deleted found ${Math.random()}`
+        console.time(timeTag)
 
-    let record = `DELETED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getDescription()}`;
+        let bookAnchor = super.buildBookAnchor(connectedBook);
 
-    console.timeEnd(timeTag)
+        if (connectedTransaction.isChecked()) {
+            await connectedTransaction.uncheck();
+        }
+        await connectedTransaction.remove();
 
-    return `${bookAnchor}: ${record}`;
-  }
+        let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
+
+        let record = `DELETED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${connectedTransaction.getDescription()}`;
+
+        console.timeEnd(timeTag)
+
+        return `${bookAnchor}: ${record}`;
+    }
 
 }

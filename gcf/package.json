@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^2.0.0",
-    "bkper": "^2.4.0",
+    "bkper": "^2.5.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-http-context": "^1.2.4",
