@@ -47,7 +47,7 @@ namespace GainLossUpdateService {
             delta = delta.times(-1);
           }
 
-          // delta = book.round(delta);
+          const deltaRounded = book.round(delta);
 
           let transaction = book.newTransaction()
             .setDate(dateParam)
@@ -56,13 +56,13 @@ namespace GainLossUpdateService {
             .setProperty(EXC_AMOUNT_PROP, "0")
             .setAmount(delta.abs());
 
-          if (delta.gt(0)) {
+          if (deltaRounded.gt(0)) {
             transaction.from(account).to(excAccount).setDescription('#exchange_loss').post();
             if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
               transaction.check();
             }
             aknowledgeResult(result, excAccount, delta);
-          } else if (delta.lt(0)) {
+          } else if (deltaRounded.lt(0)) {
             transaction.from(excAccount).to(account).setDescription('#exchange_gain').post();
             if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
               transaction.check();
