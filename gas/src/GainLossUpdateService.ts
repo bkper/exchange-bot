@@ -47,7 +47,7 @@ namespace GainLossUpdateService {
             delta = delta.times(-1);
           }
 
-          delta = book.round(delta);
+          // delta = book.round(delta);
 
           let transaction = book.newTransaction()
             .setDate(dateParam)
