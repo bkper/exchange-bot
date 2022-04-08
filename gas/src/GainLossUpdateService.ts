@@ -51,6 +51,9 @@ namespace GainLossUpdateService {
 
           let transaction = book.newTransaction()
             .setDate(dateParam)
+            .setProperty(EXC_CODE_PROP, connectedCode)
+            .setProperty(EXC_RATE_PROP, expectedBalance.rate.toString())
+            .setProperty(EXC_AMOUNT_PROP, "0")
             .setAmount(delta.abs());
 
           if (delta.gt(0)) {
