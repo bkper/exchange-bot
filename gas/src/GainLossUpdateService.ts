@@ -13,6 +13,9 @@ namespace GainLossUpdateService {
     let connectedBooks = BotService.getConnectedBooks(book);
     let baseCode = BotService.getBaseCode(book);
 
+    let closingDateProp = book.getProperty(REPORT_CLOSING_DATE_PROP);
+    let excHistoricalProp = book.getProperty(EXC_HISTORICAL);
+
     var date = BotService.parseDateParam(dateParam);
 
     let result: {[key: string]: Bkper.Amount} = {};
@@ -23,10 +26,10 @@ namespace GainLossUpdateService {
       accounts.forEach(account => {
         let connectedAccount = connectedBook.getAccount(account.getName());
         if (connectedAccount != null) {
-          let connectedAccountBalanceOnDate = getAccountBalance(connectedBook, connectedAccount, date);
+          let connectedAccountBalanceOnDate = getAccountBalance(connectedBook, connectedAccount, date, closingDateProp, excHistoricalProp);
           let expectedBalance = ExchangeService.convert(connectedAccountBalanceOnDate, connectedCode, baseCode, exchangeRates);
 
-          let accountBalanceOnDate = getAccountBalance(book, account, date);
+          let accountBalanceOnDate = getAccountBalance(book, account, date, closingDateProp, excHistoricalProp);
           let delta = accountBalanceOnDate.minus(expectedBalance.amount);
 
           let excAccountName = getExcAccountName(connectedAccount, connectedCode);
@@ -183,16 +186,29 @@ namespace GainLossUpdateService {
     return BkperApp.AccountType.LIABILITY;
   }
 
-  function getAccountBalance(book: Bkper.Book, account: Bkper.Account, date: Date): Bkper.Amount {
-    let balances;
+  function getAccountBalance(book: Bkper.Book, account: Bkper.Account, date: Date, closingDateProp: string, historicalProp: string): Bkper.Amount {
+    let query;
     if (account.isPermanent()) {
-      balances = book.getBalancesReport(`account:"${account.getName()}" on:${book.formatDate(date, Session.getScriptTimeZone())}`);
+      query = `account:"${account.getName()}" on:${book.formatDate(date)}`;
     } else {
       var dateAfter = new Date(date.getTime());
       dateAfter.setDate(dateAfter.getDate() + 1)
-      balances = book.getBalancesReport(`account:"${account.getName()}" before:${book.formatDate(dateAfter, Session.getScriptTimeZone())}`);
+      if (!historicalProp && closingDateProp) {
+        let openingDate: Date;
+        try {
+          const closingDate = new Date();
+          closingDate.setTime(book.parseDate(closingDateProp).getTime());
+          closingDate.setDate(closingDate.getDate() + 1);
+          openingDate = closingDate;
+        } catch (error) {
+          throw `Error parsing closing date property: ${closingDateProp}`
+        }
+        query = `account:"${account.getName()}" after:${book.formatDate(openingDate)} before:${book.formatDate(dateAfter)}`;
+      } else {
+        query = `account:"${account.getName()}" before:${book.formatDate(dateAfter)}`;
+      }
     }
-    let containers = balances.getBalancesContainers();
+    let containers = book.getBalancesReport(query).getBalancesContainers();
     if (containers == null || containers.length == 0) {
       return BkperApp.newAmount(0);
     }

@@ -8,6 +8,8 @@ const EXC_AMOUNT_PROP = 'exc_amount';
 const EXC_BASE_PROP = 'exc_base';
 const EXC_RATE_PROP = 'exc_rate';
 const EXC_ON_CHECK = 'exc_on_check';
+const REPORT_CLOSING_DATE_PROP = 'report_closing_date';
+const EXC_HISTORICAL = 'exc_historical';
 
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
   //@ts-ignore
