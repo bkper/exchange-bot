@@ -26,7 +26,12 @@ export class EventHandlerBookUpdated extends EventHandler {
       if (baseBook.getLockDate() != connectedBook.getLockDate()) {
         connectedBook.setLockDate(baseBook.getLockDate())
         response += ` lock date: ${baseBook.getLockDate()}`
-      }      
+      }
+
+      if (baseBook.getClosingDate() != connectedBook.getClosingDate()) {
+        connectedBook.setClosingDate(baseBook.getClosingDate())
+        response += ` closing date: ${baseBook.getClosingDate()}`
+      }
 
       console.log(baseBook.getPeriodStartMonth())
 
