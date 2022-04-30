@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@bkper/bkper-api-types@^5.1.1":
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-5.1.1.tgz#4dc29e4c1d6b2fa0cb2d9a2df8916025d2ceb500"
-  integrity sha512-ZGjU7wLEZedqx88zroqvUsEvJflTYsx+Nql6cXJp3JFv/chIoRwZataVuhxMTwk8mL3GEtuyBEdvkLX5Il01vA==
+"@bkper/bkper-api-types@^5.1.4":
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-5.1.4.tgz#f648be76dccc2468d5f79f437678859058cf7fc7"
+  integrity sha512-wvS6eBWr6W5EZXsMoTRBJdrTnZ6ur/+fBOQwTk1SuRE4Mfux8iB/al2zStQh2Qij/6u522V29NXGSU8Uvmp6lg==
 
 "@eslint/eslintrc@^0.3.0":
   version "0.3.0"
@@ -497,10 +497,10 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
-bkper@^2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/bkper/-/bkper-2.5.1.tgz#d3cb51aed18add72ebcf09423042aa7cbd97927c"
-  integrity sha512-DeeRbIShARWXlHGm5kMfc+VFzW/YgNFu7rK/RgYcyxFTiIjEiv6ZB0RCnyz4XOZOmdXT9/Ze16fUQppAvpecBA==
+bkper@^2.5.2:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/bkper/-/bkper-2.5.2.tgz#64025200d65121a957d36e1498bd058451ff0b53"
+  integrity sha512-XpBL+380o8CxrJ5lP+ZFf34zF17gQ0KKbftfwkZIFW+rNtDYyWGKGWAAkGK68R5XsJurI/PNcwLbA0YwbMwTtQ==
   dependencies:
     "@google-cloud/local-auth" "^1.0.0"
     big.js "^6.0.3"
