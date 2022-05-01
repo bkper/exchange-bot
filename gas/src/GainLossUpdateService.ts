@@ -13,7 +13,7 @@ namespace GainLossUpdateService {
     let connectedBooks = BotService.getConnectedBooks(book);
     let baseCode = BotService.getBaseCode(book);
 
-    let closingDateProp = book.getProperty(REPORT_CLOSING_DATE_PROP);
+    let bookClosingDate = book.getClosingDate();
     let excHistoricalProp = book.getProperty(EXC_HISTORICAL);
 
     var date = BotService.parseDateParam(dateParam);
@@ -26,10 +26,10 @@ namespace GainLossUpdateService {
       accounts.forEach(account => {
         let connectedAccount = connectedBook.getAccount(account.getName());
         if (connectedAccount != null) {
-          let connectedAccountBalanceOnDate = getAccountBalance(connectedBook, connectedAccount, date, closingDateProp, excHistoricalProp);
+          let connectedAccountBalanceOnDate = getAccountBalance(connectedBook, connectedAccount, date, bookClosingDate, excHistoricalProp);
           let expectedBalance = ExchangeService.convert(connectedAccountBalanceOnDate, connectedCode, baseCode, exchangeRates);
 
-          let accountBalanceOnDate = getAccountBalance(book, account, date, closingDateProp, excHistoricalProp);
+          let accountBalanceOnDate = getAccountBalance(book, account, date, bookClosingDate, excHistoricalProp);
           let delta = accountBalanceOnDate.minus(expectedBalance.amount);
 
           let excAccountName = getExcAccountName(connectedAccount, connectedCode);
@@ -186,22 +186,22 @@ namespace GainLossUpdateService {
     return BkperApp.AccountType.LIABILITY;
   }
 
-  function getAccountBalance(book: Bkper.Book, account: Bkper.Account, date: Date, closingDateProp: string, historicalProp: string): Bkper.Amount {
+  function getAccountBalance(book: Bkper.Book, account: Bkper.Account, date: Date, bookClosingDate: string, historicalProp: string): Bkper.Amount {
     let query;
     if (account.isPermanent()) {
       query = `account:"${account.getName()}" on:${book.formatDate(date)}`;
     } else {
       var dateAfter = new Date(date.getTime());
       dateAfter.setDate(dateAfter.getDate() + 1)
-      if (!historicalProp && closingDateProp) {
+      if (!historicalProp && bookClosingDate) {
         let openingDate: Date;
         try {
           const closingDate = new Date();
-          closingDate.setTime(book.parseDate(closingDateProp).getTime());
+          closingDate.setTime(book.parseDate(bookClosingDate).getTime());
           closingDate.setDate(closingDate.getDate() + 1);
           openingDate = closingDate;
         } catch (error) {
-          throw `Error parsing closing date property: ${closingDateProp}`
+          throw `Error parsing book closing date: ${bookClosingDate}`
         }
         query = `account:"${account.getName()}" after:${book.formatDate(openingDate)} before:${book.formatDate(dateAfter)}`;
       } else {
