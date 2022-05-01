@@ -22,7 +22,7 @@ The Exchange Bot uses rates from [Open Exchange Rates](https://openexchangerates
 
 ## Configuration
 
-The Exchange Bot work by listening for TRANSACTION_CHECKED events in your book, applying exchange rates from the an **exchange rates endpoint** and recording another transaction to the associated books:
+The Exchange Bot works by listening for TRANSACTION_CHECKED events in your book, applying exchange rates from the an **exchange rates endpoint** and recording another transaction to the associated books:
 
 ![Exchange Bot Flow](https://docs.google.com/drawings/d/e/2PACX-1vSgg3HznU8deJsYNuZx57XvOusDTg-t6MwNIBpF2RuJRMzz-eFY4LhbCP1giOaO1mR3pD3K1gvEIz5i/pub?w=2880&h=1248)
 
@@ -35,9 +35,9 @@ In order to proper setup the Exchange Bot on your books, some book properties sh
 - ```exc_code```: Required - The book (currency) exchange code.
 - ```exc_rates_url```: Optional - The rates endpoint url to use. Default: [exchangeratesapi.io](https://exchangeratesapi.io/). 
 rate.
-- ```exc_base```: Optional - true/false - Define a book as a base and only mirror transactions to other books that matches the exchange base from accounts.
-- ```exc_on_check```: Optional - true/false - True to only exchange on CHECK event. Default is false, performing exchange on POST events.
-
+- ```exc_base```: Optional - true/false - Defines a book as a base and only mirror transactions to other books that matches the exchange base from accounts.
+- ```exc_on_check```: Optional - true/false - True only to exchange on CHECK event. Default is false, performing exchange on POST events.
+- ```exc_historical```: Optional - true/false - Defines if exchange updates should consider balances since the beginning of the book's operation. If set to false or not present, updates will consider balances after the book's [closing date](https://help.bkper.com/en/articles/5100445-book-closing-and-lock-dates).
 
 
 You can associate multiple books.
