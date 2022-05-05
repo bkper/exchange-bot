@@ -1,5 +1,5 @@
 import { Account, Amount, Bkper, Book, Group } from "bkper";
-import { EXC_AMOUNT_PROP, EXC_BASE_PROP, EXC_CODE_PROP, EXC_RATE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
+import { EXC_AMOUNT_PROP, EXC_BASE_PROP, EXC_CODE_PROP, EXC_RATE_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP, EXC_DATE_PROP } from "./constants";
 import { AmountDescription } from "./EventHandlerTransaction";
 import { convert } from "./exchange-service";
 
@@ -7,9 +7,16 @@ interface RatesEndpointConfig {
   url: string
 }
 
-  export function getRatesEndpointConfig(book: Book, date: string, agent: string): RatesEndpointConfig {
+  export function getRatesEndpointConfig(book: Book, transaction: bkper.Transaction): RatesEndpointConfig {
     //Read from properties
     let ratesUrl = book.getProperty(EXC_RATES_URL_PROP, 'exchange_rates_url');
+
+    let date = transaction.date;
+
+    if (transaction.properties[EXC_DATE_PROP]) {
+        let parsedDate = book.parseDate(transaction.properties[EXC_DATE_PROP])
+        date = parsedDate.toISOString().substring(0, 10);
+    }
 
     //Default values
     if (ratesUrl == null || ratesUrl.trim() == '') {
@@ -19,7 +26,7 @@ interface RatesEndpointConfig {
     //deprecated
     ratesUrl = ratesUrl.replace("${transaction.date}", date);
     ratesUrl = ratesUrl.replace("${date}", date);
-    ratesUrl = ratesUrl.replace("${agent}", agent);
+    ratesUrl = ratesUrl.replace("${agent}", 'bot');
 
     return {
       url: ratesUrl
@@ -85,17 +92,6 @@ interface RatesEndpointConfig {
 
   export function getBaseCode(book: Book): string {
     return book.getProperty(EXC_CODE_PROP, 'exchange_code');
-  }
-
-  export function parseDateParam(dateParam: string) {
-    var dateSplit = dateParam != null ? dateParam.split('-') : null;
-  
-    let year = new Number(dateSplit[0]).valueOf();
-    let month = new Number(dateSplit[1]).valueOf() - 1;
-    let day = new Number(dateSplit[2]).valueOf();
-    var date = new Date(year, month, day, 13, 0, 0, 0);
-  
-    return date;
   }
 
 

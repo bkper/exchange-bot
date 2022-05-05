@@ -52,6 +52,7 @@
     },
     "transaction": {
       "keys": [
+        "exc_date",
         "exc_code",
         "exc_amount",
         "exc_rate"

@@ -56,7 +56,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
     protected async extractAmountDescription_(baseBook: Book, connectedBook: Book, baseCode: string, connectedCode: string, transaction: bkper.Transaction): Promise<AmountDescription> {
 
-        let ratesEndpointConfig = getRatesEndpointConfig(connectedBook, transaction.date, 'bot');
+        let ratesEndpointConfig = getRatesEndpointConfig(connectedBook, transaction);
 
         return await extractAmountDescription_(baseBook, connectedBook, baseCode, connectedCode, transaction, ratesEndpointConfig.url)
     }
