@@ -22,9 +22,7 @@ The Bkper Exchange Bot default exchange rates are read at the moment of the gain
 
 
 
-Find a detailed explanation and instalation instructions on Bkper Help 
-
-[Bkper Exchange Bot Help](https://help.bkper.com/en/articles/4056041-bkper-exchange-bot) 
+Find a detailed explanation and instalation instructions on Bkper Help [Bkper Exchange Bot Help](https://help.bkper.com/en/articles/4056041-bkper-exchange-bot) 
 
 
 
@@ -148,4 +146,4 @@ Example:
 
 ### Sponsoring 
 
-![Sponsor Bkper Bot developement on Github ❤](https://github.com/sponsors/bkper)
+[Sponsor Bkper Bot developement on Github ❤](https://github.com/sponsors/bkper)
