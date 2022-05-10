@@ -21,6 +21,8 @@ The Bkper Exchange Bot default exchange rates are read at the moment of the gain
 [<img src='https://storage.googleapis.com/bkper-public/logos/brain-logo.webp' height='50'>](https://www.brain.uy/) -->
 
 
+The chart of account (CoA) is synchronized on books in a Collection by the Bkper Exchange Bot.
+
 
 Find a detailed explanation and instalation instructions on Bkper Help [Bkper Exchange Bot Help](https://help.bkper.com/en/articles/4056041-bkper-exchange-bot) 
 
