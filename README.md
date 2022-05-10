@@ -1,23 +1,33 @@
-The Exchange Bot helps you keep multiple Books in different currencies in sync.
+The Bkper Exchange Bot keeps balance values, in different Bkper Books with other currencies, synchronized.
 
-It works by mirroring transactios from one book to other books, automatically applying updated conversions rates.
+It works by mirroring transactions from one book to other books, automatically applying updated conversion rates.
 
 ![Exchange Bot](https://docs.google.com/drawings/d/e/2PACX-1vTAW6vvlAPHup58L5mwdiQnUVoSxHbf890GJiHYVkLmzhAc0kaGsb8B721vc1pRFVXp2OWx8rBiACMR/pub?w=949&h=436)
 
 
-For every transaction in a base book, it will generate another transaction on associated books, with different currencies.
+The Bkper Exchange Bot must be installed on all books in a Collection. For every transaction in a book within the Collection, it records another transaction on other Books with different currencies in the Collection. 
 
-The Bot also adds a menu item to your books too update gains and losses, based on exchange rates variation.
+The Bkper Exchange Bot installation adds a menu item to books to record gains and loss transactions, based on exchange rates variation.
 
 ![Exchange Bot Menu](https://docs.google.com/drawings/d/e/2PACX-1vSA-k4mJouFSGPUc8wH2J6o67qKs7jxYkk4VygH-6WA5uwdPAw5k5Jq42MhIvznj0EszPrAlIU_pHXm/pub?w=1200&h=400)
 
-The Exchange Bot uses rates from [Open Exchange Rates](https://openexchangerates.org/) by default, but any rates source endpoint can be used.
+The Bkper Exchange Bot default exchange rates are read at the moment of the gain/loss update from [Open Exchange Rates](https://openexchangerates.org/) Any other exchange rate source url can be used.
+
 
 <!-- ## Sponsors ❤
 
 [<img src='https://storage.googleapis.com/bkper-public/logos/ppv-logo.png' height='50'>](http://ppv.com.uy/)
 &nbsp;
 [<img src='https://storage.googleapis.com/bkper-public/logos/brain-logo.webp' height='50'>](https://www.brain.uy/) -->
+
+
+
+Find a detailed explanation and instalation instructions on Bkper Help 
+
+[Bkper Exchange Bot Help](https://help.bkper.com/en/articles/4056041-bkper-exchange-bot) 
+
+
+
 
 
 ## Configuration
@@ -134,5 +144,8 @@ Example:
     "USD": 1.2234,
   }
 }
+```
 
+### Sponsoring 
 
+![Sponsor Bkper Bot developement on Github ❤](https://github.com/sponsors/bkper)
