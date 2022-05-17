@@ -41,7 +41,7 @@
       .body #waiting-panel img {
         height: 25px;
       }
-      .body #waiting-panel {
+      .body #waiting-panel, .body #error-panel {
         display: flex;
         justify-content: center;
       }
@@ -49,9 +49,14 @@
         display: none;
       }
 
+      .body #error-panel {
+        color: red;
+      }
+
       .body label {
         width: 60px;
       }
+
 
       .footer {
         display: flex;
@@ -83,7 +88,9 @@
       <div id='rates-panel'>
 
       </div>
-      
+      <div id="error-panel">
+
+      </div>
     </div>
 
     <div class="footer">
@@ -103,15 +110,27 @@
 
   var waitingCodes = [];
 
+  var retryCount = 0;
+
   function updateGainLoss() {
     var date = document.getElementById("update-date").value;
     var rates = getExchangeRates();
     <? for (var i = 0; i < books.length; i++) { ?>
       <? if (books[i].base) { ?>
       showCodeWaiting('<?!= books[i].code ?>')
-      google.script.run.withSuccessHandler(hideCodeWaiting).withFailureHandler(showError).updateGainLoss('<?!= books[i].id ?>', date, rates)
+      google.script.run.withSuccessHandler(hideCodeWaiting).withFailureHandler(retryUpdateGainLoss).updateGainLoss('<?!= books[i].id ?>', date, rates)
       <? } ?>
     <? } ?>
+  }
+
+  function retryUpdateGainLoss(error) {
+      if (retryCount < 20) {
+          updateGainLoss();
+          retryCount++;
+      } else {
+        retryCount = 0;
+        showError(error)
+      }
   }
 
   function updateTransactions() {
@@ -183,11 +202,16 @@
 
   function showError(error) {
     showWaiting(false);
-    window.alert(error);
+    if (error) {
+        document.getElementById(`error-panel`).innerHTML = error
+    } else {
+        document.getElementById(`error-panel`).innerHTML = ''
+    }
   }
 
   function showCodeWaiting(code) {
     waitingCodes.push(code);
+    showError(false)
     disableButtons(true)
     document.getElementById(`result-${code}`).innerHTML = `<img src='https://storage.googleapis.com/bkper-public/addons/loading_3dots.gif'/>`
   }
@@ -203,6 +227,7 @@
 
   function hideWaiting() {
     showWaiting(false)
+    showError(false)
   }
 
   function closeWindow() {
