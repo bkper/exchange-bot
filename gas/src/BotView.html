@@ -127,6 +127,7 @@
       if (retryCount < 20) {
           updateGainLoss();
           retryCount++;
+          document.getElementById(`error-panel`).innerHTML = `Retrying ${retryCount}... `
       } else {
         retryCount = 0;
         showError(error)
@@ -219,6 +220,7 @@
   function hideCodeWaiting(sumary) {
     waitingCodes.splice(waitingCodes.indexOf(sumary.code), 1)
     document.getElementById(`result-${sumary.code}`).innerHTML = sumary.result
+    showError(false)
     if (waitingCodes.length == 0) {
       disableButtons(false)
       google.script.run.withFailureHandler(showError).auditBooks('<?!= book.id ?>')
