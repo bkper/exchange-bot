@@ -83,7 +83,7 @@ namespace ExchangeService {
     rates = convertBase(rates, from);
   
     if (rates == null) {
-      throw `Code ${from} not found in ${JSON.stringify(rates)}`
+      throw `Code ${from} not found in rates`
     }
   
     let rate = rates.rates[to];
