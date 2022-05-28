@@ -23,6 +23,7 @@ namespace GainLossUpdateService {
     connectedBooks.forEach(connectedBook => {
       let connectedCode = BotService.getBaseCode(connectedBook);
       let accounts = getMatchingAccounts(book, connectedCode);
+      let transactions:Bkper.Transaction[] = []
       accounts.forEach(account => {
         let connectedAccount = connectedBook.getAccount(account.getName());
         if (connectedAccount != null) {
@@ -60,21 +61,26 @@ namespace GainLossUpdateService {
             .setAmount(delta.abs());
 
           if (deltaRounded.gt(0)) {
-            transaction.from(account).to(excAccount).setDescription('#exchange_loss').post();
-            if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
-              transaction.check();
-            }
+            transaction.from(account).to(excAccount).setDescription('#exchange_loss');
+            transactions.push(transaction)
+            // if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
+            //   transaction.check();
+            // }
             aknowledgeResult(result, excAccount, delta);
           } else if (deltaRounded.lt(0)) {
-            transaction.from(excAccount).to(account).setDescription('#exchange_gain').post();
-            if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
-              transaction.check();
-            }
+            transaction.from(excAccount).to(account).setDescription('#exchange_gain');
+            transactions.push(transaction)
+
+            // if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
+            //   transaction.check();
+            // }
             aknowledgeResult(result, excAccount, delta);
           }
-
         }
       });
+
+      book.batchCreateTransactions(transactions);
+      
     });
 
     let stringResult: {[key: string]: string} = {}
