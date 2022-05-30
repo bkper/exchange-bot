@@ -29,15 +29,21 @@ namespace GainLossUpdateService {
       let accounts = getMatchingAccounts(book, connectedCode);
       let transactions:Bkper.Transaction[] = []
       let connectedBookBalancesReport = connectedBook.getBalancesReport(query);
-      accounts.forEach(account => {
+      for (const account of accounts) {
         let connectedAccount = connectedBook.getAccount(account.getName());
         if (connectedAccount != null) {
-          const connectedBalancesContainer = connectedBookBalancesReport.getBalancesContainer(connectedAccount.getName());
-          let connectedAccountBalanceOnDate = connectedBalancesContainer.getCumulativeBalance();
-          let expectedBalance = ExchangeService.convert(connectedAccountBalanceOnDate, connectedCode, baseCode, exchangeRates);
 
-          const bookBalancesContainer = bookBalancesReport.getBalancesContainer(account.getName());
-          let accountBalanceOnDate = bookBalancesContainer.getCumulativeBalance();
+          let connectedAccountBalanceOnDate = getAccountBalance(connectedBookBalancesReport, connectedAccount);
+          if (!connectedAccountBalanceOnDate) {
+              continue;
+          }
+          
+          let expectedBalance = ExchangeService.convert(connectedAccountBalanceOnDate, connectedCode, baseCode, exchangeRates);
+          let accountBalanceOnDate = getAccountBalance(bookBalancesReport, account);
+          if (!accountBalanceOnDate) {
+              continue;
+          }
+
           let delta = accountBalanceOnDate.minus(expectedBalance.amount);
 
           let excAccountName = getExcAccountName(connectedAccount, connectedCode);
@@ -84,7 +90,7 @@ namespace GainLossUpdateService {
             aknowledgeResult(result, excAccount, delta);
           }
         }
-      });
+      }
 
       book.batchCreateTransactions(transactions);
       
@@ -99,6 +105,16 @@ namespace GainLossUpdateService {
 
     return {code: baseCode, result: JSON.stringify(stringResult)};
   }
+
+    function getAccountBalance(balancesReport: Bkper.BalancesReport, account: Bkper.Account) {
+        try {
+            const connectedBalancesContainer = balancesReport.getBalancesContainer(account.getName());
+            let connectedAccountBalanceOnDate = connectedBalancesContainer.getCumulativeBalance();
+            return connectedAccountBalanceOnDate;
+        } catch (error) {
+            return null;
+        }
+    }
 
   function aknowledgeResult(result: {[key: string]: Bkper.Amount}, excAccount: Bkper.Account, delta: Bkper.Amount) {
     if (result[excAccount.getName()] == null) {
