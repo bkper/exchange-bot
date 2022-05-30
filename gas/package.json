@@ -1,6 +1,6 @@
 {
   "name": "exchange-bot-gas",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "license": "MIT",
   "scripts": {
     "login": "clasp login",
