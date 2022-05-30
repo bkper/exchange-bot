@@ -124,7 +124,7 @@
   }
 
   function retryUpdateGainLoss(error) {
-      if (`${error}`.indexOf('not found in') < 0 && retryCount < 50) {
+      if (`${error}`.indexOf('not found in') < 0 && retryCount < 5) {
           updateGainLoss();
           retryCount++;
           document.getElementById(`error-panel`).innerHTML = `Retrying ${retryCount}... `
