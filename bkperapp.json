@@ -44,6 +44,11 @@
         "exc_historical"
       ]
     },
+    "account": {
+      "keys": [
+        "exc_account"
+      ]
+    },
     "group": {
       "keys": [
         "exc_account",

@@ -67,13 +67,21 @@ As the rates changes over time, the balances on accounts with different currenci
 The accounts will be selected by matching the **group names** with exc_code from associated books, or by the ```exc_code``` property set on Groups.
 
 - ```exc_code```: The (currency) exchange code of the accounts of the group.
-- ```exc_account```: The name of exchange account to use.
+- ```exc_account```: Optional - The name of exchange account to use.
 
-By default, an account with prefix ```Exchange_```  will be used for each ```exc_code``` of associated books. You can change the default account by setting a ```exc_account``` custom property in the account **Group**, with the name of exchange account to use. Example:
+
+### Account Properties
+
+- ```exc_account```: Optional - The name of exchange account to use.
+
+
+
+By default, an account with prefix ```Exchange_```  will be used for each ```exc_code``` of associated books. You can change the default account by setting a ```exc_account``` custom property in the account **Account** or **Group**, with the name of exchange account to use. Example:
 ```yaml
 exc_account: Assets_Exchange
 ```
 The first ```exc_account``` property found will be used, so, make sure to have only one group per account with the property set, to avoid unexpected behavior.
+
 
 
 ### Transaction Properties

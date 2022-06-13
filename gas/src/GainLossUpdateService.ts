@@ -152,18 +152,23 @@ namespace GainLossUpdateService {
     return accounts;
   }
 
-  function getExcAccountName(connectedAccount: Bkper.Account, connectedCode: string): string {
-    let groups = connectedAccount.getGroups(); 
-    if (groups) {
-      for (const group of groups) {
-        let excAccount = group.getProperty(EXC_ACCOUNT_PROP)
+    function getExcAccountName(connectedAccount: Bkper.Account, connectedCode: string): string {
+        let excAccount = connectedAccount.getProperty(EXC_ACCOUNT_PROP)
         if (excAccount) {
-          return excAccount;
+            return excAccount;
         }
-      }
+
+        let groups = connectedAccount.getGroups();
+        if (groups) {
+            for (const group of groups) {
+                excAccount = group.getProperty(EXC_ACCOUNT_PROP)
+                if (excAccount) {
+                    return excAccount;
+                }
+            }
+        }
+        return `Exchange_${connectedCode}`;
     }
-    return `Exchange_${connectedCode}`;
-  }
 
   export function getExcAccountGroups(book: Bkper.Book): Set<Bkper.Group> {
     let accountNames = new Set<string>();
