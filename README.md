@@ -43,7 +43,7 @@ The books are associated by its [Collection](https://help.bkper.com/en/articles/
 In order to proper setup the Exchange Bot on your books, some book properties should be set:
 
 - ```exc_code```: Required - The book (currency) exchange code.
-- ```exc_rates_url```: Optional - The rates endpoint url to use. Default: [exchangeratesapi.io](https://exchangeratesapi.io/). 
+- ```exc_rates_url```: Optional - The rates endpoint url to use. Default: [Open Exchange Rates](https://openexchangerates.org/)
 rate.
 - ```exc_base```: Optional - true/false - Defines a book as a base and only mirror transactions to other books that matches the exchange base from accounts.
 - ```exc_on_check```: Optional - true/false - True only to exchange on CHECK event. Default is false, performing exchange on POST events.
@@ -109,14 +109,13 @@ That will generate a transaction in the current book of amount $1000, as well as
 
 ### Exchange rates endpoint
 
-By default, the free [exchangeratesapi.io](https://exchangeratesapi.io/) endpoint is used to fetch rates, but any endpoint can be provided, from other third party providers such as [Fixer](https://fixer.io/) or [Open Exchange Rates](https://openexchangerates.org/), or build your own. 
+By default, the [Open Exchange Rates](https://openexchangerates.org/) endpoint is used to fetch rates, but any endpoint can be provided, from other third party providers such as [Fixer](https://fixer.io/) or you can build your own. 
 
 To change the default endpoint, set the ```exc_rates_url``` book property. 
 
 Example:
 ```yaml
 exc_rates_url: https://data.fixer.io/api/${date}?access_key=*****
-exc_rates_cache: 3600  #optional cache
 ```
 
 **Supported expressions:**
