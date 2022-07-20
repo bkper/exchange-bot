@@ -1,6 +1,6 @@
 import { Book } from "bkper";
 import { getBaseCode } from "./BotService";
-import { EXC_ON_CHECK_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP } from "./constants";
+import { EXC_ON_CHECK_PROP, EXC_RATES_CACHE_PROP, EXC_RATES_URL_PROP, EXC_AGGREGATE } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export class EventHandlerBookUpdated extends EventHandler {
@@ -56,6 +56,12 @@ export class EventHandlerBookUpdated extends EventHandler {
       if (excOnCheck && excOnCheck != connectedBook.getProperty(EXC_ON_CHECK_PROP)) {
         connectedBook.setProperty(EXC_ON_CHECK_PROP, excOnCheck)
         response += ` ${EXC_ON_CHECK_PROP}: ${excOnCheck}`
+      }
+      
+      const excAggregate = baseBook.getProperty(EXC_AGGREGATE);
+      if (excAggregate != connectedBook.getProperty(EXC_AGGREGATE)) {
+        connectedBook.setProperty(EXC_AGGREGATE, excAggregate)
+        response += ` ${EXC_AGGREGATE}: ${excAggregate}`
       }
       
     }
