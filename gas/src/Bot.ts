@@ -9,6 +9,8 @@ const EXC_BASE_PROP = 'exc_base';
 const EXC_RATE_PROP = 'exc_rate';
 const EXC_ON_CHECK = 'exc_on_check';
 const EXC_HISTORICAL = 'exc_historical';
+const EXC_AGGREGATE_PROP = 'exc_aggregate';
+const STOCK_EXC_CODE_PROP = 'stock_exc_code';
 
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
   //@ts-ignore

@@ -46,7 +46,7 @@ namespace GainLossUpdateService {
 
           let delta = accountBalanceOnDate.minus(expectedBalance.amount);
 
-          let excAccountName = getExcAccountName(connectedAccount, connectedCode);
+          let excAccountName = getExcAccountName(book, connectedAccount, connectedCode);
 
           //Verify Exchange account created
           let excAccount = book.getAccount(excAccountName);
@@ -152,23 +152,34 @@ namespace GainLossUpdateService {
     return accounts;
   }
 
-    function getExcAccountName(connectedAccount: Bkper.Account, connectedCode: string): string {
-        let excAccount = connectedAccount.getProperty(EXC_ACCOUNT_PROP)
-        if (excAccount) {
-            return excAccount;
-        }
-
-        let groups = connectedAccount.getGroups();
-        if (groups) {
-            for (const group of groups) {
-                excAccount = group.getProperty(EXC_ACCOUNT_PROP)
-                if (excAccount) {
-                    return excAccount;
-                }
-            }
-        }
-        return `Exchange_${connectedCode}`;
+  function getExcAccountName(book: Bkper.Book, connectedAccount: Bkper.Account, connectedCode: string): string {
+    let excAccount = connectedAccount.getProperty(EXC_ACCOUNT_PROP)
+    if (excAccount) {
+      return excAccount;
     }
+    let groups = connectedAccount.getGroups();
+    if (groups) {
+      for (const group of groups) {
+        excAccount = group.getProperty(EXC_ACCOUNT_PROP)
+        if (excAccount) {
+          return excAccount;
+        }
+      }
+    }
+    let excAggregateProp = book.getProperty(EXC_AGGREGATE_PROP);
+    if (excAggregateProp) {
+      return `Exchange_${connectedCode}`;
+    }
+    if (groups) {
+      for (const group of groups) {
+        let stockExcCodeProp = group.getProperty(STOCK_EXC_CODE_PROP)
+        if (stockExcCodeProp) {
+          return `${connectedAccount.getName()} Unrealized EXC`;
+        }
+      }
+    }
+    return `${connectedAccount.getName()} EXC`;
+  }
 
   export function getExcAccountGroups(book: Bkper.Book): Set<Bkper.Group> {
     let accountNames = new Set<string>();
@@ -179,6 +190,9 @@ namespace GainLossUpdateService {
         accountNames.add(accountName);
       }
       if (account.getName().startsWith('Exchange_')) {
+        accountNames.add(account.getName());
+      }
+      if (account.getName().endsWith(` EXC`)) {
         accountNames.add(account.getName());
       }
     });
@@ -205,6 +219,10 @@ namespace GainLossUpdateService {
         accountNames.add(accountName);
       }
       if (account.getName().startsWith('Exchange_')) {
+        console.log(`Adding: ${account.getName()}`)
+        accountNames.add(account.getName());
+      }
+      if (account.getName().endsWith(` EXC`)) {
         console.log(`Adding: ${account.getName()}`)
         accountNames.add(account.getName());
       }
