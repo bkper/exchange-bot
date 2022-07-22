@@ -48,6 +48,7 @@ rate.
 - ```exc_base```: Optional - true/false - Defines a book as a base and only mirror transactions to other books that matches the exchange base from accounts.
 - ```exc_on_check```: Optional - true/false - True only to exchange on CHECK event. Default is false, performing exchange on POST events.
 - ```exc_historical```: Optional - true/false - Defines if exchange updates should consider balances since the beginning of the book's operation. If set to false or not present, updates will consider balances after the book's [closing date](https://help.bkper.com/en/articles/5100445-book-closing-and-lock-dates).
+- ```exc_aggregate```: Optional - true - If set to true, one exchange account named Exchange_XXX will be created for each XXX currency. If not present, each adjusted account will have an associated exchange account with suffix EXC.
 
 
 You can associate multiple books.
@@ -72,11 +73,9 @@ The accounts will be selected by matching the **group names** with exc_code from
 
 ### Account Properties
 
-- ```exc_account```: Optional - The name of exchange account to use.
+- ```exc_account```: Optional - The name of the exchange account to use.
 
-
-
-By default, an account with prefix ```Exchange_```  will be used for each ```exc_code``` of associated books. You can change the default account by setting a ```exc_account``` custom property in the account **Account** or **Group**, with the name of exchange account to use. Example:
+By default, an account with suffix ```EXC``` will be used for each account. You can change the default account by setting a ```exc_account``` custom property in the account **Account** or **Group**, with the name of the exchange account to use. Example:
 ```yaml
 exc_account: Assets_Exchange
 ```
