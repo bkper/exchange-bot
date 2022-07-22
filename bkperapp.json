@@ -41,7 +41,8 @@
         "exc_rates_url",
         "exc_on_check",
         "exc_base",
-        "exc_historical"
+        "exc_historical",
+        "exc_aggregate"
       ]
     },
     "account": {
