@@ -95,6 +95,29 @@ export function getBaseCode(book: Book): string {
   return book.getProperty(EXC_CODE_PROP, 'exchange_code');
 }
 
+export async function getAccountExcCode(book: Book, account: bkper.Account): Promise<string> {
+  let groups = account.groups;
+  if (groups) {
+    for (const group of groups) {
+      let excCode = await getGroupExcCode(book, group);
+      if (excCode) {
+        return excCode;
+      }
+    }
+  }
+  return undefined;
+}
+
+async function getGroupExcCode(book: Book, group: bkper.Group): Promise<string> {
+  let exchangeBooks = await getConnectedBooks(book);
+  for (const exchangeBook of exchangeBooks) {
+    let bookExcCode = getBaseCode(exchangeBook);
+    if (group.name == bookExcCode) {
+      return group.name;
+    }
+  }
+  return group.properties[EXC_CODE_PROP];
+}
 
 export async function extractAmountDescription_(baseBook: Book, connectedBook: Book, base: string, connectedCode: string, transaction: bkper.Transaction, ratesEndpointUrl: string): Promise<AmountDescription> {
   if (ratesEndpointUrl == null) {
