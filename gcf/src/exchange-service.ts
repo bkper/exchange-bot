@@ -12,13 +12,12 @@ interface ConvertedAmount {
   rate: Amount;
 }
 
-export async function convert(value: Amount, from: string, to: string, ratesEndpointUrl: string): Promise<ConvertedAmount> {
+export async function convert(value: Amount, from: string, to: string, rates: ExchangeRates): Promise<ConvertedAmount> {
 
-  if (ratesEndpointUrl == null) {
-    throw 'exchangeRatesUrl must be provided.'
-  }
-
-  let rates = await getRates(ratesEndpointUrl);
+  // if (ratesEndpointUrl == null) {
+  //   throw 'exchangeRatesUrl must be provided.'
+  // }
+  // let rates = await getRates(ratesEndpointUrl);
 
   if (rates.error) {
     throw rates.description || rates.message || 'Error reading rates'
@@ -42,7 +41,7 @@ export async function convert(value: Amount, from: string, to: string, ratesEndp
   };
 }
 
-function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {
+export function convertBase(rates: ExchangeRates, toBase: string): ExchangeRates {
   rates.rates[rates.base] = '1'
   if (rates.base == toBase) {
     return rates;
@@ -72,30 +71,25 @@ export async function getRates(ratesEndpointUrl: string): Promise<ExchangeRates>
     console.timeEnd(`getRates ${random}`)
     return rates;
   } else {
-    
     console.warn(`Fetching rates...`)
 
     try {
-
-
-    let req = await request({
-      url: ratesEndpointUrl,
-      method: 'GET',
-      agent: new https.Agent({keepAlive: true}),
-      retryConfig: {
-        statusCodesToRetry: [[100, 199], [401, 429], [500, 599]],
-        retry: 5,
-        onRetryAttempt: (err: GaxiosError) => {console.log(`${err.response.data.description} - Retrying... `)},
-        retryDelay: 100
-      }
-    })
-
-    rates = req.data as ExchangeRates;
-
-  } catch (err) {
-    //@ts-ignore
-    rates = err?.response?.data || null;
-  }    
+      let req = await request({
+        url: ratesEndpointUrl,
+        method: 'GET',
+        agent: new https.Agent({ keepAlive: true }),
+        retryConfig: {
+          statusCodesToRetry: [[100, 199], [401, 429], [500, 599]],
+          retry: 5,
+          onRetryAttempt: (err: GaxiosError) => { console.log(`${err.response.data.description} - Retrying... `) },
+          retryDelay: 100
+        }
+      })
+      rates = req.data as ExchangeRates;
+    } catch (err) {
+      //@ts-ignore
+      rates = err?.response?.data || null;
+    }
 
     if (rates == null) {
       throw `Unable to get exchange rates from endpoint ${ratesEndpointUrl}`;
@@ -121,5 +115,5 @@ export async function getRates(ratesEndpointUrl: string): Promise<ExchangeRates>
     return rates;
 
   }
-  
+
 }
