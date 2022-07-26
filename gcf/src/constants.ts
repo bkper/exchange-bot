@@ -7,5 +7,6 @@ export const EXC_BASE_PROP = 'exc_base';
 export const EXC_RATE_PROP = 'exc_rate';
 export const EXC_DATE_PROP = 'exc_date';
 export const EXC_ON_CHECK_PROP = 'exc_on_check';
+export const EXC_LOG_PROP = 'exc_log';
 export const EXC_AGGREGATE = 'exc_aggregate';
 export const CHILD_BOOK_ID_PROP = 'child_book_id';
