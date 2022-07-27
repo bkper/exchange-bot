@@ -1,13 +1,7 @@
-import { Account, AccountType, Book, Transaction, Amount } from "bkper";
-import { getBaseCode, getAccountExcCode } from "./BotService";
-import { EXC_CODE_PROP, EXC_RATE_PROP, EXC_AMOUNT_PROP, EXC_LOG_PROP } from "./constants";
+import { Account, AccountType, Book, Transaction } from "bkper";
+import { getBaseCode } from "./BotService";
+import { EXC_CODE_PROP, EXC_RATE_PROP, EXC_LOG_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
-import { convertBase } from "./exchange-service";
-
-export interface ExcLogEntry {
-  exc_code: string,
-  exc_rate: string
-}
 
 export abstract class EventHandlerTransactionEvent extends EventHandlerTransaction {
 
@@ -71,23 +65,9 @@ export abstract class EventHandlerTransactionEvent extends EventHandlerTransacti
       newTransaction.setProperty(EXC_RATE_PROP, amountDescription.excBaseRate.toString())
     }
 
-    const creditAccCode = await getAccountExcCode(baseBook, baseCreditAccount);
-    const debitAccCode = await getAccountExcCode(baseBook, baseDebitAccount);
-
-    if (creditAccCode && debitAccCode) {
-      if (connectedCode != creditAccCode && connectedCode != debitAccCode) {
-        const excLogEntries: ExcLogEntry[] = [];
-        let creditCurrencyEntry: ExcLogEntry = {
-          exc_code: creditAccCode,
-          exc_rate: amountDescription.excBaseRate.toString()
-        }
-        const debitCodeRate = transaction.properties[EXC_AMOUNT_PROP] ? amountDescription.amount.div(transaction.properties[EXC_AMOUNT_PROP]) : new Amount(convertBase(amountDescription.rates, debitAccCode).rates[connectedCode]);
-        let debitCurrencyEntry: ExcLogEntry = {
-          exc_code: debitAccCode,
-          exc_rate: debitCodeRate.toString()
-        }
-        excLogEntries.push(creditCurrencyEntry);
-        excLogEntries.push(debitCurrencyEntry);
+    if (amountDescription.rates) {
+      const excLogEntries = await this.buildExcLog(baseBook, connectedBook, transaction, amountDescription);
+      if (excLogEntries.length > 0) {
         newTransaction.setProperty(EXC_LOG_PROP, JSON.stringify(excLogEntries));
       }
     }

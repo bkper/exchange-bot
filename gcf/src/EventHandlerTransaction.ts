@@ -1,7 +1,9 @@
 import { Amount, Book, Transaction } from "bkper";
-import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig, hasBaseBookInCollection, isBaseBook, match } from "./BotService";
+import { extractAmountDescription_, getBaseCode, getRatesEndpointConfig, hasBaseBookInCollection, isBaseBook, getAccountExcCode, match } from "./BotService";
+import { EXC_AMOUNT_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 import { ExchangeRates } from "./ExchangeRates";
+import { convertBase } from "./exchange-service";
 
 export interface AmountDescription {
     amount: Amount;
@@ -9,6 +11,11 @@ export interface AmountDescription {
     excBaseCode: string;
     excBaseRate?: Amount;
     rates?: ExchangeRates;
+}
+
+export interface ExcLogEntry {
+    exc_code: string,
+    exc_rate: string
 }
 
 export abstract class EventHandlerTransaction extends EventHandler {
@@ -68,4 +75,27 @@ export abstract class EventHandlerTransaction extends EventHandler {
     protected abstract connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string>;
 
     protected abstract connectedTransactionFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string>;
+
+    protected async buildExcLog(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction, amountDescription: AmountDescription): Promise<ExcLogEntry[]> {
+        const creditAccountCode = await getAccountExcCode(baseBook, transaction.creditAccount);
+        const debitAccountCode = await getAccountExcCode(baseBook, transaction.debitAccount);
+        let connectedCode = getBaseCode(connectedBook);
+        let excLogEntries: ExcLogEntry[] = [];
+        if (creditAccountCode && debitAccountCode) {
+            if (connectedCode != creditAccountCode && connectedCode != debitAccountCode) {
+                let creditCurrencyEntry: ExcLogEntry = {
+                    exc_code: creditAccountCode,
+                    exc_rate: amountDescription.excBaseRate.toString()
+                }
+                const debitCodeRate = transaction.properties[EXC_AMOUNT_PROP] ? amountDescription.amount.div(transaction.properties[EXC_AMOUNT_PROP]) : new Amount(convertBase(amountDescription.rates, debitAccountCode).rates[connectedCode]);
+                let debitCurrencyEntry: ExcLogEntry = {
+                    exc_code: debitAccountCode,
+                    exc_rate: debitCodeRate.toString()
+                }
+                excLogEntries.push(creditCurrencyEntry);
+                excLogEntries.push(debitCurrencyEntry);
+            }
+        }
+        return excLogEntries;
+    }
 }
