@@ -137,7 +137,7 @@ async function getAmountDescription_(baseBook: Book, connectedBook: Book, base: 
   let txExcRate = transaction.properties[EXC_RATE_PROP];
   let txExcCode = transaction.properties[EXC_CODE_PROP];
 
-  if (txExcAmount && (connectedCode == txExcCode || isBaseBook(connectedBook) || match(baseBook, connectedCode, transaction))) {
+  if (txExcAmount && (connectedCode == txExcCode || match(baseBook, connectedCode, transaction))) {
     const amount = connectedBook.parseValue(txExcAmount);
     return {
       amount: amount,
