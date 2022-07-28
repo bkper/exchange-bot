@@ -87,7 +87,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
                     exc_code: creditAccountCode,
                     exc_rate: amountDescription.excBaseRate.toString()
                 }
-                const debitCodeRate = transaction.properties[EXC_AMOUNT_PROP] ? amountDescription.amount.div(transaction.properties[EXC_AMOUNT_PROP]) : new Amount(convertBase(amountDescription.rates, debitAccountCode).rates[connectedCode]);
+                const debitCodeRate = this.getDebitCodeRate(connectedBook, transaction, amountDescription, debitAccountCode, connectedCode);
                 let debitCurrencyEntry: ExcLogEntry = {
                     exc_code: debitAccountCode,
                     exc_rate: debitCodeRate.toString()
@@ -97,5 +97,25 @@ export abstract class EventHandlerTransaction extends EventHandler {
             }
         }
         return excLogEntries;
+    }
+
+    private getDebitCodeRate(connectedBook: Book, transaction: bkper.Transaction, amountDescription: AmountDescription, debitAccountCode: string, connectedCode: string): Amount {
+        if (transaction.properties[EXC_AMOUNT_PROP]) {
+            return amountDescription.amount.div(transaction.properties[EXC_AMOUNT_PROP]);
+        }
+        let parts = amountDescription.description.split(' ');
+        for (const part of parts) {
+            if (part.startsWith(debitAccountCode)) {
+                try {
+                    const amount = connectedBook.parseValue(part.replace(debitAccountCode, ''));
+                    if (amount) {
+                        return amountDescription.amount.div(amount);
+                    }
+                } catch (error) {
+                    continue;
+                }
+            }
+        }
+        return new Amount(convertBase(amountDescription.rates, debitAccountCode).rates[connectedCode]);
     }
 }
