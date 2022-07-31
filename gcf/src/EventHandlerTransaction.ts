@@ -82,7 +82,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
         let connectedCode = getBaseCode(connectedBook);
         let excLogEntries: ExcLogEntry[] = [];
         if (creditAccountCode && debitAccountCode) {
-            if (connectedCode != creditAccountCode && connectedCode != debitAccountCode) {
+            if (connectedCode != creditAccountCode && connectedCode != debitAccountCode && creditAccountCode != debitAccountCode) {
                 let creditCurrencyEntry: ExcLogEntry = {
                     exc_code: creditAccountCode,
                     exc_rate: amountDescription.excBaseRate.toString()
