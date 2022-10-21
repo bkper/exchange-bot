@@ -24,6 +24,13 @@ export function getRatesEndpointConfig(book: Book, transaction: bkper.Transactio
     ratesUrl = "https://openexchangerates.org/api/historical/${date}.json?show_alternative=true&app_id=" + process.env.open_exchange_rates_app_id;
   }
 
+  //Use today if date in future
+  let today = new Date();
+  let parsedDate = book.parseDate(date);
+  if (parsedDate.getTime() > today.getTime()) {
+    date = today.toISOString().substring(0, 10);
+  }
+  
   //deprecated
   ratesUrl = ratesUrl.replace("${transaction.date}", date);
   ratesUrl = ratesUrl.replace("${date}", date);
