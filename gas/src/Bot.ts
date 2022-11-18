@@ -30,9 +30,9 @@ function auditBooks(bookId: string) {
   BotViewService.auditBooks(bookId);
 }
 
-function updateTransactions(bookId: string, dateParam: string, exchangeRates: ExchangeRates): Summary {
-  return TransactionsUpdateService.updateTransactions(bookId, dateParam, exchangeRates);
-}
+// function updateTransactions(bookId: string, dateParam: string, exchangeRates: ExchangeRates): Summary {
+//   return TransactionsUpdateService.updateTransactions(bookId, dateParam, exchangeRates);
+// }
 
 
 

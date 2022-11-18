@@ -63,10 +63,6 @@
         justify-content: center;
       }
       
-      /* #transactions-update-button {
-        display: none;
-      } */
-
     </style>
     
   </header>
@@ -94,7 +90,7 @@
     </div>
 
     <div class="footer">
-      <button id="transactions-update-button" onclick="updateTransactions()">Transactions</button>
+      <!-- <button id="transactions-update-button" onclick="updateTransactions()">Transactions</button> -->
       <button id="gain-loss-update-button" onclick="updateGainLoss()">Gain/Loss</button>
       <button id="close-button" onclick="closeWindow()">Close</button>
     </div>
@@ -134,14 +130,14 @@
       }
   }
 
-  function updateTransactions() {
-    var date = document.getElementById("update-date").value;
-    var rates = getExchangeRates();
-    <? for (var i = 0; i < books.length; i++) { ?>
-      showCodeWaiting('<?!= books[i].code ?>')
-      google.script.run.withSuccessHandler(hideCodeWaiting).withFailureHandler(showError).updateTransactions('<?!= books[i].id ?>', date, rates)
-    <? } ?>    
-  }
+  // function updateTransactions() {
+  //   var date = document.getElementById("update-date").value;
+  //   var rates = getExchangeRates();
+  //   <? for (var i = 0; i < books.length; i++) { ?>
+  //     showCodeWaiting('<?!= books[i].code ?>')
+  //     google.script.run.withSuccessHandler(hideCodeWaiting).withFailureHandler(showError).updateTransactions('<?!= books[i].id ?>', date, rates)
+  //   <? } ?>    
+  // }
 
   function showWaiting(show) {
     if (show) {
@@ -157,11 +153,11 @@
   function disableButtons(disable) {
     if (disable) {
       document.getElementById('gain-loss-update-button').setAttribute('disabled', true);
-      document.getElementById('transactions-update-button').setAttribute('disabled', true);
+      // document.getElementById('transactions-update-button').setAttribute('disabled', true);
       document.getElementById('close-button').setAttribute('disabled', true);
     } else {
       document.getElementById('gain-loss-update-button').removeAttribute('disabled');
-      document.getElementById('transactions-update-button').removeAttribute('disabled');
+      // document.getElementById('transactions-update-button').removeAttribute('disabled');
       document.getElementById('close-button').removeAttribute('disabled');
     }
   }
