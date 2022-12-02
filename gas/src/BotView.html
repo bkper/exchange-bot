@@ -215,7 +215,7 @@
 
   function hideCodeWaiting(sumary) {
     waitingCodes.splice(waitingCodes.indexOf(sumary.code), 1)
-    document.getElementById(`result-${sumary.code}`).innerHTML = sumary.result
+    document.getElementById(`result-${sumary.code}`).innerHTML = `<img src='https://storage.googleapis.com/bkper-public/addons/check.png'>Done!</img>` + ' ' + sumary.result;
     showError(false)
     if (waitingCodes.length == 0) {
       disableButtons(false)
