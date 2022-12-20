@@ -30,7 +30,7 @@ export function getRatesEndpointConfig(book: Book, transaction: bkper.Transactio
   if (parsedDate.getTime() > today.getTime()) {
     date = today.toISOString().substring(0, 10);
   }
-  
+
   //deprecated
   ratesUrl = ratesUrl.replace("${transaction.date}", date);
   ratesUrl = ratesUrl.replace("${date}", date);
@@ -68,7 +68,7 @@ export async function getConnectedBooks(book: Book): Promise<Set<Book>> {
   let collectionBooks = book.getCollection() != null ? book.getCollection().getBooks() : null;
   if (collectionBooks) {
     for (const b of collectionBooks) {
-      if ((b.getId() != book.getId()) && getBaseCode(b) != null && getBaseCode(b) != 'TEMPLATE') {
+      if (getBaseCode(b) != null && getBaseCode(b) != 'TEMPLATE') {
         books.add(b);
       }
     }

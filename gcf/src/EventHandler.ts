@@ -38,6 +38,9 @@ export abstract class EventHandler {
 
 
     for (const connectedBook of connectedBooks) {
+      if (connectedBook.getId() == baseBook.getId()) {
+        continue;
+      }
       let connectedCode = getBaseCode(connectedBook);
       if (connectedCode != null && connectedCode != '') {
         let response = this.processObject(baseBook, connectedBook, event);
