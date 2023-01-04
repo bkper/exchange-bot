@@ -14,9 +14,16 @@ export function getRatesEndpointConfig(book: Book, transaction: bkper.Transactio
 
   let date = transaction.date;
 
-  if (transaction.properties[EXC_DATE_PROP]) {
-    let parsedDate = book.parseDate(transaction.properties[EXC_DATE_PROP])
-    date = parsedDate.toISOString().substring(0, 10);
+  let excDateProp = transaction.properties[EXC_DATE_PROP]
+  if (excDateProp) {
+    let parsedDate = book.parseDate(excDateProp)
+    // checks if parsedDate is valid
+    if (!Number.isNaN(new Date(parsedDate).getTime())) {
+      date = parsedDate.toISOString().substring(0, 10);
+    }else{
+      const dateFormat = book.getDatePattern()
+      throw `Invalid range for ${EXC_DATE_PROP} property. Use appropriated date in ${dateFormat} format, instead of ${excDateProp}.`
+    }
   }
 
   //Default values
