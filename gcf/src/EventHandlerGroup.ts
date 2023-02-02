@@ -15,6 +15,10 @@ export abstract class EventHandlerGroup extends EventHandler {
         connectedGroup = await connectedBook.getGroup(event.data.previousAttributes['name']);
       }
 
+      if (connectedGroup == null) {
+        connectedGroup = await connectedBook.getGroup(group.name + ' ');
+      }
+
       if (connectedGroup) {
         return await this.connectedGroupFound(baseBook, connectedBook, group, connectedGroup);
       } else {

@@ -18,6 +18,10 @@ export abstract class EventHandlerAccount extends EventHandler {
         connectedAccount = await connectedBook.getAccount(event.data.previousAttributes['name']);
       }
 
+      if (connectedAccount == null) {
+        connectedAccount = await connectedBook.getAccount(account.name + ' ');
+      }
+
       console.timeEnd(timeTagWrite)
 
       if (connectedAccount) {
