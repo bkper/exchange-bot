@@ -10,8 +10,8 @@ export abstract class EventHandlerAccount extends EventHandler {
 
     if (connectedCode != null && connectedCode != '') {
 
-      const timeTagWrite = `EventHandlerAccount getAccount. [Book ${connectedBook.getName()}] [Owner ${connectedBook.getOwnerName()}] ${Math.random()}`
-      console.time(timeTagWrite)
+      const timeTagWrite = `EventHandlerAccount getAccount. [Book ${connectedBook.getName()}] [Owner ${connectedBook.getOwnerName()}] ${Math.random()}`;
+      console.time(timeTagWrite);
 
       let connectedAccount = await connectedBook.getAccount(account.name);
       if (connectedAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
@@ -22,7 +22,7 @@ export abstract class EventHandlerAccount extends EventHandler {
         connectedAccount = await connectedBook.getAccount(account.name + ' ');
       }
 
-      console.timeEnd(timeTagWrite)
+      console.timeEnd(timeTagWrite);
 
       if (connectedAccount) {
         return this.connectedAccountFound(baseBook, connectedBook, account, connectedAccount);
