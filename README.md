@@ -151,7 +151,3 @@ Example:
   }
 }
 ```
-
-### Sponsoring 
-
-[Sponsor Bkper Bot developement on Github ❤](https://github.com/sponsors/bkper)
