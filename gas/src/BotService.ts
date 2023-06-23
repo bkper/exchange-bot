@@ -40,6 +40,36 @@ namespace BotService {
     }
   }
 
+  export function getBooksExcCodesUserCanView(book: Bkper.Book): Set<string> {
+    const collection = book.getCollection();
+    if (collection) {
+        let excCodes = new Set<string>();
+        for (const book of collection.getBooks()) {
+            const bookExcCodeProp = book.getProperty(EXC_CODE_PROP, 'exchange_code');
+            if (bookExcCodeProp) {
+                excCodes.add(bookExcCodeProp);
+            }
+        }
+        return excCodes;
+    }
+    return new Set<string>();
+  }
+
+  export function canUserEditBook(book: Bkper.Book): boolean {
+      return book.getPermission() === (BkperApp.Permission.EDITOR || BkperApp.Permission.OWNER) ? true : false;
+  }
+
+  export function getBookConfiguredExcCodes(book: Bkper.Book): Set<string> {
+    let excCodes = new Set<string>()
+    for (const group of book.getGroups()) {
+      const groupExCodeProp = group.getProperty(EXC_CODE_PROP, 'exchange_code')
+      if (groupExCodeProp) {
+        excCodes.add(groupExCodeProp)
+      }
+    }
+    return excCodes
+  }
+
   export function getConnectedBooks(book: Bkper.Book): Set<Bkper.Book> {
     if (book.getProperties() == null) {
       return new Set<Bkper.Book>();
@@ -158,8 +188,5 @@ namespace BotService {
 
     return false;
   }
-
-  
-
 
 }
