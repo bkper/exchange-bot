@@ -56,7 +56,7 @@ namespace BotService {
   }
 
   export function canUserEditBook(book: Bkper.Book): boolean {
-      return book.getPermission() === (BkperApp.Permission.EDITOR || BkperApp.Permission.OWNER) ? true : false;
+      return (book.getPermission() === BkperApp.Permission.EDITOR || book.getPermission() ===  BkperApp.Permission.OWNER) ? true : false;
   }
 
   export function getBookConfiguredExcCodes(book: Bkper.Book): Set<string> {
