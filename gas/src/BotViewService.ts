@@ -22,14 +22,25 @@ namespace BotViewService {
 
     const hasBaseBookInCollection = BotService.hasBaseBookInCollection(book);
 
-    let connectedBooks = BotService.getConnectedBooks(book);
+    let bookExcCodesPendingTasks: string[] = [];
+
+    const connectedBooks = BotService.getConnectedBooks(book);
     for (const connectedBook of connectedBooks) {
-        template.books.push({
-          id: connectedBook.getId(),
-          name: connectedBook.getName(),
-          code: BotService.getBaseCode(connectedBook),
-          base: BotService.isBaseBook(connectedBook) || !hasBaseBookInCollection
-        })
+
+      if (BotService.hasPendingTasks(connectedBook)) {
+        bookExcCodesPendingTasks.push(BotService.getBaseCode(connectedBook));
+      }
+
+      template.books.push({
+        id: connectedBook.getId(),
+        name: connectedBook.getName(),
+        code: BotService.getBaseCode(connectedBook),
+        base: BotService.isBaseBook(connectedBook) || !hasBaseBookInCollection
+      })
+    }
+
+    if (BotService.hasPendingTasks(book)) {
+      bookExcCodesPendingTasks.push(BotService.getBaseCode(book));
     }
 
     template.book = {
@@ -49,8 +60,8 @@ namespace BotViewService {
       template.basePermissionGranted = true;
     }
 
-    const bookExcCodesUserCanView = BotService.getBooksExcCodesUserCanView(book)
-    const bookConfiguredExcCodes = BotService.getBookConfiguredExcCodes(book)
+    const bookExcCodesUserCanView = BotService.getBooksExcCodesUserCanView(book);
+    const bookConfiguredExcCodes = BotService.getBookConfiguredExcCodes(book);
 
     let bookExcCodesUserCannotView: string[] = [];
     for (const code of Array.from(bookConfiguredExcCodes)) {
@@ -62,6 +73,9 @@ namespace BotViewService {
     if (bookExcCodesUserCannotView.length > 0) {
       template.permissionGranted = false;
       template.permissionError = `User needs permission in ${bookExcCodesUserCannotView.join(', ')} books`;
+    } else if (bookExcCodesPendingTasks.length > 0) {
+      template.permissionGranted = false;
+      template.permissionError = `There are pending bot tasks in ${bookExcCodesPendingTasks.join(', ')} books`;
     } else {
       template.permissionGranted = true;
     }
