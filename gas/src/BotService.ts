@@ -193,4 +193,8 @@ namespace BotService {
     return (book.getBacklog().getCount() > 0) ? true : false;
   }
 
+  export function getErrorText(array: any[]): string {
+    return (array.length > 1) ? 'books' : 'book';
+  }
+
 }
