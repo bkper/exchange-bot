@@ -1,6 +1,6 @@
 import { Account, AccountType, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
-import { EXC_CODE_PROP, EXC_RATE_PROP, EXC_LOG_PROP } from "./constants";
+import { EXC_CODE_PROP, EXC_RATE_PROP, EXC_LOG_PROP, EXC_AMOUNT_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export abstract class EventHandlerTransactionEvent extends EventHandlerTransaction {
@@ -58,11 +58,17 @@ export abstract class EventHandlerTransactionEvent extends EventHandlerTransacti
     ;
 
     if (amountDescription.excBaseCode) {
+      // Exchange code prop
       newTransaction.setProperty(EXC_CODE_PROP, amountDescription.excBaseCode);
     }
 
     if (amountDescription.excBaseRate) {
-      newTransaction.setProperty(EXC_RATE_PROP, amountDescription.excBaseRate.toString())
+      // Exchange rate prop
+      newTransaction.setProperty(EXC_RATE_PROP, amountDescription.excBaseRate.toString());
+      // Exchange amount prop
+      if (transaction.amount) {
+        newTransaction.setProperty(EXC_AMOUNT_PROP, transaction.amount);
+      }
     }
 
     if (amountDescription.rates) {
