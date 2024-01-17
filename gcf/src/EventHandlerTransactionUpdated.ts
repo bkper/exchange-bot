@@ -2,15 +2,23 @@ import { Account, Book, Transaction } from "bkper";
 import { getBaseCode } from "./BotService";
 import { EXC_CODE_PROP, EXC_RATE_PROP, EXC_LOG_PROP } from "./constants";
 import { AmountDescription, EventHandlerTransaction } from "./EventHandlerTransaction";
+import { EventHandlerTransactionEvent } from './EventHandlerTransactionEvent';
 
-export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
+export class EventHandlerTransactionUpdated extends EventHandlerTransactionEvent {
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
     return `remoteId:${transaction.id}`;
   }
 
-  protected connectedTransactionNotFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction): Promise<string> {
-    return null;
+  protected async connectedTransactionNotFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction): Promise<string> {
+
+    const timeTagWrite = `Posted not found. [Book ${connectedBook.getName()}] [Owner ${connectedBook.getOwnerName()}] ${Math.random()}`;
+    console.time(timeTagWrite);
+
+    let newTransaction = await super.mirrorTransaction(baseBook, connectedBook, baseTransaction);
+    console.timeEnd(timeTagWrite);
+
+    return newTransaction ? `${super.buildBookAnchor(connectedBook)}: ${newTransaction.getDate()} ${newTransaction.getAmount()} ${newTransaction.getDescription()}` : null;
   }
 
   protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
