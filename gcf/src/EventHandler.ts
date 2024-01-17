@@ -19,8 +19,12 @@ export abstract class EventHandler {
 
     console.time(logtag)
 
-    if (event.type == 'TRANSACTION_POSTED' && baseBook.getProperty(EXC_ON_CHECK_PROP, 'exc_auto_check')) {
-      return false;
+    if (event.type == 'TRANSACTION_POSTED') {
+      let operation = event.data.object as bkper.TransactionOperation;
+      let transaction = operation.transaction;
+      if (baseBook.getProperty(EXC_ON_CHECK_PROP, 'exc_auto_check') && !transaction.checked) {
+        return false;
+      }
     }
 
     if (event.type == 'TRANSACTION_CHECKED' || event.type == 'TRANSACTION_POSTED' || event.type == 'TRANSACTION_UPDATED') {

@@ -42,7 +42,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransactionEvent
       if (connectedTransaction.isChecked()) {
         await connectedTransaction.uncheck();
       }
-      await (await connectedTransaction.update()).check();
+      await connectedTransaction.setChecked(true).update();
 
       resp = this.buildCheckResponse("UPDATED AND CHECKED", connectedBook, connectedTransaction);
 
@@ -51,8 +51,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransactionEvent
       resp = this.buildCheckResponse("CHECKED", connectedBook, connectedTransaction);
 
     } else if (!connectedTransaction.isPosted() && this.isReadyToPost(connectedTransaction.json())) {
-      await connectedTransaction.post();
-      await connectedTransaction.check();
+      await connectedTransaction.setChecked(true).post();
       resp = this.buildCheckResponse("POSTED AND CHECKED", connectedBook, connectedTransaction);
 
     } else {
@@ -76,10 +75,6 @@ export class EventHandlerTransactionChecked extends EventHandlerTransactionEvent
     console.time(timeTagWrite);
 
     let newTransaction = await super.mirrorTransaction(baseBook, connectedBook, transaction);
-
-    if (newTransaction && newTransaction.isPosted()) {
-      await newTransaction.check();
-    }
 
     console.timeEnd(timeTagWrite);
     return newTransaction ? `${super.buildBookAnchor(connectedBook)}: ${newTransaction.getDate()} ${newTransaction.getAmount()} ${newTransaction.getDescription()}` : null;

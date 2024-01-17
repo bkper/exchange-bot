@@ -79,6 +79,7 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
       .setProperties(transaction.properties)
       .setCreditAccount(connectedCreditAccount)
       .setDebitAccount(connectedDebitAccount)
+      .setChecked(transaction.checked)
     ;
 
     if (amountDescription.excBaseCode) {

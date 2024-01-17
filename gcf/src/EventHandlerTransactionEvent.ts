@@ -55,6 +55,7 @@ export abstract class EventHandlerTransactionEvent extends EventHandlerTransacti
       .setDebitAccount(creditDebitAccounts[1])
       .setDescription(amountDescription.description)
       .addRemoteId(transaction.id)
+      .setChecked(transaction.checked)
     ;
 
     if (amountDescription.excBaseCode) {
