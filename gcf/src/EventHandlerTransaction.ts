@@ -38,8 +38,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
         let ret: Promise<string> = null;
 
-
-        if (event.type == 'TRANSACTION_UPDATED' || isBaseBook(connectedBook) || !hasBaseBookInCollection(baseBook) || match(baseBook, connectedCode, transaction)) {
+        if (isBaseBook(connectedBook) || !hasBaseBookInCollection(baseBook) || match(baseBook, connectedCode, transaction)) {
             if (connectedCode != null && connectedCode != '') {
                 let iterator = connectedBook.getTransactions(this.getTransactionQuery(transaction));
                 if (await iterator.hasNext()) {
@@ -61,7 +60,6 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
         return ret;
     }
-    
 
     protected async extractAmountDescription_(baseBook: Book, connectedBook: Book, baseCode: string, connectedCode: string, transaction: bkper.Transaction): Promise<AmountDescription> {
 
