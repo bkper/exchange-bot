@@ -7,7 +7,7 @@ interface AmountDescription {
   amount: Bkper.Amount;
   description: string;
   excBaseCode: string;
-  excBaseRate: Bkper.Amount;  
+  excBaseRate: Bkper.Amount;
 }
 
 namespace BotService {
@@ -20,7 +20,7 @@ namespace BotService {
 
     //Default values
     if (ratesUrl == null || ratesUrl.trim() == '') {
-      ratesUrl = "https://openexchangerates.org/api/historical/${date}.json?show_alternative=true&app_id="+PropertiesService.getScriptProperties().getProperty('open_exchange_rates_app_id');
+      ratesUrl = "https://openexchangerates.org/api/historical/${date}.json?show_alternative=true&app_id=" + PropertiesService.getScriptProperties().getProperty('open_exchange_rates_app_id');
       ratesCache = 3600;
     }
 
@@ -43,20 +43,20 @@ namespace BotService {
   export function getBooksExcCodesUserCanView(book: Bkper.Book): Set<string> {
     const collection = book.getCollection();
     if (collection) {
-        let excCodes = new Set<string>();
-        for (const book of collection.getBooks()) {
-            const bookExcCodeProp = book.getProperty(EXC_CODE_PROP, 'exchange_code');
-            if (bookExcCodeProp) {
-                excCodes.add(bookExcCodeProp);
-            }
+      let excCodes = new Set<string>();
+      for (const book of collection.getBooks()) {
+        const bookExcCodeProp = book.getProperty(EXC_CODE_PROP, 'exchange_code');
+        if (bookExcCodeProp) {
+          excCodes.add(bookExcCodeProp);
         }
-        return excCodes;
+      }
+      return excCodes;
     }
     return new Set<string>();
   }
 
   export function canUserEditBook(book: Bkper.Book): boolean {
-      return (book.getPermission() === BkperApp.Permission.EDITOR || book.getPermission() ===  BkperApp.Permission.OWNER) ? true : false;
+    return (book.getPermission() === BkperApp.Permission.EDITOR || book.getPermission() === BkperApp.Permission.OWNER) ? true : false;
   }
 
   export function getBookConfiguredExcCodes(book: Bkper.Book): Set<string> {
@@ -112,12 +112,12 @@ namespace BotService {
 
   export function parseDateParam(dateParam: string) {
     var dateSplit = dateParam != null ? dateParam.split('-') : null;
-  
+
     let year = new Number(dateSplit[0]).valueOf();
     let month = new Number(dateSplit[1]).valueOf() - 1;
     let day = new Number(dateSplit[2]).valueOf();
     var date = new Date(year, month, day, 13, 0, 0, 0);
-  
+
     return date;
   }
 
@@ -132,7 +132,7 @@ namespace BotService {
       return {
         amount: amount,
         excBaseCode: base,
-        excBaseRate: amount.div(transaction.amount),        
+        excBaseRate: amount.div(transaction.amount),
         description: transaction.description,
       };
     }
@@ -144,10 +144,10 @@ namespace BotService {
       if (part.startsWith(connectedCode)) {
         try {
           const amount = book.parseValue(part.replace(connectedCode, ''));
-          let ret =  {
+          let ret = {
             amount: amount,
             excBaseCode: base,
-            excBaseRate: amount.div(transaction.amount),            
+            excBaseRate: amount.div(transaction.amount),
             description: transaction.description.replace(part, `${base}${transaction.amount}`),
           };
           if (ret.amount && !ret.amount.eq(0)) {
@@ -166,7 +166,7 @@ namespace BotService {
       excBaseRate: convertedAmount.rate,
       description: `${transaction.description}`,
     };
-  }  
+  }
 
   export function isBaseBook(book: Bkper.Book): boolean {
     if (book.getProperty(EXC_BASE_PROP)) {
@@ -195,6 +195,24 @@ namespace BotService {
 
   export function getErrorText(array: any[]): string {
     return (array.length > 1) ? 'books' : 'book';
+  }
+
+  export function getCollectionBooksWithErrors(book: Bkper.Book): Set<string> {
+    let collectionBooksWithErrors = new Set<string>();
+    const collection = book.getCollection();
+    if (collection) {
+      for (const book of collection.getBooks()) {
+        const bookExcCode = BotService.getBaseCode(book);
+        if (bookExcCode && hasBotErrors(book)) {
+          collectionBooksWithErrors.add(bookExcCode);
+        }
+      }
+    }
+    return collectionBooksWithErrors;
+  }
+
+  function hasBotErrors(book: Bkper.Book): boolean {
+    return book.getEvents('', '', true).hasNext() ? true : false;
   }
 
 }

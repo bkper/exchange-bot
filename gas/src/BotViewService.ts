@@ -74,6 +74,9 @@ namespace BotViewService {
       }
     }
 
+    // Check bot errors in the collection
+    let bookExcCodesWithErrors = Array.from(BotService.getCollectionBooksWithErrors(book));
+
     // Show validation warnings
     if (bookExcCodesUserCannotView.length > 0) {
       template.permissionGranted = false;
@@ -81,6 +84,9 @@ namespace BotViewService {
     } else if (bookExcCodesPendingTasks.length > 0) {
       template.permissionGranted = false;
       template.permissionError = `There are pending bot tasks in ${bookExcCodesPendingTasks.join(', ')} ${BotService.getErrorText(bookExcCodesPendingTasks)}`;
+    } else if (bookExcCodesWithErrors.length > 0) {
+      template.permissionGranted = false;
+      template.permissionError = `There are bot errors in ${bookExcCodesWithErrors.join(', ')} ${BotService.getErrorText(bookExcCodesWithErrors)}`;
     } else {
       template.permissionGranted = true;
     }
