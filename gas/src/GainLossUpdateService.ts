@@ -209,33 +209,44 @@ namespace GainLossUpdateService {
     return groups;
   }
 
-  export function getExcAccountType(book: Bkper.Book): Bkper.AccountType {
-    let accountNames = new Set<string>();
-
+  function getExcAccountType(book: Bkper.Book): Bkper.AccountType {
+    // Map exchange account names
+    let excAccountNames = new Set<string>();
     book.getAccounts().forEach(account => {
-      let accountName = account.getProperty(EXC_ACCOUNT_PROP);
-      if (accountName) {
-        console.log(`Adding: ${accountName}`)
-        accountNames.add(accountName);
+      const excAccountProp = account.getProperty(EXC_ACCOUNT_PROP);
+      if (excAccountProp) {
+        excAccountNames.add(excAccountProp);
       }
       if (account.getName().startsWith('Exchange_')) {
-        console.log(`Adding: ${account.getName()}`)
-        accountNames.add(account.getName());
+        excAccountNames.add(account.getName());
       }
       if (account.getName().endsWith(` EXC`)) {
-        console.log(`Adding: ${account.getName()}`)
-        accountNames.add(account.getName());
+        excAccountNames.add(account.getName());
       }
     });
-
-    for (const accountName of accountNames) {
-      let account = book.getAccount(accountName);
+    // Map exchange accounts by type
+    let excAccountTypes = new Map<Bkper.AccountType, Bkper.Account[]>();
+    for (const accountName of excAccountNames) {
+      const account = book.getAccount(accountName);
       if (account) {
-        return account.getType();
+        let mappedAccounts = excAccountTypes.get(account.getType());
+        if (mappedAccounts) {
+          mappedAccounts.push(account);
+        } else {
+          excAccountTypes.set(account.getType(), [account]);
+        }
       }
     }
-    
-    return BkperApp.AccountType.LIABILITY;
+    // Return most common type
+    let maxOccurrencesType = BkperApp.AccountType.LIABILITY;
+    let maxOccurrences = 1;
+    for (const [accountType, accounts] of excAccountTypes.entries()) {
+      if (accounts.length > maxOccurrences) {
+        maxOccurrences = accounts.length;
+        maxOccurrencesType = accountType;
+      }
+    }
+    return maxOccurrencesType;
   }
 
   function getAccountQuery(book: Bkper.Book, date: Date, bookClosingDate: string, historicalProp: string): string {
