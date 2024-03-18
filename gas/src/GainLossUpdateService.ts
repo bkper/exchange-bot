@@ -153,32 +153,36 @@ namespace GainLossUpdateService {
   }
 
   function getExcAccountName(book: Bkper.Book, connectedAccount: Bkper.Account, connectedCode: string): string {
-    let excAccount = connectedAccount.getProperty(EXC_ACCOUNT_PROP)
-    if (excAccount) {
-      return excAccount;
+    let excAccountProp = connectedAccount.getProperty(EXC_ACCOUNT_PROP);
+    if (excAccountProp) {
+      return excAccountProp;
     }
-    let groups = connectedAccount.getGroups();
+    const groups = connectedAccount.getGroups();
     if (groups) {
       for (const group of groups) {
-        excAccount = group.getProperty(EXC_ACCOUNT_PROP)
-        if (excAccount) {
-          return excAccount;
+        excAccountProp = group.getProperty(EXC_ACCOUNT_PROP);
+        if (excAccountProp) {
+          return excAccountProp;
         }
       }
     }
-    let excAggregateProp = book.getProperty(EXC_AGGREGATE_PROP);
+    const excAggregateProp = book.getProperty(EXC_AGGREGATE_PROP);
     if (excAggregateProp) {
-      return `Exchange_${connectedCode}`;
+      return isHistAccount(connectedAccount) ? `Exchange_${connectedCode} Hist` : `Exchange_${connectedCode}`;
     }
     if (groups) {
       for (const group of groups) {
-        let stockExcCodeProp = group.getProperty(STOCK_EXC_CODE_PROP)
+        const stockExcCodeProp = group.getProperty(STOCK_EXC_CODE_PROP);
         if (stockExcCodeProp) {
-          return `${connectedAccount.getName()} Unrealized EXC`;
+          return isHistAccount(connectedAccount) ? `${connectedAccount.getName()} Unrealized Hist EXC` : `${connectedAccount.getName()} Unrealized EXC`;
         }
       }
     }
-    return `${connectedAccount.getName()} EXC`;
+    return isHistAccount(connectedAccount) ? `${connectedAccount.getName()} Hist EXC` : `${connectedAccount.getName()} EXC`;
+  }
+
+  function isHistAccount(account: Bkper.Account): boolean {
+    return account.getName().endsWith(` Hist`) ? true : false;
   }
 
   export function getExcAccountGroups(book: Bkper.Book): Set<Bkper.Group> {
