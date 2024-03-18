@@ -18,28 +18,34 @@ namespace GainLossUpdateService {
 
         let date = BotService.parseDateParam(dateParam);
 
-        let query = getAccountQuery(book, date, bookClosingDate, excHistoricalProp);
+        let query = getQuery(book, date, bookClosingDate, excHistoricalProp);
+        let histQuery = getHistQuery(book, date);
 
         let bookBalancesReport = book.getBalancesReport(query);
+        let bookHistBalancesReport = !excHistoricalProp ? book.getBalancesReport(histQuery) : null;
 
         let result: { [key: string]: Bkper.Amount } = {};
 
         connectedBooks.forEach(connectedBook => {
+
             let connectedCode = BotService.getBaseCode(connectedBook);
             let accounts = getMatchingAccounts(book, connectedCode);
             let transactions: Bkper.Transaction[] = [];
+
             let connectedBookBalancesReport = connectedBook.getBalancesReport(query);
+            let connectedBookHistBalancesReport = (!excHistoricalProp && hasHistAccount(accounts)) ? connectedBook.getBalancesReport(histQuery) : null;
+
             for (const account of accounts) {
                 let connectedAccount = connectedBook.getAccount(account.getName());
                 if (connectedAccount != null) {
 
-                    let connectedAccountBalanceOnDate = getAccountBalance(connectedBookBalancesReport, connectedAccount);
+                    let connectedAccountBalanceOnDate = (isHistAccount(connectedAccount) && connectedBookHistBalancesReport !== null) ? getAccountBalance(connectedBookHistBalancesReport, connectedAccount) : getAccountBalance(connectedBookBalancesReport, connectedAccount);
                     if (!connectedAccountBalanceOnDate) {
                         continue;
                     }
 
                     let expectedBalance = ExchangeService.convert(connectedAccountBalanceOnDate, connectedCode, baseCode, exchangeRates);
-                    let accountBalanceOnDate = getAccountBalance(bookBalancesReport, account);
+                    let accountBalanceOnDate = (isHistAccount(connectedAccount) && bookHistBalancesReport !== null) ? getAccountBalance(bookHistBalancesReport, account) : getAccountBalance(bookBalancesReport, account);
                     if (!accountBalanceOnDate) {
                         continue;
                     }
@@ -70,19 +76,21 @@ namespace GainLossUpdateService {
                         .setProperty(EXC_CODE_PROP, connectedCode)
                         .setProperty(EXC_RATE_PROP, expectedBalance.rate.toString())
                         .setProperty(EXC_AMOUNT_PROP, "0")
-                        .setAmount(delta.abs());
+                        .setAmount(delta.abs())
+                    ;
 
                     if (deltaRounded.gt(0)) {
-                        transaction.from(account).to(excAccount).setDescription('#exchange_loss');
+                        const description = isHistAccount(account) ? '#exchange_loss_hist' : '#exchange_loss';
+                        transaction.from(account).to(excAccount).setDescription(description);
                         transactions.push(transaction);
                         // if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
                         //   transaction.check();
                         // }
                         aknowledgeResult(result, excAccount, delta);
                     } else if (deltaRounded.lt(0)) {
-                        transaction.from(excAccount).to(account).setDescription('#exchange_gain');
+                        const description = isHistAccount(account) ? '#exchange_gain_hist' : '#exchange_gain';
+                        transaction.from(excAccount).to(account).setDescription(description);
                         transactions.push(transaction);
-
                         // if (book.getProperty(EXC_ON_CHECK, 'exc_auto_check')) {
                         //   transaction.check();
                         // }
@@ -184,6 +192,15 @@ namespace GainLossUpdateService {
         return account.getName().endsWith(` Hist`) ? true : false;
     }
 
+    function hasHistAccount(accounts: Set<Bkper.Account>): boolean {
+        for (const account of accounts) {
+            if (isHistAccount(account)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     export function getExcAccountGroups(book: Bkper.Book): Set<Bkper.Group> {
         let accountNames = new Set<string>();
 
@@ -252,9 +269,9 @@ namespace GainLossUpdateService {
         return maxOccurrencesType;
     }
 
-    function getAccountQuery(book: Bkper.Book, date: Date, bookClosingDate: string, historicalProp: string): string {
-        var dateAfter = new Date(date.getTime());
-        dateAfter.setDate(dateAfter.getDate() + 1)
+    function getQuery(book: Bkper.Book, date: Date, bookClosingDate: string, historicalProp: string): string {
+        const dateAfter = new Date(date.getTime());
+        dateAfter.setDate(dateAfter.getDate() + 1);
         if (!historicalProp && bookClosingDate) {
             let openingDate: Date;
             try {
@@ -263,12 +280,18 @@ namespace GainLossUpdateService {
                 closingDate.setDate(closingDate.getDate() + 1);
                 openingDate = closingDate;
             } catch (error) {
-                throw `Error parsing book closing date: ${bookClosingDate}`
+                throw `Error parsing book closing date: ${bookClosingDate}`;
             }
             return `after:${book.formatDate(openingDate)} before:${book.formatDate(dateAfter)}`;
         } else {
             return `before:${book.formatDate(dateAfter)}`;
         }
+    }
+
+    function getHistQuery(book: Bkper.Book, date: Date): string {
+        const dateAfter = new Date(date.getTime());
+        dateAfter.setDate(dateAfter.getDate() + 1);
+        return `before:${book.formatDate(dateAfter)}`;
     }
 
 }
