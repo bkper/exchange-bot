@@ -182,15 +182,16 @@ namespace GainLossUpdateService {
         if (excAggregateProp) {
             return isHistAccount(connectedAccount) ? `Exchange_${connectedCode} Hist` : `Exchange_${connectedCode}`;
         }
+        // Stock accounts
         if (groups) {
             for (const group of groups) {
                 const stockExcCodeProp = group.getProperty(STOCK_EXC_CODE_PROP);
                 if (stockExcCodeProp) {
-                    return isHistAccount(connectedAccount) ? `${connectedAccount.getName()} Unrealized Hist EXC` : `${connectedAccount.getName()} Unrealized EXC`;
+                    return `${connectedAccount.getName()} Unrealized EXC`;
                 }
             }
         }
-        return isHistAccount(connectedAccount) ? `${connectedAccount.getName()} Hist EXC` : `${connectedAccount.getName()} EXC`;
+        return `${connectedAccount.getName()} EXC`;
     }
 
     function isHistAccount(account: Bkper.Account): boolean {
