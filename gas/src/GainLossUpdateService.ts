@@ -38,6 +38,11 @@ namespace GainLossUpdateService {
             for (const account of accounts) {
                 let connectedAccount = connectedBook.getAccount(account.getName());
                 if (connectedAccount != null) {
+                    
+                    // Skip Hist accounts if book is historical
+                    if (excHistoricalProp && isHistAccount(connectedAccount)) {
+                        continue;
+                    }
 
                     let connectedAccountBalanceOnDate = (isHistAccount(connectedAccount) && connectedBookHistBalancesReport !== null) ? getAccountBalance(connectedBookHistBalancesReport, connectedAccount) : getAccountBalance(connectedBookBalancesReport, connectedAccount);
                     if (!connectedAccountBalanceOnDate) {
