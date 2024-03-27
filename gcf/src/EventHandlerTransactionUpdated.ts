@@ -1,6 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
-import { getBaseCode } from "./BotService";
-import { EXC_CODE_PROP, EXC_RATE_PROP, EXC_LOG_PROP } from "./constants";
+import { extractAmountDescription_, getBaseCode, getRatesEndpointConfigForDate } from "./BotService";
+import { EXC_CODE_PROP, EXC_RATE_PROP, EXC_LOG_PROP, EXC_AMOUNT_PROP, EXC_RATE_HIST_PROP, EXC_DATE_HIST_PROP } from "./constants";
 import { AmountDescription, EventHandlerTransaction } from "./EventHandlerTransaction";
 import { EventHandlerTransactionEvent } from './EventHandlerTransactionEvent';
 
@@ -62,9 +62,20 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransactionEvent
       return record
     }
 
+    let amountDescriptionHist: AmountDescription | undefined = undefined;
+
+    // exc_date_hist prop: if present, fetch and record historical exchange rate for reference
+    const excDateHistProp = baseTransaction.properties[EXC_DATE_HIST_PROP];
+    if (excDateHistProp) {
+      // historical rates endpoint
+      const histRatesEndpointConfig = getRatesEndpointConfigForDate(baseBook, excDateHistProp);
+      // historical amount description
+      amountDescriptionHist = await extractAmountDescription_(baseBook, connectedBook, baseCode, connectedCode, baseTransaction, histRatesEndpointConfig.url);
+    }
+
     let bookAnchor = super.buildBookAnchor(connectedBook);
 
-    await this.updateConnectedTransaction(baseBook, connectedBook, connectedTransaction, amountDescription, baseTransaction, connectedCreditAccount, connectedDebitAccount);
+    await this.updateConnectedTransaction(baseBook, connectedBook, connectedTransaction, amountDescription, baseTransaction, connectedCreditAccount, connectedDebitAccount, amountDescriptionHist);
 
     let record = `EDITED: ${connectedTransaction.getDateFormatted()} ${connectedBook.formatValue(connectedTransaction.getAmount())}  ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
 
@@ -75,7 +86,7 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransactionEvent
 
 
 
-  private async updateConnectedTransaction(baseBook: Book, connectedBook: Book, connectedTransaction: Transaction, amountDescription: AmountDescription, transaction: bkper.Transaction, connectedCreditAccount: Account, connectedDebitAccount: Account) {
+  private async updateConnectedTransaction(baseBook: Book, connectedBook: Book, connectedTransaction: Transaction, amountDescription: AmountDescription, transaction: bkper.Transaction, connectedCreditAccount: Account, connectedDebitAccount: Account, amountDescriptionHist?: AmountDescription) {
 
     if (connectedTransaction.isChecked()) {
       await connectedTransaction.uncheck();
@@ -91,11 +102,17 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransactionEvent
     ;
 
     if (amountDescription.excBaseCode) {
+      // Exchange code prop
       connectedTransaction.setProperty(EXC_CODE_PROP, amountDescription.excBaseCode);
     }
 
     if (amountDescription.excBaseRate) {
+      // Exchange rate prop
       connectedTransaction.setProperty(EXC_RATE_PROP, amountDescription.excBaseRate.toString())
+      // Exchange amount prop
+      if (transaction.amount) {
+        connectedTransaction.setProperty(EXC_AMOUNT_PROP, transaction.amount);
+      }
     }
 
     if (amountDescription.rates) {
@@ -103,6 +120,12 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransactionEvent
       if (excLogEntries.length > 0) {
         connectedTransaction.setProperty(EXC_LOG_PROP, JSON.stringify(excLogEntries));
       }
+    }
+
+    // Historical exchange rate prop
+    if (amountDescriptionHist && amountDescriptionHist.excBaseRate) {
+      // set property
+      connectedTransaction.setProperty(EXC_RATE_HIST_PROP, amountDescriptionHist.excBaseRate.toString());
     }
 
     let urls = transaction.urls;
